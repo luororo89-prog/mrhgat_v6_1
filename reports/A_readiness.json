@@ -1,10 +1,10 @@
 {
   "stage": "A",
-  "status": "aggregate_inputs_ready",
+  "status": "necessary_recovery_gate_not_met",
   "ready_for_training": false,
   "safe_preprocessing_complete": true,
   "blockers": [
-    "真实训练需先通过模拟识别门槛"
+    "模拟必要识别门槛未达标，无合格真实训练配置"
   ],
   "outputs": [
     "adjacency.parquet",
