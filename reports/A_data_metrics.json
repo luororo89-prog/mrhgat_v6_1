@@ -1,0 +1,199 @@
+{
+  "python": "3.11.15",
+  "source_root": "/Users/luoxuan/Documents/博后三胎/mrhgat_v6_1/input_sources",
+  "legacy_supply": {
+    "rows": 666,
+    "features": [
+      "Accessibility_TH",
+      "Density_TH",
+      "Number_TH",
+      "Accessibility_SH",
+      "Density_SH",
+      "Number_SH",
+      "Accessibility_CHC",
+      "Density_CHC",
+      "Number_CHC"
+    ],
+    "class_counts": {
+      "0": 379,
+      "3": 99,
+      "1": 96,
+      "4": 71,
+      "2": 21
+    },
+    "negative_values": {
+      "Accessibility_TH": 488,
+      "Density_TH": 0,
+      "Number_TH": 477,
+      "Accessibility_SH": 512,
+      "Density_SH": 0,
+      "Number_SH": 453,
+      "Accessibility_CHC": 89,
+      "Density_CHC": 0,
+      "Number_CHC": 89
+    },
+    "missing": 0,
+    "legacy_gat_feature_shape": [
+      666,
+      12
+    ]
+  },
+  "id_crosswalk": {
+    "key": "SQCODE",
+    "canonical_ids": "existing center OBJECTID, matching the original supply table",
+    "polygon_duplicate_OBJECTID_rows": 40,
+    "population_OBJECTID_equals_center": 0,
+    "SQCODE_sets_identical": true,
+    "rows": 666
+  },
+  "communities": {
+    "rows": 666,
+    "invalid_geometry": 3,
+    "iso_rows": 665,
+    "iso_missing_ids": [
+      242
+    ],
+    "iso_extra_ids": [],
+    "iso_name_match": 665,
+    "iso_name_comparisons": 665,
+    "center_geometry_types": {
+      "Point": 666
+    },
+    "population_source_fields": [
+      "联通人",
+      "七普扩"
+    ],
+    "population_year_verified": false
+  },
+  "adjacency": {
+    "directed_edges": 3998,
+    "isolated_ids": [],
+    "rule": "existing Queen matrix, preserving original GAT positional order",
+    "polygon_exact_touch_edges": 1132,
+    "polygon_isolated_count": 315,
+    "edge_symmetric_difference": 2874,
+    "topology_provenance_verified": false
+  },
+  "grids": {
+    "rows": 43272,
+    "unique_grid_ids": 43272,
+    "duplicate_grid_id_rows": 0,
+    "existing_assignment_outside_community_ids": 20,
+    "SQCODE_unmapped_rows": 6,
+    "walk_min_to_center_available": false
+  },
+  "flows": {
+    "rows": 14839,
+    "total": 330831.0,
+    "paper_total": 651575,
+    "difference_from_paper": -320744.0,
+    "duplicate_pairs": 0,
+    "matrix_total": 330831.0,
+    "matrix_shape": [
+      666,
+      666
+    ],
+    "matrix_order_elementwise_checks": {
+      "legacy_supply_OBJECTID_order": true,
+      "legacy_feature_life_circle_id_order": true,
+      "sorted_OBJECTID_order": true
+    },
+    "facility_id_and_tier_available": false
+  },
+  "travel_time": {
+    "rows": 14839,
+    "columns": [
+      "source",
+      "target",
+      "flow_count",
+      "o_x",
+      "o_y",
+      "d_x",
+      "d_y",
+      "coord_ok",
+      "dis_m",
+      "time_s",
+      "status_info",
+      "time_min"
+    ],
+    "zero_time_rows": 0,
+    "negative_time_rows": 0,
+    "status_counts": {
+      "ok": 14839
+    },
+    "all_community_pair_count": 443556,
+    "peak_free_labels_available": false,
+    "facility_destinations_available": false
+  },
+  "facilities": {
+    "hospital_records": 159,
+    "hospital_unique_Uid": 159,
+    "hospital_duplicate_Uid_rows": 0,
+    "beds_zero": 21,
+    "beds_missing_or_non_numeric": 0,
+    "chc_records": 904,
+    "chc_capacity_column": "加权总",
+    "chc_beds_available": false,
+    "TH_named_file_records": 75,
+    "SH_named_file_records": 84,
+    "TH_SH_Uid_overlap": 0,
+    "SH_named_file_grades": {
+      "一级": 50,
+      "二级": 34
+    },
+    "hospital_grade_fields": {
+      "列4": {
+        "3": 74,
+        "1": 48,
+        "2": 29,
+        "0": 8
+      },
+      "列1": {
+        "三级": 75,
+        "一级": 50,
+        "二级": 34
+      }
+    }
+  },
+  "alternative_flow_tables": {
+    "代码\\出行轨迹\\result\\medical_flow_result1224.csv": {
+      "rows": 87182,
+      "flow_total": 381833.0,
+      "columns": [
+        "source",
+        "target",
+        "flow_count"
+      ]
+    },
+    "代码\\出行轨迹\\result\\medical_flow_result12241.csv": {
+      "rows": 41877,
+      "flow_total": 147356.0,
+      "columns": [
+        "source",
+        "target",
+        "flow_count"
+      ]
+    },
+    "服务能力分级\\五次嵌入\\result\\medical_flow.csv": {
+      "rows": 52352,
+      "flow_total": 1691653.0,
+      "columns": [
+        "source",
+        "target",
+        "count"
+      ]
+    },
+    "服务能力分级\\五次嵌入\\result\\medical_flow_classification.csv": {
+      "rows": 274418,
+      "flow_total": 7440202.0,
+      "columns": [
+        "source",
+        "target",
+        "flow_type",
+        "count"
+      ]
+    }
+  },
+  "source_integrity_unchanged": true,
+  "checked_source_files": 74
+}
