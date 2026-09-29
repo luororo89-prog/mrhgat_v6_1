@@ -1,0 +1,834 @@
+{
+  "scope": "diagnostic only; original inputs, models, gate thresholds and official results unchanged",
+  "saved_models": [
+    {
+      "comp_edge_auc": 0.9907174561856753,
+      "comp_residual_auc": 0.7055534889049684,
+      "comp_node_auc": 1.0,
+      "compet_edge_auc": 0.9950986107094342,
+      "compet_node_auc": 0.9920045688178184,
+      "comp_edge_positive": 26697,
+      "compet_edge_positive": 15073,
+      "comp_share_predicted": 0.2183227688074112,
+      "compet_share_predicted": 0.0885128527879715,
+      "comp_share_expected": 0.15900936378752079,
+      "compet_share_expected": 0.07653914891119813,
+      "topo_adj_pred": 0.017272738739848137,
+      "topo_adj_truth": 0.0020631233198206192,
+      "topo_crs_pred": 0.24851329624652863,
+      "topo_crs_truth": 0.18205731304305955,
+      "ce": 6.138396739959717,
+      "channel_auc_for_true_comp_edges": [
+        0.010153266516843005,
+        0.9907174561856753,
+        0.13111143113968227
+      ],
+      "channel_auc_for_low_supply_nodes": [
+        0.09047619047619046,
+        1.0,
+        0.013864205969469153
+      ],
+      "mean_channel_share_low": [
+        0.47120919823646545,
+        0.5283990502357483,
+        0.0003916043497156352
+      ],
+      "mean_channel_share_high": [
+        0.6908990144729614,
+        0.0438014417886734,
+        0.2652997374534607
+      ],
+      "conservation_max_error": 5.960464477539062e-07,
+      "finite": true,
+      "data_seed": 0,
+      "model_seed": 0,
+      "epochs": 89,
+      "original_full_ce": 6.138396739959717,
+      "data_reproduced_exactly": true
+    },
+    {
+      "comp_edge_auc": 0.9798053973357393,
+      "comp_residual_auc": 0.703893017049901,
+      "comp_node_auc": 1.0,
+      "compet_edge_auc": 0.9907792814436376,
+      "compet_node_auc": 0.9815343613173424,
+      "comp_edge_positive": 26803,
+      "compet_edge_positive": 15100,
+      "comp_share_predicted": 0.22399355471134186,
+      "compet_share_predicted": 0.08882032334804535,
+      "comp_share_expected": 0.15901126900358284,
+      "compet_share_expected": 0.07712845128317301,
+      "topo_adj_pred": 0.014685975387692451,
+      "topo_adj_truth": 0.0020587736356308785,
+      "topo_crs_pred": 0.25515300035476685,
+      "topo_crs_truth": 0.1821212899308316,
+      "ce": 6.145673751831055,
+      "channel_auc_for_true_comp_edges": [
+        0.02224206501683974,
+        0.9798053973357393,
+        0.1659386249402845
+      ],
+      "channel_auc_for_low_supply_nodes": [
+        0.11261107313738894,
+        1.0,
+        0.03269537480063795
+      ],
+      "mean_channel_share_low": [
+        0.4910795986652374,
+        0.5078771710395813,
+        0.0010433434508740902
+      ],
+      "mean_channel_share_high": [
+        0.6901163458824158,
+        0.047723881900310516,
+        0.26215994358062744
+      ],
+      "conservation_max_error": 5.960464477539062e-07,
+      "finite": true,
+      "data_seed": 1,
+      "model_seed": 1,
+      "epochs": 77,
+      "original_full_ce": 6.145673751831055,
+      "data_reproduced_exactly": true
+    },
+    {
+      "comp_edge_auc": 0.9881154363183089,
+      "comp_residual_auc": 0.7045162815803231,
+      "comp_node_auc": 0.9998632946001368,
+      "compet_edge_auc": 0.9909212552744138,
+      "compet_node_auc": 0.9964782029316581,
+      "comp_edge_positive": 26773,
+      "compet_edge_positive": 15151,
+      "comp_share_predicted": 0.19602884352207184,
+      "compet_share_predicted": 0.0811081975698471,
+      "comp_share_expected": 0.1591074529940346,
+      "compet_share_expected": 0.07601109458002983,
+      "topo_adj_pred": 0.01349613256752491,
+      "topo_adj_truth": 0.002064800047720644,
+      "topo_crs_pred": 0.22314219176769257,
+      "topo_crs_truth": 0.18221559678175356,
+      "ce": 6.150458335876465,
+      "channel_auc_for_true_comp_edges": [
+        0.013503012307691012,
+        0.9881154363183089,
+        0.1956262821022285
+      ],
+      "channel_auc_for_low_supply_nodes": [
+        0.0861585782638414,
+        0.9998632946001368,
+        0.028787878787878796
+      ],
+      "mean_channel_share_low": [
+        0.5028150081634521,
+        0.4956396222114563,
+        0.0015452499501407146
+      ],
+      "mean_channel_share_high": [
+        0.7388418316841125,
+        0.022056568413972855,
+        0.23910163342952728
+      ],
+      "conservation_max_error": 5.960464477539062e-07,
+      "finite": true,
+      "data_seed": 2,
+      "model_seed": 2,
+      "epochs": 83,
+      "original_full_ce": 6.150458335876465,
+      "data_reproduced_exactly": true
+    },
+    {
+      "comp_edge_auc": 0.18798112387869603,
+      "comp_residual_auc": 0.7054213399084207,
+      "comp_node_auc": 0.00968329915698336,
+      "compet_edge_auc": 0.9522268226190302,
+      "compet_node_auc": 0.9275652008376166,
+      "comp_edge_positive": 26668,
+      "compet_edge_positive": 15055,
+      "comp_share_predicted": 0.07222948968410492,
+      "compet_share_predicted": 0.21488530933856964,
+      "comp_share_expected": 0.1588846559819468,
+      "compet_share_expected": 0.0769341581331187,
+      "topo_adj_pred": 0.020472602918744087,
+      "topo_adj_truth": 0.002051575342447439,
+      "topo_crs_pred": 0.08040186017751694,
+      "topo_crs_truth": 0.18195647486109603,
+      "ce": 6.136435031890869,
+      "channel_auc_for_true_comp_edges": [
+        0.01334675744697528,
+        0.18798112387869603,
+        0.9891247802566489
+      ],
+      "channel_auc_for_low_supply_nodes": [
+        0.08056504898610162,
+        0.00968329915698336,
+        0.9587833219412166
+      ],
+      "mean_channel_share_low": [
+        0.48132964968681335,
+        0.022296808660030365,
+        0.4963736832141876
+      ],
+      "mean_channel_share_high": [
+        0.7197307348251343,
+        0.14532214403152466,
+        0.13494715094566345
+      ],
+      "conservation_max_error": 5.960464477539062e-07,
+      "finite": true,
+      "data_seed": 3,
+      "model_seed": 3,
+      "epochs": 108,
+      "original_full_ce": 6.136435031890869,
+      "data_reproduced_exactly": true
+    },
+    {
+      "comp_edge_auc": 0.9891772163841083,
+      "comp_residual_auc": 0.7038822585763272,
+      "comp_node_auc": 1.0,
+      "compet_edge_auc": 0.9913434726716025,
+      "compet_node_auc": 0.9831524842946886,
+      "comp_edge_positive": 26743,
+      "compet_edge_positive": 15135,
+      "comp_share_predicted": 0.18993768095970154,
+      "compet_share_predicted": 0.07746034115552902,
+      "comp_share_expected": 0.1586648259361746,
+      "compet_share_expected": 0.0768075518679938,
+      "topo_adj_pred": 0.009874929673969746,
+      "topo_adj_truth": 0.0020488492421397025,
+      "topo_crs_pred": 0.21654516458511353,
+      "topo_crs_truth": 0.1817067226234261,
+      "ce": 6.134738922119141,
+      "channel_auc_for_true_comp_edges": [
+        0.012761637139117474,
+        0.9891772163841083,
+        0.1481265490182574
+      ],
+      "channel_auc_for_low_supply_nodes": [
+        0.0887673729778993,
+        1.0,
+        0.024629756208703578
+      ],
+      "mean_channel_share_low": [
+        0.5212157964706421,
+        0.4783099293708801,
+        0.0004741180164273828
+      ],
+      "mean_channel_share_high": [
+        0.7376000285148621,
+        0.037138402462005615,
+        0.22526121139526367
+      ],
+      "conservation_max_error": 5.960464477539062e-07,
+      "finite": true,
+      "data_seed": 4,
+      "model_seed": 4,
+      "epochs": 93,
+      "original_full_ce": 6.134738922119141,
+      "data_reproduced_exactly": true
+    }
+  ],
+  "controls": [
+    {
+      "comp_edge_auc": 0.9594094323307097,
+      "comp_residual_auc": 0.633632419662814,
+      "comp_node_auc": 0.999122807017544,
+      "compet_edge_auc": 0.9807366803062725,
+      "compet_node_auc": 0.9958119169998096,
+      "comp_edge_positive": 26697,
+      "compet_edge_positive": 15073,
+      "comp_share_predicted": 0.19959136843681335,
+      "compet_share_predicted": 0.1099749207496643,
+      "comp_share_expected": 0.15900936378752079,
+      "compet_share_expected": 0.07653914891119813,
+      "topo_adj_pred": 0.02560345083475113,
+      "topo_adj_truth": 0.0020631233198206192,
+      "topo_crs_pred": 0.22603383660316467,
+      "topo_crs_truth": 0.18205731304305955,
+      "ce": 6.155006408691406,
+      "channel_auc_for_true_comp_edges": [
+        0.0507629453015029,
+        0.9594094323307097,
+        0.5429166707411551
+      ],
+      "channel_auc_for_low_supply_nodes": [
+        0.13964456596035543,
+        0.999122807017544,
+        0.12107541581225792
+      ],
+      "mean_channel_share_low": [
+        0.6262600421905518,
+        0.3173055052757263,
+        0.05643467232584953
+      ],
+      "mean_channel_share_high": [
+        0.6772075891494751,
+        0.14148171246051788,
+        0.18131066858768463
+      ],
+      "conservation_max_error": 5.960464477539062e-07,
+      "finite": true,
+      "data_seed": 0,
+      "model_seed": 0,
+      "epochs": 40
+    },
+    {
+      "comp_edge_auc": 0.9890944888634539,
+      "comp_residual_auc": 0.633632419662814,
+      "comp_node_auc": 1.0,
+      "compet_edge_auc": 0.9882298480838182,
+      "compet_node_auc": 0.9850561583856844,
+      "comp_edge_positive": 26697,
+      "compet_edge_positive": 15073,
+      "comp_share_predicted": 0.2268235683441162,
+      "compet_share_predicted": 0.08054202795028687,
+      "comp_share_expected": 0.15900936378752079,
+      "compet_share_expected": 0.07653914891119813,
+      "topo_adj_pred": 0.02017560973763466,
+      "topo_adj_truth": 0.0020631233198206192,
+      "topo_crs_pred": 0.25792643427848816,
+      "topo_crs_truth": 0.18205731304305955,
+      "ce": 6.139669895172119,
+      "channel_auc_for_true_comp_edges": [
+        0.01176291120546111,
+        0.9890944888634539,
+        0.15476984602261007
+      ],
+      "channel_auc_for_low_supply_nodes": [
+        0.08348143084985192,
+        1.0,
+        0.019799498746867178
+      ],
+      "mean_channel_share_low": [
+        0.47057774662971497,
+        0.5289322733879089,
+        0.0004902263171970844
+      ],
+      "mean_channel_share_high": [
+        0.6941894292831421,
+        0.05302541330456734,
+        0.25278499722480774
+      ],
+      "conservation_max_error": 5.960464477539062e-07,
+      "finite": true,
+      "data_seed": 0,
+      "model_seed": 0,
+      "epochs": 80
+    },
+    {
+      "comp_edge_auc": 0.9907851283103772,
+      "comp_residual_auc": 0.633632419662814,
+      "comp_node_auc": 1.0,
+      "compet_edge_auc": 0.9921987328224381,
+      "compet_node_auc": 0.9915286502950694,
+      "comp_edge_positive": 26697,
+      "compet_edge_positive": 15073,
+      "comp_share_predicted": 0.20906424522399902,
+      "compet_share_predicted": 0.08761973679065704,
+      "comp_share_expected": 0.15900936378752079,
+      "compet_share_expected": 0.07653914891119813,
+      "topo_adj_pred": 0.013892813585698605,
+      "topo_adj_truth": 0.0020631233198206192,
+      "topo_crs_pred": 0.2382868081331253,
+      "topo_crs_truth": 0.18205731304305955,
+      "ce": 6.1367597579956055,
+      "channel_auc_for_true_comp_edges": [
+        0.01005055395530875,
+        0.9907851283103772,
+        0.14716299611960654
+      ],
+      "channel_auc_for_low_supply_nodes": [
+        0.0934609250398724,
+        1.0,
+        0.01605149236728186
+      ],
+      "mean_channel_share_low": [
+        0.47095197439193726,
+        0.528739869594574,
+        0.00030828171293251216
+      ],
+      "mean_channel_share_high": [
+        0.6978499889373779,
+        0.03290873393416405,
+        0.26924124360084534
+      ],
+      "conservation_max_error": 5.960464477539062e-07,
+      "finite": true,
+      "data_seed": 0,
+      "model_seed": 0,
+      "epochs": 108
+    },
+    {
+      "comp_edge_auc": 0.406953326897726,
+      "comp_residual_auc": 0.633632419662814,
+      "comp_node_auc": 0.4128275233538391,
+      "compet_edge_auc": 0.5875325524918336,
+      "compet_node_auc": 0.8165810013325718,
+      "comp_edge_positive": 26697,
+      "compet_edge_positive": 15073,
+      "comp_share_predicted": 0.07186490297317505,
+      "compet_share_predicted": 0.2847209870815277,
+      "comp_share_expected": 0.15900936378752079,
+      "compet_share_expected": 0.07653914891119813,
+      "topo_adj_pred": 0.011397804133594036,
+      "topo_adj_truth": 0.0020631233198206192,
+      "topo_crs_pred": 0.08112866431474686,
+      "topo_crs_truth": 0.18205731304305955,
+      "ce": 6.156376838684082,
+      "channel_auc_for_true_comp_edges": [
+        0.12780808797830517,
+        0.406953326897726,
+        0.876529999312269
+      ],
+      "channel_auc_for_low_supply_nodes": [
+        0.3079175210754158,
+        0.4128275233538391,
+        0.9004215083162451
+      ],
+      "mean_channel_share_low": [
+        0.6388377547264099,
+        0.045113399624824524,
+        0.316048800945282
+      ],
+      "mean_channel_share_high": [
+        0.5961828231811523,
+        0.13950495421886444,
+        0.2643122971057892
+      ],
+      "conservation_max_error": 5.960464477539062e-07,
+      "finite": true,
+      "data_seed": 0,
+      "model_seed": 3,
+      "epochs": 40
+    },
+    {
+      "comp_edge_auc": 0.23082774137075288,
+      "comp_residual_auc": 0.633632419662814,
+      "comp_node_auc": 0.021724766461608577,
+      "compet_edge_auc": 0.3945044500649234,
+      "compet_node_auc": 0.5433085855701503,
+      "comp_edge_positive": 26697,
+      "compet_edge_positive": 15073,
+      "comp_share_predicted": 0.11983868479728699,
+      "compet_share_predicted": 0.19159217178821564,
+      "comp_share_expected": 0.15900936378752079,
+      "compet_share_expected": 0.07653914891119813,
+      "topo_adj_pred": 0.023760486394166946,
+      "topo_adj_truth": 0.0020631233198206192,
+      "topo_crs_pred": 0.1347256302833557,
+      "topo_crs_truth": 0.18205731304305955,
+      "ce": 6.143289566040039,
+      "channel_auc_for_true_comp_edges": [
+        0.03326639322146661,
+        0.23082774137075288,
+        0.9711882541469915
+      ],
+      "channel_auc_for_low_supply_nodes": [
+        0.133071314650262,
+        0.021724766461608577,
+        0.999669628616997
+      ],
+      "mean_channel_share_low": [
+        0.5421063899993896,
+        0.04008137434720993,
+        0.4178125262260437
+      ],
+      "mean_channel_share_high": [
+        0.6981993317604065,
+        0.2630612254142761,
+        0.038739483803510666
+      ],
+      "conservation_max_error": 5.960464477539062e-07,
+      "finite": true,
+      "data_seed": 0,
+      "model_seed": 3,
+      "epochs": 80
+    },
+    {
+      "comp_edge_auc": 0.09627785686744258,
+      "comp_residual_auc": 0.633632419662814,
+      "comp_node_auc": 0.0006265664160400948,
+      "compet_edge_auc": 0.45155733448628343,
+      "compet_node_auc": 0.5874738244812489,
+      "comp_edge_positive": 26697,
+      "compet_edge_positive": 15073,
+      "comp_share_predicted": 0.129964679479599,
+      "compet_share_predicted": 0.18788228929042816,
+      "comp_share_expected": 0.15900936378752079,
+      "compet_share_expected": 0.07653914891119813,
+      "topo_adj_pred": 0.041308026760816574,
+      "topo_adj_truth": 0.0020631233198206192,
+      "topo_crs_pred": 0.14427590370178223,
+      "topo_crs_truth": 0.18205731304305955,
+      "ce": 6.134638786315918,
+      "channel_auc_for_true_comp_edges": [
+        0.01141187395788084,
+        0.09627785686744258,
+        0.9946145362708371
+      ],
+      "channel_auc_for_low_supply_nodes": [
+        0.09114832535885167,
+        0.0006265664160400948,
+        0.9999544315333789
+      ],
+      "mean_channel_share_low": [
+        0.4583282172679901,
+        0.03054960072040558,
+        0.5111221671104431
+      ],
+      "mean_channel_share_high": [
+        0.6909456849098206,
+        0.2912374436855316,
+        0.017816882580518723
+      ],
+      "conservation_max_error": 5.960464477539062e-07,
+      "finite": true,
+      "data_seed": 0,
+      "model_seed": 3,
+      "epochs": 108
+    },
+    {
+      "comp_edge_auc": 0.9359359398706136,
+      "comp_residual_auc": 0.633355200119685,
+      "comp_node_auc": 1.0,
+      "compet_edge_auc": 0.982250209755962,
+      "compet_node_auc": 0.9978107747953551,
+      "comp_edge_positive": 26668,
+      "compet_edge_positive": 15055,
+      "comp_share_predicted": 0.18457664549350739,
+      "compet_share_predicted": 0.12383294105529785,
+      "comp_share_expected": 0.1588846559819468,
+      "compet_share_expected": 0.0769341581331187,
+      "topo_adj_pred": 0.023886941373348236,
+      "topo_adj_truth": 0.002051575342447439,
+      "topo_crs_pred": 0.20879806578159332,
+      "topo_crs_truth": 0.18195647486109603,
+      "ce": 6.154399394989014,
+      "channel_auc_for_true_comp_edges": [
+        0.08636723192586138,
+        0.9359359398706136,
+        0.5572138389676876
+      ],
+      "channel_auc_for_low_supply_nodes": [
+        0.19387104123946228,
+        1.0,
+        0.14643426748689906
+      ],
+      "mean_channel_share_low": [
+        0.658018946647644,
+        0.28398364782333374,
+        0.057997725903987885
+      ],
+      "mean_channel_share_high": [
+        0.658396303653717,
+        0.126228466629982,
+        0.21537543833255768
+      ],
+      "conservation_max_error": 5.960464477539062e-07,
+      "finite": true,
+      "data_seed": 3,
+      "model_seed": 0,
+      "epochs": 40
+    },
+    {
+      "comp_edge_auc": 0.9891325547823907,
+      "comp_residual_auc": 0.633355200119685,
+      "comp_node_auc": 1.0,
+      "compet_edge_auc": 0.9928788553804327,
+      "compet_node_auc": 0.9846754235674852,
+      "comp_edge_positive": 26668,
+      "compet_edge_positive": 15055,
+      "comp_share_predicted": 0.21821725368499756,
+      "compet_share_predicted": 0.08185376226902008,
+      "comp_share_expected": 0.1588846559819468,
+      "compet_share_expected": 0.0769341581331187,
+      "topo_adj_pred": 0.016508493572473526,
+      "topo_adj_truth": 0.002051575342447439,
+      "topo_crs_pred": 0.24823051691055298,
+      "topo_crs_truth": 0.18195647486109603,
+      "ce": 6.139173984527588,
+      "channel_auc_for_true_comp_edges": [
+        0.013295315566297023,
+        0.9891325547823907,
+        0.17604862782044306
+      ],
+      "channel_auc_for_low_supply_nodes": [
+        0.1079175210754158,
+        1.0,
+        0.032023239917976745
+      ],
+      "mean_channel_share_low": [
+        0.49376317858695984,
+        0.5055640339851379,
+        0.0006727560539729893
+      ],
+      "mean_channel_share_high": [
+        0.7006655931472778,
+        0.05755019187927246,
+        0.24178409576416016
+      ],
+      "conservation_max_error": 5.960464477539062e-07,
+      "finite": true,
+      "data_seed": 3,
+      "model_seed": 0,
+      "epochs": 80
+    },
+    {
+      "comp_edge_auc": 0.9916286771546016,
+      "comp_residual_auc": 0.633355200119685,
+      "comp_node_auc": 1.0,
+      "compet_edge_auc": 0.9926998573598835,
+      "compet_node_auc": 0.986103179135732,
+      "comp_edge_positive": 26668,
+      "compet_edge_positive": 15055,
+      "comp_share_predicted": 0.20934809744358063,
+      "compet_share_predicted": 0.08955556899309158,
+      "comp_share_expected": 0.1588846559819468,
+      "compet_share_expected": 0.0769341581331187,
+      "topo_adj_pred": 0.01181733701378107,
+      "topo_adj_truth": 0.002051575342447439,
+      "topo_crs_pred": 0.23861345648765564,
+      "topo_crs_truth": 0.18195647486109603,
+      "ce": 6.135172367095947,
+      "channel_auc_for_true_comp_edges": [
+        0.009401978692155971,
+        0.9916286771546016,
+        0.1659890908309762
+      ],
+      "channel_auc_for_low_supply_nodes": [
+        0.10326953748006382,
+        1.0,
+        0.03542948279790384
+      ],
+      "mean_channel_share_low": [
+        0.4712922275066376,
+        0.5273539423942566,
+        0.0013533630408346653
+      ],
+      "mean_channel_share_high": [
+        0.7041636109352112,
+        0.039412833750247955,
+        0.2564235031604767
+      ],
+      "conservation_max_error": 5.960464477539062e-07,
+      "finite": true,
+      "data_seed": 3,
+      "model_seed": 0,
+      "epochs": 108
+    },
+    {
+      "comp_edge_auc": 0.5101281309029921,
+      "comp_residual_auc": 0.633355200119685,
+      "comp_node_auc": 0.5064593301435407,
+      "compet_edge_auc": 0.7608828981657825,
+      "compet_node_auc": 0.9657338663620788,
+      "comp_edge_positive": 26668,
+      "compet_edge_positive": 15055,
+      "comp_share_predicted": 0.06684377044439316,
+      "compet_share_predicted": 0.2884880006313324,
+      "comp_share_expected": 0.1588846559819468,
+      "compet_share_expected": 0.0769341581331187,
+      "topo_adj_pred": 0.010987884365022182,
+      "topo_adj_truth": 0.002051575342447439,
+      "topo_crs_pred": 0.07534104585647583,
+      "topo_crs_truth": 0.18195647486109603,
+      "ce": 6.156021595001221,
+      "channel_auc_for_true_comp_edges": [
+        0.11618054103202713,
+        0.5101281309029921,
+        0.8829920587112927
+      ],
+      "channel_auc_for_low_supply_nodes": [
+        0.2842105263157895,
+        0.5064593301435407,
+        0.7900774663932559
+      ],
+      "mean_channel_share_low": [
+        0.6385339498519897,
+        0.056887611746788025,
+        0.3045784533023834
+      ],
+      "mean_channel_share_high": [
+        0.6083513498306274,
+        0.10299333930015564,
+        0.2886551320552826
+      ],
+      "conservation_max_error": 4.76837158203125e-07,
+      "finite": true,
+      "data_seed": 3,
+      "model_seed": 3,
+      "epochs": 40
+    },
+    {
+      "comp_edge_auc": 0.25799720425501727,
+      "comp_residual_auc": 0.633355200119685,
+      "comp_node_auc": 0.02849168375484164,
+      "compet_edge_auc": 0.8743653667231894,
+      "compet_node_auc": 0.9746811345897582,
+      "comp_edge_positive": 26668,
+      "compet_edge_positive": 15055,
+      "comp_share_predicted": 0.08919638395309448,
+      "compet_share_predicted": 0.252022922039032,
+      "comp_share_expected": 0.1588846559819468,
+      "compet_share_expected": 0.0769341581331187,
+      "topo_adj_pred": 0.01851489394903183,
+      "topo_adj_truth": 0.002051575342447439,
+      "topo_crs_pred": 0.1000828742980957,
+      "topo_crs_truth": 0.18195647486109603,
+      "ce": 6.141643047332764,
+      "channel_auc_for_true_comp_edges": [
+        0.019902293894898934,
+        0.25799720425501727,
+        0.9803544830209463
+      ],
+      "channel_auc_for_low_supply_nodes": [
+        0.11492367281840966,
+        0.02849168375484164,
+        0.9673501936659831
+      ],
+      "mean_channel_share_low": [
+        0.51216721534729,
+        0.047894299030303955,
+        0.43993839621543884
+      ],
+      "mean_channel_share_high": [
+        0.6575438976287842,
+        0.16489244997501373,
+        0.17756366729736328
+      ],
+      "conservation_max_error": 5.960464477539062e-07,
+      "finite": true,
+      "data_seed": 3,
+      "model_seed": 3,
+      "epochs": 80
+    },
+    {
+      "comp_edge_auc": 0.18798112387869603,
+      "comp_residual_auc": 0.633355200119685,
+      "comp_node_auc": 0.00968329915698336,
+      "compet_edge_auc": 0.9522268226190302,
+      "compet_node_auc": 0.9275652008376166,
+      "comp_edge_positive": 26668,
+      "compet_edge_positive": 15055,
+      "comp_share_predicted": 0.07222948968410492,
+      "compet_share_predicted": 0.21488530933856964,
+      "comp_share_expected": 0.1588846559819468,
+      "compet_share_expected": 0.0769341581331187,
+      "topo_adj_pred": 0.020472602918744087,
+      "topo_adj_truth": 0.002051575342447439,
+      "topo_crs_pred": 0.08040186017751694,
+      "topo_crs_truth": 0.18195647486109603,
+      "ce": 6.136435031890869,
+      "channel_auc_for_true_comp_edges": [
+        0.01334675744697528,
+        0.18798112387869603,
+        0.9891247802566489
+      ],
+      "channel_auc_for_low_supply_nodes": [
+        0.08056504898610162,
+        0.00968329915698336,
+        0.9587833219412166
+      ],
+      "mean_channel_share_low": [
+        0.48132964968681335,
+        0.022296808660030365,
+        0.4963736832141876
+      ],
+      "mean_channel_share_high": [
+        0.7197307348251343,
+        0.14532214403152466,
+        0.13494715094566345
+      ],
+      "conservation_max_error": 5.960464477539062e-07,
+      "finite": true,
+      "data_seed": 3,
+      "model_seed": 3,
+      "epochs": 108
+    },
+    {
+      "comp_edge_auc": 0.24037869457313676,
+      "comp_residual_auc": 0.633355200119685,
+      "comp_node_auc": 0.05731373889268626,
+      "compet_edge_auc": 0.4100251822841088,
+      "compet_node_auc": 0.49086236436322095,
+      "comp_edge_positive": 26668,
+      "compet_edge_positive": 15055,
+      "comp_share_predicted": 0.10584738105535507,
+      "compet_share_predicted": 0.25743281841278076,
+      "comp_share_expected": 0.1588846559819468,
+      "compet_share_expected": 0.0769341581331187,
+      "topo_adj_pred": 0.056502703577280045,
+      "topo_adj_truth": 0.002051575342447439,
+      "topo_crs_pred": 0.114712193608284,
+      "topo_crs_truth": 0.18195647486109603,
+      "ce": 6.138583183288574,
+      "channel_auc_for_true_comp_edges": [
+        0.06660699200420199,
+        0.24037869457313676,
+        0.943116157957445
+      ],
+      "channel_auc_for_low_supply_nodes": [
+        0.2371952608794714,
+        0.05731373889268626,
+        0.9684324447482342
+      ],
+      "mean_channel_share_low": [
+        0.5830473899841309,
+        0.023491796106100082,
+        0.3934609293937683
+      ],
+      "mean_channel_share_high": [
+        0.603897213935852,
+        0.25513985753059387,
+        0.14096291363239288
+      ],
+      "conservation_max_error": 5.960464477539062e-07,
+      "finite": true,
+      "data_seed": 3,
+      "model_seed": 3,
+      "epochs": 200
+    },
+    {
+      "comp_edge_auc": 0.21966993374460086,
+      "comp_residual_auc": 0.633355200119685,
+      "comp_node_auc": 0.028457507404875838,
+      "compet_edge_auc": 0.36162149755598083,
+      "compet_node_auc": 0.5753854940034266,
+      "comp_edge_positive": 26668,
+      "compet_edge_positive": 15055,
+      "comp_share_predicted": 0.1283969134092331,
+      "compet_share_predicted": 0.2696400284767151,
+      "comp_share_expected": 0.1588846559819468,
+      "compet_share_expected": 0.0769341581331187,
+      "topo_adj_pred": 0.06745383888483047,
+      "topo_adj_truth": 0.002051575342447439,
+      "topo_crs_pred": 0.13927780091762543,
+      "topo_crs_truth": 0.18195647486109603,
+      "ce": 6.13084602355957,
+      "channel_auc_for_true_comp_edges": [
+        0.05050951655383512,
+        0.21966993374460086,
+        0.9540612627946481
+      ],
+      "channel_auc_for_low_supply_nodes": [
+        0.23198906356801097,
+        0.028457507404875838,
+        0.9776030986557303
+      ],
+      "mean_channel_share_low": [
+        0.5066149234771729,
+        0.022985881194472313,
+        0.4703989326953888
+      ],
+      "mean_channel_share_high": [
+        0.6182976961135864,
+        0.3047419488430023,
+        0.07696016132831573
+      ],
+      "conservation_max_error": 5.960464477539062e-07,
+      "finite": true,
+      "data_seed": 3,
+      "model_seed": 3,
+      "epochs": 400
+    }
+  ]
+}

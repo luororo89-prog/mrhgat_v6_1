@@ -1,0 +1,1384 @@
+
+=== PDF PAGE 1 ===
+npj | urban sustainability Article
+Published in partnership with RMIT University
+https://doi.org/10.1038/s42949-026-00364-7
+Deep learning-driven community
+resilience rating based on intertwined
+socio-technical systems features
+Check for updates
+Kai Yin1,2,B oL i1,2 & Ali Mostafavi1
+Community resilience is a complex, multi-dimensional phenomenon that emerges from nonlinear
+interactions among diverse features within socio-technical systems. However, most existing
+assessment methods rely on index-based approaches that inadequately capture the heterogeneity of
+these systems and their dynamic interdependencies in shaping key resilience components, namely
+robustness, redundancy, and resourcefulness. To address this gap, this study introduces Resili-Net,
+an integrated three-module deep learning framework for rating community resilience. The model
+incorporates twelve measurable features across infrastructure, facility, and social systems, using
+publicly available data from multiple metropolitan statistical areas in the United States. Resili-Net
+classiﬁes spatial areas intoﬁve distinct resilience levels, and its interpretability allows for identifying the
+key factors in ﬂuencing resilience across communities. Scenario analyses simulate how changes in
+socio-technical conditions affect resilience levels, and a combined resilience –risk analysis reveals
+communities facing both high hazard risk and low resilience. These ﬁndings highlight priority areas for
+targeted interventions. By modeling resilience as an emergent property of interacting community
+features, Resili-Net offers a scalable, data-driven approach for resilience assessment that advances
+current practices through the use of machine learning and heterogeneous urban data.
+Natural hazards pose a signi ﬁcant threat to cities and communities
+worldwide. As population growth and urbanization continue, an increasing
+number of people and assets will be exposed to these hazards
+1.T oc o p ew i t h
+such hazards, assessing the resilience of cities and communities becomes
+essential for developing effective strategies. Resilience refers to the capacity
+of a system to prepare for, adapt to, and recover from disruptive events
+2.
+Decades of research have assessed u rban resilience against natural
+hazards from a variety of disciplinary perspectives. Many studies focus on
+individual urban systems, such as transportation networks3– 6, power grids7– 9,
+communication infrastructure, and social systems10,11 to evaluate how the
+system withstands and recovers from disruption. While these system-
+speciﬁc analyses offer valuable insights, they often fall short in capturing the
+broader, interconnected nature of urban resilience.
+Recognizing that cities function as complex systems, studies have
+moved beyond isolated system assessment to incorporate this complexity
+into resilience assessment. A framework such as PEOPLES
+12 has been
+developed to integrate social, environmental, infrastructural, and institu-
+tional dimensions to evaluate community resilience. Similarly, Datola 13
+identiﬁes ﬁve key dimensions, including economy, society, environment,
+nature, and governance, and nine capacities essential for assessing urban
+resilience in a holistic way. Helmrich, Kuhn et al. 14 evaluate urban infra-
+structure systems from a social-ecological-technological perspective, offer-
+ing a convergence-based approach to uncover interdependencies, feedback
+loops, and disruption pathways that inﬂuence urban resilience. Together,
+these efforts underscore the growing r ecognition that resilience must be
+approached through a complex, multidimensional lens.
+However, operationalizing this complexity in a spatially explicit, scal-
+able, and context-sensitive manner remains an open challenge. A common
+method for assessing community resili ence involves selecting a set of
+indicators, assigning weights to each, and aggregating them into a composite
+index or synthetic score. For example, studies by Moghadas, Asadzadeh
+et al.
+15 assessed urban ﬂood resilience in Tehran using a composite index
+built from six dimensions, with indi cator weights assigned through the
+Analytic Hierarchy Process (AHP) and aggregated using TOPSIS to rank
+districts. Similarly, Anelli, Tajani et al.
+16 proposed a synthetic natural risk
+index for Rome, combining 23 indica tors across hazard, exposure, and
+vulnerability dimensions using AHP-based weighting. While these methods
+provide structured assessments, the y typically assume that indicators
+1Zachry Department of Civil and Environmental Engineering, Texas A&M University, College Station, TX, USA. 2These authors contributed equally: Kai Yin, Bo Li.
+e-mail: libo@tamu.edu
+npj Urban Sustainability |            (2026) 6:56 1
+1234567890():,;
+1234567890():,;
+
+=== PDF PAGE 2 ===
+function independently and rely heavily on expert-based weighting, limiting
+their ability to reﬂect the interconnected nature of real-world urban systems.
+Some studies, such as those by Parizi, Taleai et al.17 and Parizi, Taleai et al.18,
+have taken a step further by applying methods like Interpretive Structural
+Modeling (ISM) and DEMATEL to explore relationships and structures
+among indicators. Although these techniques offer insights into indicator
+interdependencies, the relationships they identify are static and derived
+from expert input, providing only a partial representation of the complex,
+nonlinear interactions that characterize socio-technical systems. For
+example,ﬂood losses can escalate sharply when inundation disables even a
+small number of key road segments. The resulting network fragmentation
+can disproportionately increase travel times and disrupt access to essential
+facilities such as hospitals and food locations. In such situations, impacts are
+no longer proportional to the magnitude of the initial hazard. Rather, those
+impacts are ampliﬁed through compounding effects that propagate across
+interconnected urban systems. These limitations highlight the need for
+more integrated, systems-based a pproaches that go beyond indicator
+aggregation to capture the emergent, adaptive, and interdependent nature of
+community resilience.
+Recent advances in deep learning have demonstrated strong potential
+for modeling complex, high-dimensional, and nonlinear relationships in
+urban systems. Emerging studies have begun to leverage deep learning in the
+context of urban hazard and resilience. For example, Yin and Mostafavi
+19
+proposed FloodRisk-Net, an unsupervised graph deep learning model for
+emergent ﬂood risk proﬁling. Siam et al.20 employed a hybrid deep neural
+network and fuzzy AHP model for national-scaleﬂood risk mapping. These
+efforts show how deep learning can be used to capture hidden patterns in
+urban risk contexts. Additionally, unsupervised deep learning has been
+effectively used to identify latent risk patterns and system vulnerabilities in
+other domains such as healthcare
+21, transportation6, and infrastructure
+diagnostics22, offering transferable methodologies for urban resilience
+analysis.
+Building upon these identiﬁed gaps and the emerging potential of deep
+learning to model complexity in urban systems, this study presentsResili-
+Net, a deep learning-based framework for rating community resilience.
+Speciﬁcally, we introduce an integrated three-layer unsupervised deep
+learning framework designed to characterize the resilience proﬁles of urban
+communities by leveraging urban big data and machine intelligence. We
+apply the Resili-Netmodel to four of the most populous metropolitan sta-
+tistical areas (MSAs) in the United States: Los Angeles, Chicago, Dallas, and
+Houston, which are selected due to their large populations and the heigh-
+tened socioeconomic impacts associated with hazards in densely populated
+regions. The model operates at the spatialgrid cell level, assigning resilience
+scores based on each cell’ s underlying features. By mapping these resilience
+ratings alongside ﬂood risk data, the framework enables identi ﬁcation of
+resilience– risk pro ﬁles within each city, highlighting high-risk, low-
+resilience zones that require prioritized intervention. While demonstrated
+in large MSAs, theResili-Netframework has the potential to generalize and
+adapt to cities of varying population sizes and geographic contexts.
+This study advances the ﬁeld of community resilience assessment
+through the development and application of a novel deep learning-based
+framework, Resili-Net. The key contributions of our work are threefold.
+First, this study introduces an integrated three-module unsupervised deep
+learning architecture that automatica lly learns latent representations of
+socio-technical system features. Bycapturing hidden structures and com-
+plex, nonlinear interdependencies among socio-technical system features,
+Resili-Netovercomes key limitations of traditional indicator-based models,
+which often rely on expert-de ﬁned weights and assume linear, additive
+relationships. The model clusters spatial units into distinct resilience groups
+based on their emergent characteristics, enabling a more nuanced, data-
+driven understanding of urban resilience that is both scalable and adaptable
+to diverse urban contexts. Second, this study enhances the interpretability of
+the deep learning framework by incorporating a feature importance analysis
+using a random forest classiﬁer. This step reveals the relative contribution of
+each resilience feature to the classiﬁcation of spatial units, translating the
+model’ s abstract representations into actionable insights. By doing so, it
+provides a transparent basis for stakeholders and policymakers to under-
+stand which factors most in ﬂuence resilience outcomes, enabling more
+targeted, data-informed decision-making. Third, the implementation of the
+proposed framework across multiple metropolitans demonstrates the
+practical utility of Resili-Net, examining how varying urban development
+scenarios inﬂuence resilience distributions. By integrating high-resolution
+ﬂood risk data, the framework enables the identi ﬁcation of compound
+vulnerable zones that are simultaneously highly exposed to hazards and
+structurally low in resilience. This integrated resilience– risk pro
+ﬁling sup-
+ports spatial prioritization for tar geted interventions. Our approach
+uniquely combines unsupervised deep learning with interpretable modeling
+and scenario analysis, offering a more robust and scalable tool for cross-
+sectoral planning and strategic resilience enhancement.
+Resili-netis designed as a generalizable, hazard-agnostic framework for
+community resilience assessment. Its three-module architecture is applic-
+able across diverse hazard setting sw i t h o u tr e l y i n go nh a z a r d - s p e c iﬁc
+assumptions. Many of the indicators employed here, including transpor-
+tation connectivity, healthcare accessibility, communication capacity, and
+social vulnerability, are widely recognized as cross-cutting determinants of
+community functioning under both acute hazards and chronic stressors.
+When applied to a speciﬁc hazard, the framework remainsﬂexible, allowing
+researchers to substitute or augment the feature sets used as model inputs,
+while keeping the same analytical pipeline. In this study, we validate and
+demonstrate the framework primarily in a ﬂood-related application
+domain. The broader multi-hazard applicability remains inherent to the
+architecture but is not empirically evaluated here. Future research should
+systematically evaluateResili-Netacross a wider range of hazard types and
+urban environments to empirically assess its generalizability and further
+strengthen its multi-hazard utility.
+Results
+Three-layer unsupervised deep learning model for community
+resilience rating
+We constructed an integrated three-module deep learning model (Resili-
+Net) for community resilience rating (Fig.1) based on 12 features related to
+the three components of resilience: robustness, redundancy, and resource-
+fulness, using publicly available urban datasets. Table 1 in the Methods
+section summarizes the features used in the model. The description and
+computation of features, as well as the rationale for their selection, are
+explained in the Methods section.
+As presented in Fig. 1,i nt h e ﬁrst module, node representation
+learning, the complex and nonlinear interactions of resilience-related fea-
+tures (RF,T a b l e2) among different urban sub-systems are encoded into
+latent representations. In the second module, grid cells with similar resi-
+lience levels are clustered into the same group by implementing deep
+embedded clustering on the learned node representation. In the third
+module, feature importance is determined by utilizing clustering results as
+labels for classiﬁcation algorithms and then interpreting cluster assignments
+modeled by the classiﬁer. The community resilience level of each cluster is
+calculated by taking feature importance as weights.
+Revealing ﬁve resilience levels within each MSA based on inter-
+actions among community resilience-related features
+Resili-Netyields ﬁve distinct, city-speciﬁc community resilience levels, with
+level 5 being the highest resilience, while level 1 is the lowest resilience level
+(Fig. 2) .T h ec h o i c eo fﬁve levels was determined empirically by testing
+clustering sizes and selecting the value that produced the highest average
+Silhouette score across MSAs (Suppl ementary Table 1). These outputs
+unveil the spatial proﬁle of community resilience across different areas of
+cities in an interpretable way. Each resilience level has distinct feature values
+related to the extent of robustness, redundancy, and resourcefulness of the
+urban sub-systems (Fig.3). For example, the highest resilience level areas in
+Greater Houston are found to have the lowest building age, cell tower age,
+and poverty rate as well as the largest available number of healthcare centers
+https://doi.org/10.1038/s42949-026-00364-7 Article
+npj Urban Sustainability |            (2026) 6:56 2
+
+=== PDF PAGE 3 ===
+within 30 minutes driving distance, the largest number of connected roads
+to the community, the largest available number of cell towers, the largest
+road length, the fastest internet speed, and the highest education level. All
+these features indicate that these communities have the greatest levels of
+robustness, redundancy, and resourcefulness, giving them the highest
+capacity to prepare for, absorb, reco ver from, and adapt to disturbances
+caused by hazards. The spatial distribution maps of the individual features
+for the four MSAs are provided in the Supplementary Figs. 1 to 4.
+To explore broader spatial patterns, we overlaid each MSA’ sc o r ec i t y
+boundary with its resilience mapping. Results show that higher-resilience
+communities tend to cluster in or nearcore cities across all four MSAs (Fig.
+2). These communities are characterized by the presence of newer and more
+robust infrastructure and facilities access, as well as higher educational levels
+(Fig. 3). We also found that community resilience levels are spatially con-
+centrated instead of randomly distributed and dispersed. Global Moran’ sI
+index is calculated by taking a contiguous network (grid cell sharing a
+boundary or a vertex is deﬁned as a neighbor) as the spatial-weight matrix.
+The signiﬁcantly positive Moran’ sI( T a b l e1) indicates that grid cells with
+similar resilience are spatially clustered. Such clustering may arise because
+adjacent communities share infrastructure networks, socio-demographic
+characteristics, and exposure to common hazards; as a result, improvements
+made in one cell could propagate beneﬁts (or conversely burdens) to nearby
+cells. It may also reﬂect past planning choices that have unevenly allocated
+resilience-enhancing resources. Determining which mechanism dominates
+will require targeted causal analysis beyond the scope of this study. As a
+comparison, we compiled resilience maps generated by a linear aggregation
+of the same features and simply classi ﬁed them into quintiles for all four
+MSAs (Supplementary Fig. 5). The two approaches yield notably different
+spatial patterns. The linear-quintile method treats all indicators as additive
+and substitutable and therefore tends to smooth over variation across space.
+Resili-Net preserves sharper gradients and reveals spatial heterogeneities,
+such as clear central-peri-urban contrasts andﬁne-grained pockets of low
+resilience embedded within otherwis e higher-resilience regions. These
+patterns arise because Resili-Net encodes nonlinear relationships among
+infrastructural, facility, and social features, enabling the model to capture
+Table 1 | Results of the Global Moran ’s I index in four MSAs
+MSAs Greater Los
+Angeles
+Greater
+Chicago
+Greater
+Dallas
+Greater
+Houston
+Moran’s
+I value
+0.851*** 0.768*** 0.821*** 0.698***
+***signiﬁcant at 0.01 level
+…
+…
+…
+…
+…
+Module1: Node Representation Learning
+RF
+Ancillary cluster
+distribution
+Target
+distribution
+SuperviseGenerate
+Moduel2: Deep Embedded Clustering
+Encoder Decoder
+Clustering
+Label
+Feature
+Importance
+Resilience level
+Level 5
+Level 2
+Level 3
+Level 4
+Level 1
+Clustering result
+Cluster 3
+Cluster 2
+Cluster 1
+Cluster 5
+Cluster 4Argmax
+Random Forest Classifier
+…
+Moduel3: Resilience Level Interpretation
+Fig. 1 | The overall framework of the proposed three-module community resi-
+lience rating model. Each MSA is divided into grid cells of equal size. The input of
+the model is a resilience-related feature matrix (RF), which includes three resilience
+characteristics, i.e. robustness, redundancy, and resourcefulness, in urban sub-
+systems of facilities, infrastructures, and societies (Table 2; See Methods for details
+about the construction of RF). The model outputs the resilience level (level 5 is the
+highest resilience, while level 1 is the lowest) of each grid cell. E is the encoded
+representation of RF.
+https://doi.org/10.1038/s42949-026-00364-7 Article
+npj Urban Sustainability |            (2026) 6:56 3
+
+=== PDF PAGE 4 ===
+interacting vulnerabilities that accumulate in speciﬁc spatial contexts. In
+contrast, the quintile method averages these effects and often elevates areas
+with strong values on a subset of indicators, even when interacting weak-
+nesses collectively compromise resilience.
+Changes in resilience level under an urban development scenario
+Urban development and growth patterns reshape the spatial pro ﬁle of
+community resilience. Resili-Net could be implemented to generate a
+community’ s resilience level for different urban development scenarios by
+changing the input value of community socio-technical features. The fol-
+lowing urban development scenario provides a concrete illustration of how
+Resili-Net handles interactions among indicators by altering a subset of
+features and tracing their combined effect on resilience levels. In the illus-
+trative scenario, every grid cell labeled as low resilience receives a 20% boost
+in (i) the number of hospitals reachable within a 30‑minute drive and (ii)
+total road length, representing targeted infrastructure upgrades typical of
+urban development. All other indicators remain unchanged, andResili‑Net
+is retrained with the same hyper‑parameters to produce the updated resi-
+lience map (Fig. 4).
+T h ef o u rM S A se x h i b i th e t e r o g eneous patterns in how community
+resilience shifts under the urban development scenario. In Greater Los
+Angeles, around 33% of grid cells rise at least one resilience tier (about
+Table 2 | Features used to assess community resilience
+Urban Sub-systems Robustness Redundancy Resourcefulness
+Facility Building age Number of hospitals within 30 minutes driving distance Area of green space
+Infrastructure-Transportation Degree assortativity coef ﬁcient Number of roads connected with grid cell Road length
+Infrastructure-Communication Cell tower age Number of cell towers Internet speed
+Society Poverty rate Social connectedness Education level
+Fig. 2 | Geographical distribution of community resilience level in four MSAs.
+Geographical distribution of community resilience levels in (a) Greater Los Angeles,
+b Greater Chicago, c Greater Dallas, d Greater Houston. Level 5 represents the
+highest resilience, while level 1 represents the lowest resilience level. The black lines
+in the maps represent the core cities within each MSA.
+https://doi.org/10.1038/s42949-026-00364-7 Article
+npj Urban Sustainability |            (2026) 6:56 4
+
+=== PDF PAGE 5 ===
+12% climb two tiers or more), and fewer than 5% decline. This indicates
+that strategies focusing on healthcare accessibility and transportation
+infrastructure may be particularly e ffective in these areas. In contrast,
+the Greater Chicago area presents a more complex picture. While some
+communities (18% of cells) would see an improvement in resilience,
+others would experience a decline (16%). This suggests that a one-size-
+ﬁts-all approach would not be applic able, necessitating more nuanced,
+localized strategies. Moreover, it implies that factors other than hos-
+pital accessibility and road length, such as social cohesion, could be
+essential and require separate interventions. Within the MSAs for
+Greater Dallas and Houston, most communities ’ resilience levels
+remain unchanged under further urban development, but
+Fig. 3 | Characteristics of clusters in Greater Houston. Community resilience
+comprises the features of a reciprocal building age, b assortativity coefﬁcient,
+c reciprocal cell tower age,d the reciprocal rate of poverty,e the number of healthcare
+centers within 30 minutes driving distance,f the number roads connected to the grid
+cell, g the number of cell towers, h social connectedness, I the area of greenspace,
+j road length, k internet speed, and l education level. The other three MSAs are
+shown in Supplementary Fig. 6 to 8. The “reciprocal” refers to the inverse of the
+spatial or infrastructural distance between two grid cells (i.e., 1 / distance), used as a
+proxy for connection strength in our modeling framework.
+https://doi.org/10.1038/s42949-026-00364-7 Article
+npj Urban Sustainability |            (2026) 6:56 5
+
+=== PDF PAGE 6 ===
+communities with improved or deter iorated resilience are dispersed
+across a city (10%).
+This heterogeneous community response is due to the intricate
+interactions among components of socio-technical systems within urban
+environments, such as social, facility, and infrastructural systems. This
+complexity underscores the necessity of capturing these interactions to
+develop targeted resilience enhancement strategies. For instance, com-
+munities with already robust and redundant road networks and hospital
+accessibility may not beneﬁt substantially from further improvements in
+these domains. Shifting focus towards enhancing social infrastructure
+(e.g., green spaces) can simultaneously strengthen well-being and social
+cohesion, thereby advancing community resilience in multifaceted ways.
+These strategies could be informed by a deep understanding of the mul-
+tifaceted interactions among community socio-technical systems, which
+have already been captured by the Resili-Net model. Although we present
+one combined scenario here, Resili‑Net can readily be rerun with
+alternative single ‑indicator or social ‑infrastructure scenarios in sub-
+sequent studies.
+Combined resilience-risk levels
+Community resilience levels capture the ability of a community to prepare
+for, absorb, recover from, and adapt to disturbances
+2,23,w h i l et h er i s ki s
+generally deﬁned as an aggregate of hazard, exposure, and vulnerability24,25.
+Hence, a combined resilience-risk assessment would provide a more com-
+prehensive understanding of the extent of risks in a community and the
+ability of the community to cope with the risks. In this step, an analysis of the
+combined resilience and risk levels across four MSAs informs risk mitiga-
+tion and resilience enhancement plans and actions. Theﬂood risk level of
+areas is computed using the FloodRisk-Net model developed by Yin and
+Mostafavi
+19. FloodRisk-Netcaptures features of hazards, exposure, and social
+and physical vulnerability in specifying ﬂood risk levels of spatial areas.
+Although there is some overlap in input features (building age and poverty
+Fig. 4 | Spatial distribution of community resilience level changes under an urban
+development scenario. Each community’ s resilience level after urban development
+is compared with the previous resilience level. Urban development is modeled by the
+changes in the input feature value. The spatial distribution of community resilience
+level after urban development is shown in Supplementary Fig. 9. The urban
+development scenario refers to a targeted infrastructure-upgrade scenario applied to
+grid cells in the lowest resilience tier: each of those cells receives a 20% increase in (i)
+the number of hospitals reachable within a 30-minute drive and (ii) total road length,
+while all other indicators remain unchanged.
+https://doi.org/10.1038/s42949-026-00364-7 Article
+npj Urban Sustainability |            (2026) 6:56 6
+
+=== PDF PAGE 7 ===
+rate) in both Resili-Net and FloodRisk-Net, their functional interpretations
+differ. InFloodRisk-Net, these variables contribute to vulnerability and thus
+amplify ﬂood risk. In Resili-Net,t h e yr eﬂect structural or social capacities
+that shape resilience (More details on FloodRisk-Netare provided in Sup-
+plementary Note 1). We use ﬂood risk as an example to perform the
+combined resilience-risk assessment, while the framework is ﬂexible and
+can be adapted to incorporate risk levels from other hazards, enabling
+similar analyses across different threat contexts.
+The analysis reveals areas suffering from high ﬂood risk and low
+resilience levels across the four MSAs (Fig. 5a– d). These areas are
+characterized by a lack of infrastructure robustness and redundancy, as well
+as greater social vulnerability and low resourcefulness of the populations.
+The high-risk and low-resilience areas are where socially vulnerable
+populations reside with greater rate s of unemployment, disability, the
+elderly, and children. All of these features make these communities sus-
+ceptible to disasters with limited ability to prepare for, absorb, recover from,
+and adapt to disturbances. These are areas where infrastructure investments
+should be strategically optimized to allocate resources more effectively. This
+requires a nuanced approach to ensure such optimization does not unin-
+tentionally decrease the resilience level.
+Fig. 5 | Spatial distribution of the overlap of community resilience and risk level.
+Both community resilience level andﬂood risk level are divided into three types: low,
+medium, and high. For community resilience: levels 1 and 2 are considered low; level
+3, medium; levels 4 and 5, high. Forﬂood risk: levels 1 and 2 are considered low; levels
+3 and 4, are medium; and levels 5 and 6, are high. Low-high represents lowﬂood risk
+level and high community resilience level, the other eight annotations follow the
+same pattern; that is, the ﬁrst item represents ﬂood risk level, and the second one is
+the community resilience level.
+https://doi.org/10.1038/s42949-026-00364-7 Article
+npj Urban Sustainability |            (2026) 6:56 7
+
+=== PDF PAGE 8 ===
+Analyses of characteristics of areas in various levels of risk-resilience
+proﬁles (Fig. 6) show that the effects of facilities and infrastructures on
+community resilience and ﬂood risk are twofold. The large number of
+available infrastructures and facilit ies increases the resourcefulness and
+redundancy of these communities, which is beneﬁcial to the communities’
+resilience. These extensive physical infrastructure and facility developments
+would also increase physical vulnerability, which increases the ﬂood risk
+level of the community. Another interesting observation is that the low level
+of resilience may not be a pressing concern due to the relatively lowﬂood-
+hazard exposure. Nevertheless, while the focus on these areas may not be
+urgent, it should not be entirely ignored. Infrastructure in these areas should
+be gradually improved to ensure basic robustness and redundancy, pre-
+paring for unforeseenﬂood risks that may manifest due to climate change or
+other variables. For areas where communities already exhibit robust infra-
+structure, redundant systems, and high resourcefulness, further expansion
+of traditional infrastructure may not bet h em o s te f f e c t i v es t r a t e g y .I n t e n -
+sifying physical development in such zones can inadvertently increase
+exposure to hazards without signi ﬁcantly improving resilience. Instead,
+these areas would beneﬁt more from risk mitigation strategies, such as low-
+impact development (e.g., green infrastructure, permeable surfaces, and
+stormwater management), which reduce hazard risk while reinforcing
+existing resilience capacities. In parallel, targeted efforts to reduce social
+vulnerability, such as improving access to healthcare and community sup-
+port services, can further mitigate t he risk of these communities. This
+integrated approach promotes sustai nable development tailored to the
+unique needs and risks of these areas.
+To further enhance resilience, integrated urban design strategies
+should be speci ﬁcally designed for the different types of areas. In high
+resilience and low risk areas, retroﬁtting existing infrastructure to maintain
+robustness could be a viable strategy.Those areas could serve as places for
+the establishment of community centers (e.g., shelters) to enhance the
+overall community resilience. The highsocial vulnerability in low resilience
+and high risk areas with a large percentage of poverty contributes to low
+robustness and resourcefulness in these areas. To enhance their robustness,
+infrastructure development strategies should focus on risk reduction and
+resilience improvement simultaneously. By focusing on these aspects,
+communities can develop targeted and effective resilience enhancement and
+risk reduction strategies that account for co-beneﬁts and trade-offs among
+Fig. 6 | Comparisons between characteristics of clusters in areas that need special
+attention and other areas in Greater Houston. Areas needing special attention are
+characterized as high-low, high-medium, and medium-low in Fig. 6 according to
+their risk and resilience level. The last four of these sixteen features are selected to
+further evaluate the social vulnerability of communities following Yin and Mosta-
+favi’ s work
+19. These four features are calculated using the 2020 Centers for Disease
+Control/Agency for Toxic Substances and Disease Registry Social Vulnerability
+Index (SVI) dataset at the Census Tract level
+46. Unemployment rate represents the
+percentage of the civilian (non-institutionalized) population aged 16 years and older
+who are unemployed and actively seeking employment. Disability rate represents the
+percentage of the civilian (non-institutionalized) population reporting any hearing,
+vision, cognitive, ambulatory, self-care, or independent-living dif ﬁculty. Minority
+rate represents the percentage of persons not classi ﬁed as “White, non-Hispanic”
+(i.e., 100% minus percent non-Hispanic White). The percentage of older and
+younger persons is the rate of persons aged 17 and younger and persons aged 65 and
+older. (The comparisons for the other three MSAs are shown in Supplementary
+Figs. 10– 12).
+https://doi.org/10.1038/s42949-026-00364-7 Article
+npj Urban Sustainability |            (2026) 6:56 8
+
+=== PDF PAGE 9 ===
+socio-technical features shaping the varying degrees of ﬂood risk and resi-
+lience in different areas. This comprehensive approach ensures that efforts
+to enhance community resilience are equitable and effective in the
+long term.
+Discussion
+This study develops a novel deep learning model,Resili-Net,t oe x a m i n et h e
+community resilience proﬁle of cities based on their intertwined socio-
+technical systems features. Resili-Net contains three modules. The ﬁrst
+module encodes interactions among tw elve resilience-related features
+spanning three key urban sub-systems: facility, infrastructure, and society.
+This module employs an encoder-decoder neural architecture to generate
+low-dimensional latent representations that reﬂect the embedded, nonlinear
+structure of resilience dynamics across grid cells. The second module
+leverages deep embedded clustering to group grid cells into discrete resi-
+lience categories based on their learned latent features. Each cluster corre-
+sponds to a distinct resilience group, capturing shared structural and social
+characteristics related to robustness, redundancy, and resourcefulness. The
+third module then interprets the resilience grouping through an explainable
+machine learning model, showing the relative importance of each feature in
+shaping community resilience. These feature importance scores are then
+used as weights to determine the community resilience level for each group.
+Resili-Netmodel is applied across four MSAs in the U.S., demonstrating its
+ability to generalize across diverse urban contexts. By juxtaposing hazard
+risk levels and community resilience ratings, we identiﬁed critical zones that
+face both highﬂood risk and low resilience, enabling priority targets for risk
+reduction efforts and resilience enhancement strategies.
+The ﬁndings provide multiple important contributions to the com-
+munity resilience assessments. First, this study introduces a novel, data-
+driven approach to assessing communityresilience through an integrated
+unsupervised deep learning architecture. This approach captures the non-
+linear and complex interdependencies among multiple features derived
+from urban socio-technical systems. Through node representation learning,
+the model encodes latent structures re ﬂecting how these diverse features
+interact to shape resilience. Deep embedded clustering then groups spatial
+units into distinct resilience categories based on these learned patterns,
+revealing emergent community resilience proﬁles that are difﬁcult to cap-
+ture using conventional methods. This approach models community resi-
+lience as an emergent property of interconnected urban systems, enabling a
+more nuanced understanding of robustness, redundancy, and resourceful-
+ness at the community scale. While tra ditional indicator-based methods
+remain widely used due to their transparency and ease of implementation,
+they may face limitations when it comes to capturing the full complexity of
+interacting features. For example, Li and Mostafavi
+26 found that using
+indicator-based methods, which apply equal weights and ignore interac-
+t i o n sb e t w e e nu r b a nf e a t u r e s ,c a nl e a dto unintended mischaracterizations
+in infrastructure provision assessment. In contrast, Resili-Net provides a
+complementary, data-driven alternative that automatically learns these
+relationships from the data, enabling amore context-sensitive and scalable
+resilience evaluation. This framework is applicable across diverse urban
+settings using publicly available data, offering researchers and practitioners a
+powerful tool to better understand, monitor, and compare resilience across
+communities. The distinction between traditional indicator-based methods
+and Resili-Netcarries practical implications. Rel y i n gs o l e l yo nt h et r a d i t i o n a l
+quintile method may conceal mutually reinforcing weaknesses, overlooking
+communities whose resilience is compromised by the interplay of multiple
+factors. Such oversights can misdirect resources, diverting attention away
+from communities facing multi-dimensional socio-technical constraints.
+Accordingly, the two approaches sh ould be viewed as complementary:
+linear aggregation offers a transparent descriptive snapshot, whereasResili-
+Net provides a systems-aware diagnosis of interaction-driven vulnerabilities
+that is essential for targeted and effective resilience planning.
+Second, this study bridges the gap between complex deep learning
+outputs and practical decision-making by providing interpretable resilience
+level ratings for communities. While deep learning-based clustering is
+powerful in capturing nonlinear and high-dimensional patterns, it often
+lacks transparency, making it difﬁcult for practitioners to understand why
+certain areas are grouped together or how resilience levels are determined.
+To address this, we implement a post hoc interpretability approach using a
+random forest classiﬁer trained on the original features and clustering labels.
+This allows us to derive feature importance scores, which are then used to
+calculate weighted resilience scores for each cluster. The result is a trans-
+parent, data-informed rating of community resilience levels that supports
+more targeted and actionable planning decisions. Beyond this, this study
+applies scenario-based analysis to illustrate how modi ﬁc a t i o n si nu r b a n
+development features can in ﬂuence resilience level, adding additional
+insights by showing potential pathways of change. By simulating changes in
+key socio-technical features,Resili-Netcan be used to evaluate how resilience
+levels shift under different urban development scenarios. This enables sta-
+keholders to explore the potential impacts of policy or investment decisions
+and better understand how speciﬁc interventions may strengthen or weaken
+community resilience across different urban contexts. By revealing how
+communities respond differently to the same interventions, scenario ana-
+lysis offers a deeper understanding of the interactions among urban systems
+and supports the development of targeted, context-sensitive resilience
+strategies. For example, the scenario analysis reveals heterogeneous patterns
+across the four MSAs, with certain c ommunities showing pronounced
+improvements in resilience following enhancements to hospital accessibility
+and road infrastructure, whereas others display only marginal gains or even
+adverse shifts. This result suggests that mere infrastructure development,
+such as hospitals and roads, might not be suf ﬁcient to improve resilience
+universally in all areas of a city. Rather, attention should be given to
+enhancing social infrastructure, such as green spaces, especially in areas
+already abundant in physical infrastructure.Resili-Net therefore functions
+not only as an assessment framework, but also a practical tool for informing
+forward-looking, action-oriented planning.
+Third, this study contributes a combined resilience – risk analysis by
+integrating community resilience proﬁling with ﬂood risk mapping. This
+integrated approach enables the identiﬁcation of compound vulnerability
+zones, namely the areas that are both highly exposed to ﬂood risk and
+structurally low in resilience. By mapping these resilience –
+risk pro ﬁles
+across metropolitan areas, Resili-Net supports spatial prioritization of
+interventions, allowing planners and decision-makers to target areas that
+face the most severe challenges and have the greatest need for resilience
+enhancement. Moreover, the results h ighlight critical insights for urban
+development strategy. In high-resilience areas, continued infrastructure
+expansion may not substantially improve resilience, and can, in some cases,
+increase hazard exposure, suggesting the need for optimal development
+thresholds. In contrast, low-resilience, low-risk areas may bene ﬁtf r o m
+infrastructure investment to promote long-term resilience and economic
+opportunity. Meanwhile, high-resilience, low-risk zones can serve as sup-
+port hubs in times of disaster, helpin g nearby vulnerable areas through
+resource diffusion. This spatial differentiation emphasizes the importance of
+aligning resilience-building effortswith hazard risk contexts, rather than
+relying on uniform strategies across all areas. Resili-Net complements
+existing methods by offering a dual perspective on hazard and resilience. It
+equips public of ﬁcials, planners, and disaster researchers with a more
+comprehensive understanding of where risk reduction and resilience
+building efforts should be focused, supporting more strategic, context-
+sensitive planning and investment.
+While this study offers insights into community resilience assessment,
+there are areas where future research could extend and reﬁne the Resili-Net
+framework to further enhance its scope and applicability. First, while this
+study conceptualizes community resilience through the lens of socio-
+technical systems, it does not yet acco unt for the growing recognition of
+ecological dynamics as a critical component of urban resilience. Emerging
+research increasingly advocates for a Social-Ecological-Technological Sys-
+tems (SETS) perspective to capture the co-evolving relationships and
+feedback loops among natural ecosystems, built infrastructure, and human
+communities, particularly under climate-induced hazards and
+https://doi.org/10.1038/s42949-026-00364-7 Article
+npj Urban Sustainability |            (2026) 6:56 9
+
+=== PDF PAGE 10 ===
+compounding stressors 14,27,28.Expanding the Resili-Net framework to
+incorporate ecological variables co uld further enhance its explanatory
+power and applicability. Second, this study focuses on three widely recog-
+nized dimensions of community resi lience, robustness, redundancy, and
+resourcefulness, but does not includerapidity, the fourth dimension in the
+commonly referenced 4Rs framework . While rapidity is an important
+characteristic reﬂecting the speed at which a system can recover from dis-
+ruption, we were unable to incorporate this dimension due to the lack of
+spatially consistent and reliable data across all four metropolitan areas
+analyzed. As such, we limited our analysis to the dimensions for which
+sufﬁcient data were available. As part of our ongoing efforts to expand the
+framework, future research will aim t o include rapidity by identifying or
+generating suitable data sources that can support a more complete assess-
+ment of community resilience across all four dimensions. Third, this study
+uses Meta’ s Social Connectedness Index (SCI) to represent societal redun-
+dancy, leveraging itsﬁne-grained spatial detail and broad coverage of social
+ties. While SCI provides a proxy for social connectivity, it is based on
+Facebook interactions and may not fu lly capture the diversity of social
+networks across all demographic groups. We recognize this as a potential
+limitation and see future opportunities to complement SCI with additional
+data sources that reﬂect a wider range of social interactions and community
+structures. Fourth, this study uses building age as the sole proxy for struc-
+tural robustness. Although building age is widely used and empirically
+validated as an indicator, it cannot capture other important factors, such as
+building height, construction quality, retro ﬁtting history or code com-
+pliance. These features are not avail able with consistent spatial coverage
+across the four MSAs analyzed, limiting the structural information that can
+be incorporated intoResili-Net. These data constraints should be taken into
+account when interpreting the robustness component of the resilience
+scores. Future extensions of Resili-Net may incorporate richer structural
+datasets or uncertainty-aware approaches, such as probabilistic imputation
+or other uncertainty quanti ﬁcation techniques, as defensible priors and
+high-resolution structural data becomeavailable. Such developments would
+enable a more comprehensive representation of structural robustness than is
+currently feasible.
+Methods
+Selection of community resilience features
+The community is the emergent property arising from complex interactions
+among several urban sub-systems such as facilities, infrastructures, and
+society (e.g., transportation system , power system, and communication
+network)29. Drawing on prior community-resilience research (particularly
+ﬂood-focused studies), we construct our feature set around three core
+dimensions: robustness, redundancy, and resourcefulness, operationalizing
+each across the study’ s facility, infrastructure, and social sub-systems10,30,31.
+Robustness denotes the level of performance that can be retained under
+perturbation32. In this study, we use building age as the proxy for facility
+robustness. Prior research has demo nstrated that building age captures
+multiple latent aspects of structural f ragility, including the evolution of
+construction practices, material standards, and building codes 33– 35.F o r
+example, Sen, Dutta et al.36 use building age as a primary structural input in
+a Bayesian network to quantify the rob ustness of housing infrastructure.
+Likewise, Chen, Subedi et al.37 validate building age as a strong predictor of
+foundation height, demonstrating that building age is one of the most cri-
+tical physical variables in quantifying community ﬂood resistance. In the
+following step, we translate this proxy into a spatially aligned input by
+calculating grid cell building age from national structural data. The National
+Structure Inventory (NSI) dataset which provides building age information
+in the census-tract level was adopted
+38. Following Yin and Mostafavi ’ s
+work19, the building age of each grid cell is calculated by the mean value of
+building age across all census tracts intersected with it, as shown in Eq. (1).
+GC BAi ¼
+P
+jCS BAj
+jBAij for j in BAi ð1Þ
+where,GC BAi is the building age of grid celli, CS BAj is the building age of
+census tractj, BAi is the set of census tracts intersected with grid celli,a n djj
+i st h en u m b e ro fe l e m e n t si nt h es e t( t h es a m eh e r e a f t e r ) .
+Two key infrastructures are considered in our community resilience
+assessment (i.e., transportation system and communication system) given
+data availability and their importance in urban systems39– 42. Assortativity
+coefﬁcient is adopted to evaluate the robustness of the transportation sys-
+tems. Assortativity coefﬁcient, which measures the tendency for nodes in a
+network to connect to other nodes that are similar 43,44,i sap a r t i c u l a r l y
+adequate robustness indicator used in network science literature45.S i m u -
+lation results of real-world road networks conducted by Dong et al.22 showed
+that node degree assortativity has a signi ﬁcant impact on road network
+robustness, and the correlation between node degree assortativity and road
+network robustness is positive. Dataset from OpenStreetMap is converted
+into a road graph by treating intersections as nodes and road segments as
+edges. Following Yin et al. ’ sw o r k6, we include ten road classes and then
+dissolve all nodes whose degree equals2, because these points lie on unin-
+terrupted stretches of road and do not represent actual junctions. The
+resulting network balances computational efﬁciency with ﬁdelity to real-
+world connectivity. This road network will also be used to calculate the
+redundancy and resourcefulness of the transportation system, and the travel
+distance between each grid cell, which is needed in calculating the redun-
+dancy and the resourcefulness of the facility. Road segments within each grid
+cell are ﬁrstly obtained, and then constructed as a road network. The
+assortativity of the road network within each grid cell is further calculated
+using Eq. (2)
+43,45.
+GC ACi ¼ 1
+σ2
+q
+X
+jk
+jkðejk /C0 qjqkÞ ð2Þ
+where, GC ACi is the value of assortativity coefﬁcient of grid celli, qk is the
+excess distribution and deﬁned as qk ¼ ðkþ1Þpkþ1P
+j jpj
+, pk i st h ed e g r e ed i s t r i b u -
+tion of the network,ejk is the joint probability distribution of a link having
+degree j on one end and degree k on the other end,
+and σ2
+q ¼ P
+kk2qk /C0½ P
+kkqk/C138 2.
+Similar to the measurement of building age, the cell tower age is used
+to measure the robustness of a communication system. Older cell towers
+are more vulnerable to disruptive events than newly built ones due to its
+less advanced materials, design, equipped technology, and construction
+standards
+19. The OpenCellID dataset, which provides the precise location
+information, service range, and the age of a cell tower, is adopted to
+calculate the cell tower age of each grid cell. The area served by each cell
+tower is modeled as a circle with the location of the cell tower as the center
+of the circle and the service range as the radius of this circle. Grid cells
+intersected with service circle of the cell tower are then assumed to be
+served by this cell tower. The cell tower age of each grid cell is calculated by
+taking the average value of ages of all cell towers served by this grid cell, as
+shown in Eq. ( 3).
+GC
+CAGi ¼
+P
+jC CAj
+jCAij for j in CAi ð3Þ
+where, GC CAi is the cell tower age of grid celli, C CAj is the cell tower age
+of cell tower j, CAi is the set of cell towers that serve grid celli.
+Following Yin and Mostafavi’ sw o r k19, the poverty rate in each grid cell
+is used to measure the robustness in the social system. The 2020 poverty rate
+dataset in block group level provided by the US Census Bureau is adopted
+46.
+Mean value of poverty rates in block groups intersected with the grid cell is
+then calculated as shown in Eq. (4).
+GC
+PVi ¼
+P
+jBG PVj
+jPVij for j in PVi ð4Þ
+https://doi.org/10.1038/s42949-026-00364-7 Article
+npj Urban Sustainability |            (2026) 6:56 10
+
+=== PDF PAGE 11 ===
+where,GC PVi is the poverty rate of grid celli, BG BRj is the poverty rate of
+block groupj intersected with grid celli,a n dPVi is the set of block groups
+which are intersected with grid celli.
+Redundancy is deﬁned as the availability of substitutable components
+with similar functions in the urban system to enhance its adaptive capacity
+and ability to absorb shocks, giv e it reserve capacity for problem
+solving30,47,48. Numbers of healthcare facilities within an accessible distance
+are adopted to measure the redundancy of facilities. Healthcare facilities
+provide the most fundamental functions of this society to secure the basic
+life need of residents. The high-resolution geographic location information
+of healthcare centers was obtained from POI data starting with NAICS code
+of 621 (ambulatory health care services), 622 (hospitals), and 623 (nursing
+and residential care facilities). The serviced grid cells of each hospital are
+determined as grid cells which are within 30 minutes driving time to the
+hospital. The threshold of 30-minutedriving time is selected because it is a
+frequently adopted threshold to determine the serviced patients of the
+hospital
+49– 52. The estimated shortest distance between grid cells is calculated
+following the work of Fan et al. 53. The travel time between grid cells is
+estimated assuming the travel speed of each road segment is its free- ﬂow
+speed. When one key facility is disrupted within the accessible distance,
+residents could turn to others, ensuring their basic life needs. The abundance
+of healthcare facilities could ensure the availability of substitutable com-
+ponents which are crucial for preserving life. With travel time information,
+f o re a c hg r i dc e l l ,t h en u m b e ro fa v ailable healthcare centers within
+30-minutes driving time could be calculated as shown in Eq. (5).
+HG
+i ¼j CjjdG i; Cj
+/C16/C17
+≤ 30
+no
+jð 5Þ
+where, HGi is the accessible number of healthcare centers of grid celli, Cj is
+the healthcare centerj,a n ddðGi; CjÞ is the driving time from grid celli to
+healthcare centerj.
+The number of roads connected with the grid cell is used to measure the
+redundancy of transportation. The number of roads connected with the grid
+cell could ensure the travel outside the grid cell to others. When some roads
+connected with the grid cell are disrupted, alternative roads could be used to
+ensure the connection between other grid cells. The larger this index is, the
+larger the redundancy of the transportation network is to ensure basic
+mobility (e.g., the movement of rescue resources) among different areas. The
+transportation metric reﬂects baseline network redundancy under normal
+operating conditions. The actual road performance during emergencies may
+differ due to congestion, closures, or physical damage, and thus should be
+interpreted as a structural proxy rather than an exact representation of
+emergency travel conditions. Links and nodes within each grid cell are
+obtained and the feature is calculated using Eq. (6).
+RI
+k ¼
+X
+i
+RSi ð6Þ
+where,RIk is the number of road segments intersected with the boundary of
+grid cellk,a n dRSi is a binary variable which equals 1 if it is intersected with
+the boundary of k,o t h e r w i s e ,0 .
+The number of available cell towers is treated to measure the redun-
+dancy of the communication system. If more than one cell tower is available
+to the grid cell, when one of the cell towers is disrupted, others could provide
+alternatives for residences in this grid cell to maintain communication with
+the outside world. This feature is important for coordinating rescue and
+relief operations after a disaster, ensuring that accurate information can be
+sent and received by the affected community despite the challenging cir-
+cumstances. It will also serve to reassure people affected by the disaster that
+help is on the way and their situation is known to the outside world. Similar
+to the calculation of cell tower age, the OpenCellID dataset is also used. The
+available number of cell towers of each grid cell is calculated as shown in
+Eq. (7).
+GC
+CTi ¼j fC CTjjC CTj \GCigj ð7Þ
+where, GC CTi is the available number of cell tower in grid celli, C CTj is
+the service circle of the cell towerj,a n dGCi is grid cell i.
+The Social Connectedness Index (SCI), which measures the extent to
+which people with low and high socioeconomic status are friends with each
+other, is adopted to measure the redundancy of the society
+54. Residents with
+dissimilar hazard exposure would helpeach other through social ties. Those
+with wider social connections could have more choices to seek assistance to
+lessen impacts of disruption. That is, when some of their social connections
+a r eu n a b l et oh e l pt h e m( m a yb ec a u s e db yt h e i ru n w i l l i n g n e s s ,t h e i r
+inability, etc.), they could seek help from other social connections. This
+redundancy in social ties could help residents better cope with disruptions
+and recover more quickly from disruptions. Connectedness statistics at the
+Zip code level publicly available from Social Capital Atlas are adopted to
+calculate the social connectedness index of each grid cell
+54. Each grid cell’ s
+SCI value is calculated as the mean value of intersected Zip codes ’ SCI as
+s h o w ni nE q .(8):
+GC SCIi ¼
+P
+jZC SCIj
+jZij for j in Zi ð8Þ
+where, GC SCIi i st h eS C Iv a l u eo fg r i dc e l li, Zi is a set of Zip code
+intersected with grid cell, jZij i st h en u m b e ro fe l e m e n t si ns e tZi,a n d
+ZC SCIj i st h eS C Iv a l u eo ft h ejtZh Zip code intersected with grid celli.
+Resourcefulness is deﬁned as the ability to effectively use available
+resources, both internal and external, to adapt, overcome, or mitigate the
+impacts of disturbances29. After disturbances, green space could provide the
+spare capacity for temporary shelters to accommodate large numbers of
+affected residents, and space for building reconstruction
+55, which could help
+the community cope with, recover fr om disturbances better. Land cover
+data is frequently used to measure the physical and biological cover over the
+surface of the earth
+56 and National Land Cover Database (NLCD) is adopted
+to calculate the area of green space of each grid cell. The area of land use type
+71 (grassland/herbaceous) in each grid cell is calculated as its green space
+a r e a .W eh a v ea l s oe v a l u a t e dN L C Dt ype 21 (Developed Open Space) and 31
+(Barren Land) as potential candidates for temporary facility siting, but
+consultations with local emergency-management partners indicated that
+these areas often correspond to golf courses, construction zones, or unstable
+surfaces in urban settings. Based on these considerations, we restricted the
+green space to NLCD type 71.
+GS
+BCi ¼
+X
+j
+G BCj for j in GSj ð9Þ
+where, GS BCi is the green space area of grid celli, G BCj is the intersected
+area of NLCD pixel in type 71 cellj with grid celli,a n dGSj is the set of NLCD
+pixels intersected with grid celli.
+Road density is used to measure the resourcefulness of the transpor-
+tation system. A higher road density can improve access to important
+locations, such as evacuation facilities and hospitals57.T h i si sp a r t i c u l a r l y
+vital during emergencies when rapid response and evacuation are necessary.
+Thus, in the face of disturbances, the denser road network would facilitate
+evacuation of residents and would ensure rescue resources reach affected
+communities quickly
+58,59. The total length of road segments inside each grid
+cell is calculated, and it is further divided by the area of grid cell to obtain the
+value of road density.
+Internet speed measures the resourcefulness of a communication
+system. When facing disruptive events, faster internet speed ensures that
+communities have access to real-time, reliable information which are crucial
+in helping them respond to and recover from disruptive events, as well as
+ensure effective coordination among emergency services. The internet speed
+dataset is from Ookla, which is publicly accessible in the resolution of zoom
+https://doi.org/10.1038/s42949-026-00364-7 Article
+npj Urban Sustainability |            (2026) 6:56 11
+
+=== PDF PAGE 12 ===
+level 16 Web Mercator Tiles (in the shape of pixel). For each grid cell, its
+internet speed is calculated as the average internet speed of all pixels that
+intersect with it, as shown in Eq. (10).
+GC
+ISi ¼
+P
+jP ISj
+jISij for j in ISi ð10Þ
+where,GC ISi is the internet speed of grid celli, P ISj is the internet speed of
+pixel j,a n dISi is the set of pixels intersected with grid celli.
+Education level is adopted to measure the resourcefulness of society
+from the resident’ s ability to apply available resources. Higher education
+level usually results in better comprehension of data and information related
+to potential hazards and more effective emergency response. Education
+could also increase a person ’ s ability to access, understand, and utilize
+information, and improve critical thinking and problem-solving abilities,
+which are all critical in making effective strategies in the face of disturbances.
+The 2020 bachelor’ s degree rate dataset at the census block level provided by
+U SC e n s u sB u r e a ui sa d o p t e d
+46. Mean value of bachelor rates in block groups
+intersected with the grid cell is calculated as the education level of the
+corresponding grid cell, as shown in Eq. (11).
+GC ELi ¼
+P
+jBG BRj
+jBRij for j in BRi ð11Þ
+where,GC ELi is the education level of grid celli, BG BRj is the bachelor rate
+of block groupj intersected with grid celli,a n dBRi is the set of block groups
+which are intersected with grid celli.
+Community resilience feature matrix construction
+Twelve resilience-related features pertinent to the three resilience compo-
+nents (robustness, redundancy, and resourcefulness) in urban sub-systems
+of facilities, infrastructure, and societies (shown in Table2)a r ec o m p u t e dt o
+construct the resilience feature matrix (RF 2 R
+m/C3 12 being the number of
+grid cells in each MSA). These resilience-related features are at scales ran-
+ging from census-tract level to highly-detailed geographic coordinates and
+min– max normalized to the 0– 1 range. The study area is divided into 2 km
+×2 km grid cells respecting both the computation cost and the need for
+proper scale of analysis related to community resilience proﬁles. Each col-
+umn in RF represents a resilience-related feature, and every row records
+resilience features for a grid cell. This means we calculate the value of each
+resilience-related feature at grid cell level. To address potential data quality
+issues such as missing data, spatial re solution mismatches, or biases, all
+features are ﬁrst aggregated to a uniform 2 km × 2 km grid, and sparse or
+incomplete grid cells are excluded from training to ensure feature con-
+sistency and reliability. Grid cells lacking minimum data density (e.g., no
+cell-tower records) are excluded from training, ensuring that only features
+with reliable support enter the model. The data sources of our community
+resilience assessment features are summarized in Supplementary Table 2.
+Technical speciﬁcations related to the number of grid cells, hardware con-
+ﬁguration, memory usage, and runtime for each MSA are provided in
+Supplementary Table 3.
+Node representation learning
+The stacked denoising autoencoders (SDAE), an autoencoder model
+developed by Vincent et al. 60, are deployed to capture complex and non-
+linear interactions among individual community resilience-related features
+by encoding these features into latent representations. In SDAE, the auto-
+encoder is ﬁrst pre-trained in the sub-autoencoder level. Each sub-
+autoencoder is a denoising autoencoder which is a neural network that
+receives a corrupted data as input and is trained to reconstruct the original
+uncorrupted data as output, which is deﬁned as:
+ex ¼ Dropout xðÞ h ¼ f
+1 W1ex þ b1
+/C0/C1 eh ¼ DropoutðhÞ y ¼ f 2ðW2eh þ b2Þ
+ð12Þ
+wherex is the original uncorrupted data,ex is the actual input data of encoder
+layer obtained after dropout, f 1 and f 2 are activation functions for the
+encoding and decoding layer, respectively, and { W1; b1; W2; b2}a r e
+trainable model parameters. As we aimto reconstruct the uncorrupted data,
+the loss function is designed asjjx /C0 yjj2
+2. The rectiﬁed linear unit (ReLU) is
+adopted as the activation function for each sub-autoencoder, except forf 1 of
+the last sub-autoencoder to make the ﬁnal node embeddings preserve full
+information60. The embedding obtained through the encoder layer is used as
+the input of next sub-autoencoder to train it.
+After greedy layer-wise pre-train, the encoder layer in each sub-
+autoencoder is concatenated followed by all decoder layers in reverse lay-
+wise training order
+60. A deep autoencoder is thus developed and thenﬁne-
+tuned to minimize reconstruction loss 60. The resilience-feature matrix is
+passed through the encoder layers of thisﬁne-tuned deep autoencoder (f e)
+to obtain the encoded representations (E).
+Deep embedded clustering
+Inspired from Xie et al. ’ sw o r k61, a self-training strategy is employed to
+jointly optimize the assignment of cl uster labels and learn features con-
+ductive for clustering. Xie et al. 61 proposed to obtain the ﬁnal clustering
+result through alternating between two steps until a convergence criterion is
+reached. First, a soft assignment between E and the cluster centroids are
+calculated. Second, a high conﬁdence assignment is learned using an aux-
+iliary target distribution. It is further used to update f
+e for more cluster-
+friendly embeddings and reﬁne cluster centroids.
+The standard k-means clustering is used once on E to obtain initial
+cluster centroids uj. Following the work of Maaten and Hinton 62,t h e
+S t-distribution is used as a kernel to measure the similarity between
+embedding zi and uj:
+qij ¼
+ð1 þj jzi /C0 ujjj2=αÞ
+/C0 αþ1
+2
+P
+j0 ð1 þj jzi /C0 uj0 jj2=αÞ
+/C0 αþ1
+2
+ð13Þ
+where zi is the ith sample of E, qij is the probability of assigning samplei to
+cluster centerj,a n dα is the degree of freedom of thet-distributionand it is
+set to be 1 following the work of Xie et al. 61.
+Following Xie et al.61, the auxiliary target distribution (P)i sd eﬁned by
+ﬁrst raising qi to the second power and then normalizing by frequency per
+cluster:
+pij ¼
+qij
+2=f jP
+j0 qij0 2=f j0
+ð14Þ
+where f j ¼ P
+iqij are soft cluster frequencies. The soft assignment (Q)i s
+trained to match the auxiliary target distribution (P) by minimizing the KL
+divergence loss between the soft assignment ( qi) and the auxiliary target
+distribution (pi) as follows61:
+L ¼ KLðPjjQÞ¼
+X
+i
+X
+j
+pij
+pij
+qij
+ð15Þ
+The most likely clusterk that instancei belongs (si)t oi s .
+si ¼ argmaxmaxkðqikÞð 16Þ
+To test the robustness of our proposed method, we reran the clustering
+step for the Houston MSA using ﬁve different random k-means initializa-
+tions and two alternative values for thet-distribution parameter (α =0 . 5a n d
+α = 2). Across these runs, fewer than 5% of grid cells changed their ﬁnal
+cluster label, and city-level summary statistics were unaffected, indicating
+that the model is insensitive to the speciﬁcc e n t r o i ds e e do rα value.
+https://doi.org/10.1038/s42949-026-00364-7 Article
+npj Urban Sustainability |            (2026) 6:56 12
+
+=== PDF PAGE 13 ===
+Community resilience level determination
+Grid cells in the same group are assu med to have the same community-
+resilience level due to the clustering module having clustered grid cells with
+similar community resilience into the same group. The clustering module
+also ensures that grid cells in different clusters are different from each other
+as much as possible.
+Inspired from the work of Morichetta et al.
+63, an explainable classiﬁ-
+cation model is implemented to interpret the clustering results. We do this
+by training an explainable classi ﬁcation model on the clustering results
+obtained in the second layer of the model, i.e., using the clustering results as
+the labels of the classiﬁcation model then interpreting the cluster assignment
+results modeled by the explainable classiﬁer.
+The random forests classi ﬁer was selected as the explainable classi-
+ﬁcation model considering its interpretability and performance
+21. Ran-
+dom forests classi ﬁer is implemented using Scikit-learn 20 by taking
+resilience-related feature matrix as input and setting clustering results as
+labels, and details of random forests classi ﬁer is described in the work of
+Breiman21.
+After obtaining feature importance o f individual resilience-related
+feature to the ﬁnal clustering results, the community-resilience level is
+determined as follows:
+Following Siam et al. 20,X ue ta l .64, and Yin and Mostafavi ’ s19 work,
+community resilience-related features are normalized to reduce the impact
+of the difference of unit using Min-Max scaler:
+x
+0 ¼ x /C0 xmin
+xmax /C0 xmin
+ð17Þ
+where x0 is the scaled value which is in the range of ½0; 1/C138 .
+Following the work of Yin and Mostafavi19, calculate each community
+resilience-related feature’ s mean values for each cluster:
+Riku ¼
+Pn
+l¼1Riku l
+n
+ð18Þ
+whereRiku is the average value for featurei in clusterk in MSAu,a n dRiku l is
+the l-th value of feature i in cluster k in MSA u.
+The aggregated community resilience value of each cluster is calculated
+by taking the weighted sum of each resilience-related feature, with feature
+importance used as the weight:
+ARku ¼
+X
+i
+IMi /C3 Riku ð19Þ
+where IMi is the importance of featurei to the clustering result, andARku is
+the aggregated resilience value of clusterk in MSA u.
+Finally, calculate theﬂood risk level valueRLku by ranking the value of
+ARku in an ascending way:
+RLku ¼ SortedðARkuÞð 20Þ
+Parameters setting
+We set the searching space for each hyperparameter in Resili-Net and use
+grid search to select the optimal set of hyperparameters. The network
+dimension off
+e is set asdin /C0 500 /C0 500 /C0 2000 /C0 de,w h e r ed is the input
+dimension, and de is the embedding dimension. The two 500-unit hidden
+layers and 2000-unit decoder mirror the con ﬁguration adopted in
+Fig. 7 | Performances of random forest classi ﬁer results with cluster results as labels for Greater Houston. Other three MSAs are in Supplementary Fig. 13 to 15.
+https://doi.org/10.1038/s42949-026-00364-7 Article
+npj Urban Sustainability |            (2026) 6:56 13
+
+=== PDF PAGE 14 ===
+FloodRisk-Netand, in a pilot run on the Houston MSA, kept reconstruction
+error below 1% whileﬁtting comfortably in GPU memory. The embedding
+dimensionde is grid-searched over10,12,24,35. The Silhouette scores levelled off
+at 24, so that value is used in the ﬁnal model. The pre-train and ﬁne-tune
+epochs are set at 200. The dropout rate isﬁxed at 0.2, which is widely used in
+comparable deep embedded clusteri ng implementations and provided
+stable convergence here. The batch size is set at 256 and the learning rate is
+set at 0.1. The clustering number is grid searched from refs.4– 7,w i t hk =5
+yielding the best average silhouette score.
+The performance of the classiﬁer is evaluated by precision, recall, and
+F1-score in macro, micro, and the value of AUC. Deﬁnitions of these eva-
+luations can be referenced in the work of Ho et al.
+65. The random forest
+classiﬁer is capable of almost entirely modeling the clustering results, with
+AUC values, F1-score, recall, and precision values all close to 1 for all four
+clustering (Fig.7). This demonstrates that the classiﬁer is able to represent
+the obtained cluster assignments as classiﬁcation classes, and can be auto-
+matically used to interpret the allocation of instances to each cluster.
+Data availability
+The dataset used in this paper are publicly accessible and cited in this paper.
+Users could directly download the neededdatasets through the website cited.
+Received: 13 December 2024;Accepted: 9 February 2026;
+References
+1. Hallegatte, S. et al. Future ﬂood losses in major coastal cities. Nat.
+Clim. change 3, 802–806 (2013).
+2. Academies, N. et al. Disaster resilience: A national imperative. (National
+Academies Press, 2012).
+3. Esmalian, A. et al. Operationalizing resilience practices in
+transportation infrastructure planning and project development.
+Transp.Res. Part D: Transp. Environ. 104, 103214 (2022).
+4. Lee, C.-C. et al. Quantitative measures for integrating resilience into
+transportation planning practice: Study in Texas. Transp. Res. Part D:
+Transp. Environ. 113, 103496 (2022).
+5. Rajput, A. A. & Mostafavi, A. Latent sub-structural resilience
+mechanisms in temporal human mobility networks during urban
+ﬂooding. Sci. Rep. 13, 10953 (2023). p.
+6. Yin, K. et al. An integrated resilience assessment model of urban
+transportation network: A case study of 40 cities in China. Transp.
+Res. A: Policy Pract. 173, 103687 (2023).
+7. Bhusal, N. et al. Power system resilience: Current practices,
+challenges, and future directions.IEEE Access8, 18064–18086 (2020).
+8. Wang, Y. et al. Research on resilience of power systems under natural
+disasters—A review. IEEE Trans. Power Syst. 31, 1604–1613 (2015).
+9. Ma, J. et al. Establishing nationwide power system vulnerability index
+across US counties using interpretable machine learning. Appl.
+Energy 397, 126360 (2025).
+10. Saja, A. A. et al. An inclusive and adaptive framework for measuring social
+resilience to disasters.Int. J. Disaster Risk Reduct.28, 862–873 (2018).
+11. Ma, J. & Mostafavi, A. Decoding the pulse of community during
+disasters: Resilience analysis based on ﬂuctuations in latent lifestyle
+signatures within human visitation networks. Int. J. Disaster Risk
+Reduct. 124, 105552 (2025).
+12. Cimellaro, G. P. et al. PEOPLES: a framework for evaluating resilience.
+J. Struct. Eng. 142, 04016063 (2016).
+13. Datola, G. Implementing urban resilience in urban planning: A
+comprehensive framework for urban resilience evaluation. Sustain.
+Cities Soc. 98, 104821 (2023).
+14. Helmrich, A. et al. Interdependence of social-ecological-
+technological systems in Phoenix, Arizona: Consequences of an
+extreme precipitation event. J. Infrastruct. Preserv. Resil. 4, 19 (2023).
+15. Moghadas, M. et al. A multi-criteria approach for assessing urbanﬂood
+resilience in Tehran, Iran.Int. J. Disaster Risk Reduct.35, 101069 (2019).
+16. Anelli, D., Tajani, F. & Ranieri, R. Urban resilience against natural
+disasters: Mapping the risk with an innovative indicators-based
+assessment approach. J. Clean. Prod. 371, 133496 (2022).
+17. Parizi, S. M., Taleai, M. & Shari ﬁ, A. A GIS-based multi-criteria analysis
+framework to evaluate urban physical resilience against earthquakes.
+Sustainability 14, 5034 (2022).
+18. Parizi, S. M., Taleai, M. & Shari ﬁ, A. Integrated methods to determine
+urban physical resilience characteristics and their interactions. Nat.
+Hazards 109, 725–754 (2021).
+19. Yin, K. & Mostafavi, A. Unsupervised graph deep learning reveals
+emergent ﬂood risk proﬁle of urban areas. arXiv preprint
+arXiv:2309.14610, (2023).
+20. Siam, Z. S. et al. National-scale ﬂood risk assessment using GIS and
+remote sensing-based hybridized deep neural network and fuzzy
+analytic hierarchy process models: a case of Bangladesh. Geocarto
+Int. 37, 12119–12148 (2022).
+21. Breiman, L. Random Forests. Mach. Learn. 45,5 –32 (2001).
+22. Dong, S. et al. Measuring the topological robustness of transportation
+networks to disaster-induced failures: A percolation approach. J.
+Infrastruct. Syst. 26, 04020009 (2020).
+23. NIAC, Critical Infrastructure Resilience Final Report and
+Recommendations. (2009).
+24. Herreros-Cantis, P. et al. Shifting landscapes of coastal ﬂood risk:
+environmental (in) justice of urban change, sea level rise, and differential
+vulnerability in New York City. Urban Transform. 2,9( 2 0 2 0 ) .
+25. Lavell, A. et al. Managing the risks of extreme events and disasters to
+advance climate change adaptation.A Special Report Working Groups I
+II Intergovernmental Panel on Climate change (IPCC)3,2 5–64 (2012).
+26. Li, B. & Mostafavi, A. Incorporating environmental considerations into
+infrastructure inequality evaluation using interpretable machine
+learning. Comput. Environ. Urban Syst. 120, 102301 (2025).
+27. Chang, H. et al. Assessment of urban ﬂood vulnerability using the
+social-ecological-technological systems framework in six US cities.
+Sustain. Cities Soc. 68, 102786 (2021).
+28. McPhearson, T. et al. Radical changes are needed for transformations
+to a good Anthropocene. npj Urban Sustain. 1, 5 (2021).
+29. Bruneau, M. et al. A framework to quantitatively assess and enhance
+the seismic resilience of communities. Earthq. Spectra 19, 733–752
+(2003).
+30. Shari ﬁ, A. & Yamagata, Y. Principles and criteria for assessing urban
+energy resilience: A literature review.Renew. Sustain. Energy Rev. 60,
+1654–1677 (2016).
+31. Tong, P. Characteristics, dimensions and methods of current
+assessment for urban resilience to climate-related disasters: A
+systematic review of the literature. Int. J. Disaster Risk Reduct.
+60,
+102276 (2021).
+32. Gu, Y. et al. Performance of transportation network under
+perturbations: Reliability, vulnerability, and resilience. Transp. Res.
+Part E: Logist. Transp. Rev. 133, 101809 (2020).
+33. Fernandez, P. et al. A new approach for computing a ﬂood
+vulnerability index using cluster analysis.Phys. Chem. Earth a/b/c.94,
+47–55 (2016).
+34. Neubert, M. et al. The geographic information system-basedﬂood
+damage simulation model HOWAD.J. Flood Risk Manag.9,3 6–49 (2016).
+35. Hebb, A. & Mortsch, L. Floods: Mapping vulnerability in the Upper
+Thames watershed under a changing climate . Project Report XI,
+University of Waterloo, p. 1 –53. (2007).
+36. Sen, M. K., Dutta, S. & Laskar, J. I. A hierarchical Bayesian network
+model for ﬂood resilience quantiﬁcation of housing infrastructure
+systems. ASCE-ASME J. Risk Uncertain. Eng. Syst. A: Civ. Eng. 7,
+04020060 (2021).
+37. Chen, F.-C. et al. Deep learning –based building attribute estimation
+from Google Street View images for ﬂood risk assessment using
+feature fusion and task relation encoding. J. Comput. Civ. Eng. 36,
+04022031 (2022).
+https://doi.org/10.1038/s42949-026-00364-7 Article
+npj Urban Sustainability |            (2026) 6:56 14
+
+=== PDF PAGE 15 ===
+38. US Army Corps of Engineers Hydrologic Engineering Center. N. S. I.
+Technical Documentation. Available from:https://www.hec.usace.army.
+mil/conﬂuence/nsi/technicalreferences/latest/technical-documentation
+39. Wang, W. et al. Network approach reveals the spatiotemporal
+inﬂuence of trafﬁc on air pollution under COVID-19. Chaos:
+Interdiscip.J. Nonlinear Sci. 32. (2022).
+40. Qi, H. et al. Sustainable development-oriented campus bike-sharing
+site evaluation model: A case study of Henan Polytechnic University.
+arXiv preprint arXiv:2308.04454, (2023).
+41. Yin, K. et al. Examining the reasons for the low market share of road
+passenger transport based express using structural equation
+modeling. in 18th COTA International Conference of Transportation
+Professionals. American Society of Civil Engineers Reston, VA. (2018).
+42. Rajput, A. A. et al. Revealing critical characteristics of mobility
+patterns in New York City during the onset of COVID-19 pandemic.
+Front. Built Environ. 7, 654409 (2022).
+43. Newman, M. E. Assortative mixing in networks. Phys. Rev. Lett. 89,
+208701 (2002).
+44. Newman, M. E. Mixing patterns in networks. Phys. Rev. E 67, 026126
+(2003).
+45. Derrible, S. & Kennedy, C. The complexity and robustness of metro
+networks. Phys. A: Stat. Mech. its Appl. 389, 3678–3691 (2010).
+46. US Centers for Disease Control and Prevention. CDC/ATSDR Social
+Vulnerability Index 2020. 2020; Available from: https://www.atsdr.
+cdc.gov/placeandhealth/svi/index.html.
+47. Shari ﬁ, A. & Yamagata, Y. Major principles and criteria for
+development of an urban resilience assessment index. in 2014
+International Conference and Utility Exhibition on Green Energy for
+Sustainable Development (ICUE). IEEE. (2014).
+48. Tyler, S. & Moench, M. A framework for urban climate resilience. Clim.
+Dev. 4, 311–326 (2012)..
+49. Shen, Y. C. & Hsia, R. Y. Differential bene ﬁts of cardiac care
+regionalization based on driving time to percutaneous coronary
+intervention. Acad. Emerg. Med. 28, 519–529 (2021).
+50. Rayburn, W. F., Richards, M. E. & Elwell, E. C. Drive times to hospitals
+with perinatal care in the United States. Obstet. Gynecol. 119,
+611–616 (2012).
+51. Chang, J. et al. Driving time to the nearest percutaneous coronary
+intervention-capable hospital and the risk of case fatality in patients
+with acute myocardial infarction in Beijing. Int. J. Environ. Res. Public
+Health 20, 3166 (2023).
+52. Koeze, E., Patel, J. & Singhvi, A. Where Americans live far from the
+emergency room. The New York Times, 26. (2020).
+53. Fan, C. et al. Equality of access and resilience in urban population-
+facility networks. npj Urban Sustain. 2, 9 (2022).
+54. Chetty, R. et al. Social capital I: measurement and associations with
+economic mobility. Nature 608, 108–121 (2022).
+55. Shrestha, S. R., Sliuzas, R. & Kuffer, M. Open spaces and risk
+perception in post-earthquake Kathmandu city. Appl. Geogr. 93,
+81–91 (2018).
+56. Liu, J. et al. From isolation to linkage: Holistic insights into ecological
+risk induced by land use change.Land Use Policy 140, 107116 (2024).
+57. Bozza, A., Asprone, D. & Manfredi, G. Developing an integrated
+framework to quantify resilience of urban systems against disasters.
+Nat. Hazards 78, 1729–1748 (2015).
+58. Sakakibara, H., Kajitani, Y. & Okada, N. Road network robustness for
+avoiding functional isolation in disasters. J. Transp. Eng. 130,
+560–567 (2004).
+59. Kotzee, I. & Reyers, B. Piloting a social-ecological index for measuring
+ﬂood resilience: A composite index approach. Ecol. Indic. 60,4 5–53
+(2016).
+60. Vincent, P. et al. Stacked denoising autoencoders: Learning useful
+representations in a deep network with a local denoising criterion. J.
+Mach. Learn. Res. 11. (2010).
+61. Xie, J., Girshick, R. & Farhadi, A. Unsupervised deep embedding for
+clustering analysis. in International Conference on Machine Learning.
+(2016).
+62. Maaten, L. & Hinton, G. Visualizing data using t-SNE. J. Mach. Learn.
+Res. 9, 2579–2605 (2008). p.
+63. Morichetta, A., Casas, P. & Mellia, M. EXPLAIN-IT: Towards explainable
+AI for unsupervised network trafﬁc analysis. in Proceedings of the 3rd
+ACM CoNEXT Workshop on Big Data, Machine Learning and Artiﬁcial
+Intelligence for Data Communication Networks. (2019).
+64. Xu, H. et al. Urban ﬂooding risk assessment based on an integrated
+k-means cluster algorithm and improved entropy weight method in
+the region of Haikou, China. J. Hydrol. 563, 975–986 (2018).
+65. Ho, Y.-H., Hsiao, T.-C. & Chen, A. Y. Emission analysis of electric
+motorcycles and assessment of emission reduction withﬂeet
+electriﬁcation. IEEE Trans. Intell. Transp. Syst.24,1 5 3 6 9–15378 (2023).
+Acknowledgements
+This work was supported by National Science Foundation under CRISP 2.0
+Type 2 No. 1832662 grant. Any opinions, ﬁndings, conclusions, or
+recommendations expressed in this research are those of the authors and do
+not necessarily reﬂect the view of the funding agencies.
+Author contributions
+K.Y.: Conceptualization, Methodology, Software, Formal analysis,
+Investigation; Writing–original draft, Writing– Review & Editing, Visualization.
+B.L.: Conceptualization, Investigation, Writing– Original Draft, Writing –
+Review & Editing, A.M.: Conceptualization; Methodology; Writing,
+Reviewing and Editing; Supervision; Funding acquisition. All authors have
+read and approved the manuscript.
+Competing interests
+The authors declare no competing interests.
+Additional information
+Supplementary informationThe online version contains
+supplementary material available at
+https://doi.org/10.1038/s42949-026-00364-7
+.
+Correspondenceand requests for materials should be addressed to Bo Li.
+Reprints and permissions informationis available at
+http://www.nature.com/reprints
+Publisher’s note Springer Nature remains neutral with regard to
+jurisdictional claims in published maps and institutional afﬁliations.
+Open Access This article is licensed under a Creative Commons
+Attribution-NonCommercial-NoDerivatives 4.0 International License,
+which permits any non-commercial use, sharing, distribution and
+reproduction in any medium or format, as long as you give appropriate
+credit to the original author(s) and the source, provide a link to the Creative
+Commons licence, and indicate if you modi ﬁed the licensed material. You
+do not have permission under this licence to share adapted material
+derived from this article or parts of it. The images or other third party
+material in this article are included in the article ’s Creative Commons
+licence, unless indicated otherwise in a credit line to the material. If material
+is not included in the article’s Creative Commons licence and your intended
+use is not permitted by statutory regulation or exceeds the permitted use,
+you will need to obtain permission directly from the copyright holder. To
+view a copy of this licence, visit http://creativecommons.org/licenses/by-
+nc-nd/4.0/
+.
+© The Author(s) 2026
+https://doi.org/10.1038/s42949-026-00364-7 Article
+npj Urban Sustainability |            (2026) 6:56 15

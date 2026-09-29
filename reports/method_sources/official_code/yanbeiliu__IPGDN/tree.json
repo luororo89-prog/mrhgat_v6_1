@@ -1,0 +1,381 @@
+{
+  "sha": "1e5193a01fa455d8d24fa5afc2343050c86fc063",
+  "url": "https://api.github.com/repos/yanbeiliu/IPGDN/git/trees/1e5193a01fa455d8d24fa5afc2343050c86fc063",
+  "tree": [
+    {
+      "path": "__pycache__",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "6ae05dd3daf82034a9892d7ecf5edfac95f84ecb",
+      "url": "https://api.github.com/repos/yanbeiliu/IPGDN/git/trees/6ae05dd3daf82034a9892d7ecf5edfac95f84ecb"
+    },
+    {
+      "path": "__pycache__/misc.cpython-37.pyc",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ba48b24fb688400ae4ce272db6b6cd4501dd5bff",
+      "size": 9255,
+      "url": "https://api.github.com/repos/yanbeiliu/IPGDN/git/blobs/ba48b24fb688400ae4ce272db6b6cd4501dd5bff"
+    },
+    {
+      "path": "data",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "9e1bdebccd1011ad2dc3d7411ee7bd5a2667dea9",
+      "url": "https://api.github.com/repos/yanbeiliu/IPGDN/git/trees/9e1bdebccd1011ad2dc3d7411ee7bd5a2667dea9"
+    },
+    {
+      "path": "data/ind.citeseer.allx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "592091071ac35b78599c722d0e60b1c655711728",
+      "size": 595021,
+      "url": "https://api.github.com/repos/yanbeiliu/IPGDN/git/blobs/592091071ac35b78599c722d0e60b1c655711728"
+    },
+    {
+      "path": "data/ind.citeseer.ally",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7503f81a0b6ac1cc21cb5a97073542a6b1dfe99c",
+      "size": 55623,
+      "url": "https://api.github.com/repos/yanbeiliu/IPGDN/git/blobs/7503f81a0b6ac1cc21cb5a97073542a6b1dfe99c"
+    },
+    {
+      "path": "data/ind.citeseer.graph",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a01dca663d0103c130f525017a4a9c313037e286",
+      "size": 61987,
+      "url": "https://api.github.com/repos/yanbeiliu/IPGDN/git/blobs/a01dca663d0103c130f525017a4a9c313037e286"
+    },
+    {
+      "path": "data/ind.citeseer.test.index",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "62d9e3d5ed53c66b069125af98529d76c70d9b3e",
+      "size": 5000,
+      "url": "https://api.github.com/repos/yanbeiliu/IPGDN/git/blobs/62d9e3d5ed53c66b069125af98529d76c70d9b3e"
+    },
+    {
+      "path": "data/ind.citeseer.tx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b2aff18aa1fc6f4f5e8c64db7643b59b24e42584",
+      "size": 260321,
+      "url": "https://api.github.com/repos/yanbeiliu/IPGDN/git/blobs/b2aff18aa1fc6f4f5e8c64db7643b59b24e42584"
+    },
+    {
+      "path": "data/ind.citeseer.ty",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3795f79df0cd1123f4478b77c148a5fbacc4cefb",
+      "size": 24135,
+      "url": "https://api.github.com/repos/yanbeiliu/IPGDN/git/blobs/3795f79df0cd1123f4478b77c148a5fbacc4cefb"
+    },
+    {
+      "path": "data/ind.citeseer.x",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f094104a66f2689ffbd01085fe6a856689e9db9e",
+      "size": 31087,
+      "url": "https://api.github.com/repos/yanbeiliu/IPGDN/git/blobs/f094104a66f2689ffbd01085fe6a856689e9db9e"
+    },
+    {
+      "path": "data/ind.citeseer.y",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e857ac49b611da98e101a068cf4855350274f68a",
+      "size": 3014,
+      "url": "https://api.github.com/repos/yanbeiliu/IPGDN/git/blobs/e857ac49b611da98e101a068cf4855350274f68a"
+    },
+    {
+      "path": "data/ind.cora.allx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "44d53b1fece343538e45592caac521d73c6f98d6",
+      "size": 257305,
+      "url": "https://api.github.com/repos/yanbeiliu/IPGDN/git/blobs/44d53b1fece343538e45592caac521d73c6f98d6"
+    },
+    {
+      "path": "data/ind.cora.ally",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "04fbd0b083d09341fcf16b395c642329637f0542",
+      "size": 47959,
+      "url": "https://api.github.com/repos/yanbeiliu/IPGDN/git/blobs/04fbd0b083d09341fcf16b395c642329637f0542"
+    },
+    {
+      "path": "data/ind.cora.graph",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4d3bf85dfc8b1c105a2c995597a1b3eed6947925",
+      "size": 59847,
+      "url": "https://api.github.com/repos/yanbeiliu/IPGDN/git/blobs/4d3bf85dfc8b1c105a2c995597a1b3eed6947925"
+    },
+    {
+      "path": "data/ind.cora.test.index",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ded8092db4cd767a367eebe09003b954a5316f24",
+      "size": 5000,
+      "url": "https://api.github.com/repos/yanbeiliu/IPGDN/git/blobs/ded8092db4cd767a367eebe09003b954a5316f24"
+    },
+    {
+      "path": "data/ind.cora.tx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6e856d777401ee15dc8619db76c97d0a40ba2d60",
+      "size": 148025,
+      "url": "https://api.github.com/repos/yanbeiliu/IPGDN/git/blobs/6e856d777401ee15dc8619db76c97d0a40ba2d60"
+    },
+    {
+      "path": "data/ind.cora.ty",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "da1734ab670b5c8ecee78a9c30b35566df916f4b",
+      "size": 28135,
+      "url": "https://api.github.com/repos/yanbeiliu/IPGDN/git/blobs/da1734ab670b5c8ecee78a9c30b35566df916f4b"
+    },
+    {
+      "path": "data/ind.cora.x",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c4a91d008245403e7f26aa616b437191509793c0",
+      "size": 22119,
+      "url": "https://api.github.com/repos/yanbeiliu/IPGDN/git/blobs/c4a91d008245403e7f26aa616b437191509793c0"
+    },
+    {
+      "path": "data/ind.cora.y",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "58e30ef120d3553cfaac33ff28c6b5436dbef661",
+      "size": 4054,
+      "url": "https://api.github.com/repos/yanbeiliu/IPGDN/git/blobs/58e30ef120d3553cfaac33ff28c6b5436dbef661"
+    },
+    {
+      "path": "data/ind.pubmed.allx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3b86bccf08111c37c632a9dd8ab63db25ea76361",
+      "size": 7578385,
+      "url": "https://api.github.com/repos/yanbeiliu/IPGDN/git/blobs/3b86bccf08111c37c632a9dd8ab63db25ea76361"
+    },
+    {
+      "path": "data/ind.pubmed.ally",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4c8bcdc80882dd225fe4dd4fafd723baa616ac97",
+      "size": 224739,
+      "url": "https://api.github.com/repos/yanbeiliu/IPGDN/git/blobs/4c8bcdc80882dd225fe4dd4fafd723baa616ac97"
+    },
+    {
+      "path": "data/ind.pubmed.graph",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "76eb87e628a6b9d43fc31ea42c8c6c8f3e52b404",
+      "size": 471808,
+      "url": "https://api.github.com/repos/yanbeiliu/IPGDN/git/blobs/76eb87e628a6b9d43fc31ea42c8c6c8f3e52b404"
+    },
+    {
+      "path": "data/ind.pubmed.test.index",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "41f6befcb7750cc4858cb852f2b349a9598cb2f4",
+      "size": 6000,
+      "url": "https://api.github.com/repos/yanbeiliu/IPGDN/git/blobs/41f6befcb7750cc4858cb852f2b349a9598cb2f4"
+    },
+    {
+      "path": "data/ind.pubmed.tx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "eee4f3c988fde0da87a9ec7b01ca5e7863c1b1f1",
+      "size": 405505,
+      "url": "https://api.github.com/repos/yanbeiliu/IPGDN/git/blobs/eee4f3c988fde0da87a9ec7b01ca5e7863c1b1f1"
+    },
+    {
+      "path": "data/ind.pubmed.ty",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "225a0bb9bb6430e3925d04688daf6a0da964c07a",
+      "size": 12135,
+      "url": "https://api.github.com/repos/yanbeiliu/IPGDN/git/blobs/225a0bb9bb6430e3925d04688daf6a0da964c07a"
+    },
+    {
+      "path": "data/ind.pubmed.x",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "16c0eca8d2b3297014ff80327416f9332eda10d7",
+      "size": 23172,
+      "url": "https://api.github.com/repos/yanbeiliu/IPGDN/git/blobs/16c0eca8d2b3297014ff80327416f9332eda10d7"
+    },
+    {
+      "path": "data/ind.pubmed.y",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e86670576c85340eeb2271b3c918bfa89322b2cf",
+      "size": 854,
+      "url": "https://api.github.com/repos/yanbeiliu/IPGDN/git/blobs/e86670576c85340eeb2271b3c918bfa89322b2cf"
+    },
+    {
+      "path": "data/readme.txt",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "475e4aebcc0ad241fecdb53dea98ad38f81090ae",
+      "size": 907,
+      "url": "https://api.github.com/repos/yanbeiliu/IPGDN/git/blobs/475e4aebcc0ad241fecdb53dea98ad38f81090ae"
+    },
+    {
+      "path": "data/trans.citeseer.graph",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8f84c514dfc0a1247a400820c5e7d611fa4c486a",
+      "size": 61988,
+      "url": "https://api.github.com/repos/yanbeiliu/IPGDN/git/blobs/8f84c514dfc0a1247a400820c5e7d611fa4c486a"
+    },
+    {
+      "path": "data/trans.citeseer.tx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b2aff18aa1fc6f4f5e8c64db7643b59b24e42584",
+      "size": 260321,
+      "url": "https://api.github.com/repos/yanbeiliu/IPGDN/git/blobs/b2aff18aa1fc6f4f5e8c64db7643b59b24e42584"
+    },
+    {
+      "path": "data/trans.citeseer.ty",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3795f79df0cd1123f4478b77c148a5fbacc4cefb",
+      "size": 24135,
+      "url": "https://api.github.com/repos/yanbeiliu/IPGDN/git/blobs/3795f79df0cd1123f4478b77c148a5fbacc4cefb"
+    },
+    {
+      "path": "data/trans.citeseer.x",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f094104a66f2689ffbd01085fe6a856689e9db9e",
+      "size": 31087,
+      "url": "https://api.github.com/repos/yanbeiliu/IPGDN/git/blobs/f094104a66f2689ffbd01085fe6a856689e9db9e"
+    },
+    {
+      "path": "data/trans.citeseer.y",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e857ac49b611da98e101a068cf4855350274f68a",
+      "size": 3014,
+      "url": "https://api.github.com/repos/yanbeiliu/IPGDN/git/blobs/e857ac49b611da98e101a068cf4855350274f68a"
+    },
+    {
+      "path": "data/trans.cora.graph",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "df2946aab731d71701c2e32149069f8b0c7acd14",
+      "size": 59893,
+      "url": "https://api.github.com/repos/yanbeiliu/IPGDN/git/blobs/df2946aab731d71701c2e32149069f8b0c7acd14"
+    },
+    {
+      "path": "data/trans.cora.tx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6e856d777401ee15dc8619db76c97d0a40ba2d60",
+      "size": 148025,
+      "url": "https://api.github.com/repos/yanbeiliu/IPGDN/git/blobs/6e856d777401ee15dc8619db76c97d0a40ba2d60"
+    },
+    {
+      "path": "data/trans.cora.ty",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "da1734ab670b5c8ecee78a9c30b35566df916f4b",
+      "size": 28135,
+      "url": "https://api.github.com/repos/yanbeiliu/IPGDN/git/blobs/da1734ab670b5c8ecee78a9c30b35566df916f4b"
+    },
+    {
+      "path": "data/trans.cora.x",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c4a91d008245403e7f26aa616b437191509793c0",
+      "size": 22119,
+      "url": "https://api.github.com/repos/yanbeiliu/IPGDN/git/blobs/c4a91d008245403e7f26aa616b437191509793c0"
+    },
+    {
+      "path": "data/trans.cora.y",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "58e30ef120d3553cfaac33ff28c6b5436dbef661",
+      "size": 4054,
+      "url": "https://api.github.com/repos/yanbeiliu/IPGDN/git/blobs/58e30ef120d3553cfaac33ff28c6b5436dbef661"
+    },
+    {
+      "path": "data/trans.pubmed.graph",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "fa65f4d555424aee1b4ba08431a8803ccd17bf76",
+      "size": 471541,
+      "url": "https://api.github.com/repos/yanbeiliu/IPGDN/git/blobs/fa65f4d555424aee1b4ba08431a8803ccd17bf76"
+    },
+    {
+      "path": "data/trans.pubmed.tx",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "eee4f3c988fde0da87a9ec7b01ca5e7863c1b1f1",
+      "size": 405505,
+      "url": "https://api.github.com/repos/yanbeiliu/IPGDN/git/blobs/eee4f3c988fde0da87a9ec7b01ca5e7863c1b1f1"
+    },
+    {
+      "path": "data/trans.pubmed.ty",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "225a0bb9bb6430e3925d04688daf6a0da964c07a",
+      "size": 12135,
+      "url": "https://api.github.com/repos/yanbeiliu/IPGDN/git/blobs/225a0bb9bb6430e3925d04688daf6a0da964c07a"
+    },
+    {
+      "path": "data/trans.pubmed.x",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "16c0eca8d2b3297014ff80327416f9332eda10d7",
+      "size": 23172,
+      "url": "https://api.github.com/repos/yanbeiliu/IPGDN/git/blobs/16c0eca8d2b3297014ff80327416f9332eda10d7"
+    },
+    {
+      "path": "data/trans.pubmed.y",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e86670576c85340eeb2271b3c918bfa89322b2cf",
+      "size": 854,
+      "url": "https://api.github.com/repos/yanbeiliu/IPGDN/git/blobs/e86670576c85340eeb2271b3c918bfa89322b2cf"
+    },
+    {
+      "path": "main.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d5a4f890a5de1f7f9f4dac725187ba9fac2bd936",
+      "size": 18166,
+      "url": "https://api.github.com/repos/yanbeiliu/IPGDN/git/blobs/d5a4f890a5de1f7f9f4dac725187ba9fac2bd936"
+    },
+    {
+      "path": "meta.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e4e3fd3257164c90a974df9d550c77f99198be2d",
+      "size": 2190,
+      "url": "https://api.github.com/repos/yanbeiliu/IPGDN/git/blobs/e4e3fd3257164c90a974df9d550c77f99198be2d"
+    },
+    {
+      "path": "misc.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3cf310ede22d178dff7dcbb8ef0edc09a83fab3f",
+      "size": 9069,
+      "url": "https://api.github.com/repos/yanbeiliu/IPGDN/git/blobs/3cf310ede22d178dff7dcbb8ef0edc09a83fab3f"
+    },
+    {
+      "path": "sample_results.ipynb",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1aed19c165ea9792ffd21f1a7154b8cac9a4c430",
+      "size": 12620,
+      "url": "https://api.github.com/repos/yanbeiliu/IPGDN/git/blobs/1aed19c165ea9792ffd21f1a7154b8cac9a4c430"
+    }
+  ],
+  "truncated": false
+}
