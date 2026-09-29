@@ -5,6 +5,20 @@ import torch
 from .data import shares
 from .model import MRHGAT, ChoiceBaseline, cross_entropy
 
+def hsic(embeddings, rows):
+    """Biased linear HSIC over train nodes, normalized by covariance norms.
+
+Returns centered kernel alignment for scale-invariant regularization.
+This penalizes second-order dependence, not all statistical dependence.
+"""
+    weights = rows.to(embeddings.dtype)
+    n = weights.sum().clamp_min(1)
+    centered = embeddings - (embeddings * weights[:, None, None]).sum(0, keepdim=True) / n
+    left, right = centered[:, 0] * weights[:, None], centered[:, 1] * weights[:, None]
+    cross = left.T @ right / n
+    xx, yy = left.T @ left / n, right.T @ right / n
+    return cross.square().sum() / (xx.square().sum() * yy.square().sum()).sqrt().clamp_min(1e-8)
+
 def seed_all(seed):
     random.seed(seed)
     np.random.seed(seed)
@@ -36,7 +50,8 @@ def fit_baseline(data, train_rows=None, eval_rows=None, epochs=400, patience=20)
     model.load_state_dict(state)
     return model, {'best_epoch': best_epoch, 'ce': best}
 
-def fit(data, variant, seed, base_state, train_rows=None, eval_rows=None, epochs=400, patience=20):
+def fit(data, variant, seed, base_state, train_rows=None, eval_rows=None, epochs=400, patience=20,
+        dependence_weight=0):
     seed_all(seed)
     model = MRHGAT(int_channel=variant, base_beta=base_state['beta'], base_topo=base_state['topo']).to(data['x'].device)
     opt = torch.optim.Adam(model.parameters(), lr=.02)
@@ -49,6 +64,8 @@ def fit(data, variant, seed, base_state, train_rows=None, eval_rows=None, epochs
         opt.zero_grad(set_to_none=True)
         out = model(data['x'], data['F'], data['K'])
         loss = cross_entropy(out['logpi'], share, rows) + 1e-4 * model.regularization()
+        if dependence_weight:
+            loss = loss + dependence_weight * hsic(out['factor_embeddings'], rows)
         if not torch.isfinite(loss):
             raise FloatingPointError(f'Nonfinite loss at epoch {epoch}')
         loss.backward()

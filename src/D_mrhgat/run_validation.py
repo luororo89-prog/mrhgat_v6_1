@@ -79,9 +79,9 @@ def main():
             sim={**d,'F':torch.as_tensor(F,device=args.device)}
             train,evaluation=masks(sim,0)
             bcv,_=fit_baseline(sim,train,evaluation)
-            _,_,cvinfo=fit(sim,variant,seed,bcv.state_dict(),train,evaluation)
+            _,_,cvinfo=fit(sim,variant,seed,bcv.state_dict(),train,evaluation,dependence_weight=.1)
             bfull,_=fit_baseline(sim)
-            model,out,fullinfo=fit(sim,variant,seed,bfull.state_dict(),epochs=cvinfo['best_epoch'])
+            model,out,fullinfo=fit(sim,variant,seed,bfull.state_dict(),epochs=cvinfo['best_epoch'],dependence_weight=.1)
             with torch.no_grad():
                 bp=bfull(sim['x'],sim['K']).exp().cpu().numpy()
             metrics=evaluate(F,arrays['K'],out,truth,bp)

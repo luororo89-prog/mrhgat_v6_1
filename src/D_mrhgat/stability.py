@@ -19,7 +19,7 @@ from torch import nn
 from torch.nn import functional as fn
 from scipy.optimize import linear_sum_assignment
 from .model import MRHGAT, ChoiceBaseline
-from .train import seed_all
+from .train import seed_all, hsic
 
 
 class SeparatedMRHGAT(MRHGAT):
@@ -51,21 +51,6 @@ class SeparatedMRHGAT(MRHGAT):
         labels=torch.arange(2,device=x.device)
         out['factor_discrimination']=fn.cross_entropy(logits,labels)
         return out
-
-
-def hsic(embeddings, rows):
-    """Biased linear HSIC over train nodes, normalized by covariance norms.
-
-Returns centered kernel alignment for scale-invariant regularization.
-This penalizes second-order dependence, not all statistical dependence.
-"""
-    weights = rows.to(embeddings.dtype)
-    n = weights.sum().clamp_min(1)
-    centered = embeddings - (embeddings * weights[:, None, None]).sum(0, keepdim=True) / n
-    left, right = centered[:, 0] * weights[:, None], centered[:, 1] * weights[:, None]
-    cross = left.T @ right / n
-    xx, yy = left.T @ left / n, right.T @ right / n
-    return cross.square().sum() / (xx.square().sum() * yy.square().sum()).sqrt().clamp_min(1e-8)
 
 
 def masked_ce(logpi, flows, rows):
