@@ -5,7 +5,7 @@ from torch.nn import functional as fn
 
 class MRHGAT(nn.Module):
     def __init__(self, dim=16, int_channel='nested', base_beta=None, base_topo=None,
-                 compet_own_supply_gate=True, compet_own_supply_bias=True, compet_outflow=True):
+                 compet_own_supply_gate=False, compet_own_supply_bias=True, compet_outflow=False):
         super().__init__()
         if int_channel not in ('nested', 'independent', 'none'):
             raise ValueError(int_channel)
@@ -13,7 +13,9 @@ class MRHGAT(nn.Module):
         # Toggles for the 2026-09-30 ablation grid: which of compet's three
         # added information channels (own-supply gate term, own-supply
         # destination-attention bias, leave-one-out outflow term) are active.
-        # Defaults preserve prior committed behavior (all on).
+        # Defaults are the chosen configuration (gate=0,bias=1,outflow=0): best
+        # necessary-gate result found (3/4 metrics passed, smallest shortfall
+        # on the remaining one) — see reports/D6_model_selection.md.
         self.compet_own_supply_gate = compet_own_supply_gate
         self.compet_own_supply_bias = compet_own_supply_bias
         self.compet_outflow = compet_outflow
