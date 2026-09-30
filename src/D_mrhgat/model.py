@@ -30,6 +30,15 @@ class MRHGAT(nn.Module):
         self.g_out = nn.Parameter(torch.empty(dim))
         self.bu_out = nn.Parameter(torch.zeros(dim))
         self.r_comp = nn.Parameter(torch.empty(dim))
+        # compet gets a strictly larger information budget than comp (inflow +
+        # inflow-source supply already inside hid; plus outflow leave-one-out and
+        # own supply added below) — matching that competition's defining condition
+        # is a compound function of the graph, not a single local property, while
+        # compensation's is; this keeps the two channels structurally asymmetric
+        # rather than reintroducing the identical-twin non-identifiability problem.
+        self.u2b = nn.Parameter(torch.empty(dim))
+        self.r_compet = nn.Parameter(torch.empty(dim))
+        self.s_compet = nn.Parameter(torch.empty(dim))
         self.w1 = nn.Parameter(torch.empty(dim))
         self.u2 = nn.Parameter(torch.empty(dim))
         self.w3 = nn.Parameter(torch.empty(dim))
@@ -48,7 +57,8 @@ class MRHGAT(nn.Module):
         for name, p in self.named_parameters():
             if p.ndim == 2:
                 nn.init.xavier_uniform_(p)
-            elif name in ('a_in','g','w1','u2','w3','u3','a_out','g_out','r_comp') or name.startswith(('a.', 'e.')):
+            elif name in ('a_in','g','w1','u2','w3','u3','a_out','g_out','r_comp',
+                          'u2b','r_compet','s_compet') or name.startswith(('a.', 'e.')):
                 nn.init.normal_(p, std=.1)
             elif name.startswith('projection.') and name.endswith('bias'):
                 nn.init.zeros_(p)
@@ -90,7 +100,7 @@ class MRHGAT(nn.Module):
         hid_out_loo = fn.leaky_relu(h_out_loo @ self.U_out +
             sigma_out_loo.clamp_min(1e-8).log()[:,:,None] * self.g_out + self.bu_out, .2)
         comp = z['comp'] @ self.w1 + self.c1
-        compet = hid @ self.u2 + self.c2
+        compet = hid @ self.u2 + z['comp'] @ self.u2b + self.c2
         base = torch.zeros_like(comp)
         if self.int_channel == 'none':
             log_rho = torch.log_softmax(torch.stack([base, comp, compet], 1), 1)
@@ -110,16 +120,25 @@ class MRHGAT(nn.Module):
         if self.int_channel != 'none':
             base_logits = base_logits.masked_fill(self_mask, -torch.inf)
         logp = [torch.log_softmax(base_logits, 1)]
-        # compet reads hid (directed inflow), not a local-supply projection, so its
-        # destination attention cannot be architecturally interchangeable with comp's
-        # (方案 234-235 行: 补偿用本地供给, 竞争用被挤方向; 见 D6_cause_diagnosis.md 第4节).
-        destination_input = {'comp': z['comp'], 'compet': hid}
+        # compet's query is hid (inflow context); comp's query is its own local
+        # supply. Both channels' key is destination supply (candidate j's own
+        # z['comp'][j]) since "how does j's supply compare" matters for both
+        # directions (comp: go higher; compet: go same/lower) — 方案 234-235 行.
+        # compet additionally reads its own supply and the leave-one-out outflow
+        # term that comp already had, giving compet a strictly larger information
+        # budget (inflow + inflow-source-supply inside hid, plus these two) to
+        # match its inherently compound defining condition without collapsing
+        # comp/compet back into structurally identical, swappable twins.
+        destination_query = {'comp': z['comp'], 'compet': hid}
+        destination_key = {'comp': z['comp'], 'compet': z['comp']}
         for c in ('comp','compet'):
-            zc = destination_input[c]
-            logits = fn.leaky_relu((zc @ self.P[c])[:,None,:] +
-                (zc @ self.Q[c])[None,:,:] + self.e[c], .2) @ self.a[c] + self.B[c][K]
+            zq, zk = destination_query[c], destination_key[c]
+            logits = fn.leaky_relu((zq @ self.P[c])[:,None,:] +
+                (zk @ self.Q[c])[None,:,:] + self.e[c], .2) @ self.a[c] + self.B[c][K]
             if c == 'comp':
                 logits = logits + hid_out_loo @ self.r_comp
+            else:
+                logits = logits + hid_out_loo @ self.r_compet + (z['comp'] @ self.s_compet)[:,None]
             logp.append(torch.log_softmax(logits.masked_fill(self_mask, -torch.inf), 1))
         if self.int_channel != 'none':
             logp.append(torch.zeros_like(F).masked_fill(~self_mask, -torch.inf))
