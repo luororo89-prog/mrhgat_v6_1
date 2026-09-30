@@ -15,42 +15,9 @@ speed — never by re-introducing vectorized cross-seed batching.
 import multiprocessing as mp
 import numpy as np
 import torch
-from torch import nn
-from torch.nn import functional as fn
 from scipy.optimize import linear_sum_assignment
-from .model import MRHGAT, ChoiceBaseline
+from .model import MRHGAT, ChoiceBaseline, SeparatedMRHGAT
 from .train import seed_all, hsic
-
-
-class SeparatedMRHGAT(MRHGAT):
-    """MD forward model plus FactorGCN-style auxiliary factor-graph classifier.
-
-    The shared classifier predicts anonymous factor IDs, never mechanism labels.
-    Original gates and destination probabilities are inherited unchanged.
-    """
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.factor_layers=nn.ModuleList([nn.Linear(9,16),nn.Linear(16,8),nn.Linear(8,16)])
-        self.factor_classifier=nn.Linear(32,2)
-
-    def forward(self, x, F, K, loss_rows=None):
-        out=super().forward(x,F,K)
-        rows=(F.sum(1)>0) if loss_rows is None else loss_rows
-        edges=((F>0)&(K!=0)&rows[:,None]).to(x.dtype)
-        # Graph degree normalization, not facility capacity correction.
-        norm=(edges.sum(1)[:,None]*edges.sum(0)[None,:]).sqrt().clamp_min(1)
-        reps=[]
-        for channel in (1,2):
-            adjacency=edges*out['r'][:,channel,:]/norm
-            outgoing=incoming=x
-            for layer in self.factor_layers:
-                outgoing=torch.tanh(adjacency@layer(outgoing))
-                incoming=torch.tanh(adjacency.T@layer(incoming))
-            reps.append(torch.cat([outgoing.mean(0),incoming.mean(0)]))
-        logits=self.factor_classifier(torch.stack(reps))
-        labels=torch.arange(2,device=x.device)
-        out['factor_discrimination']=fn.cross_entropy(logits,labels)
-        return out
 
 
 def masked_ce(logpi, flows, rows):

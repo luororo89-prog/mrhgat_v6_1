@@ -29,6 +29,8 @@ def version():
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--device',default='cuda')
+    parser.add_argument('--dependence-weight',type=float,default=.1)
+    parser.add_argument('--discrimination-weight',type=float,default=0)
     args = parser.parse_args()
     torch.set_num_threads(3)
     seed_all(0)
@@ -79,9 +81,11 @@ def main():
             sim={**d,'F':torch.as_tensor(F,device=args.device)}
             train,evaluation=masks(sim,0)
             bcv,_=fit_baseline(sim,train,evaluation)
-            _,_,cvinfo=fit(sim,variant,seed,bcv.state_dict(),train,evaluation,dependence_weight=.1)
+            _,_,cvinfo=fit(sim,variant,seed,bcv.state_dict(),train,evaluation,
+                dependence_weight=args.dependence_weight,discrimination_weight=args.discrimination_weight)
             bfull,_=fit_baseline(sim)
-            model,out,fullinfo=fit(sim,variant,seed,bfull.state_dict(),epochs=cvinfo['best_epoch'],dependence_weight=.1)
+            model,out,fullinfo=fit(sim,variant,seed,bfull.state_dict(),epochs=cvinfo['best_epoch'],
+                dependence_weight=args.dependence_weight,discrimination_weight=args.discrimination_weight)
             with torch.no_grad():
                 bp=bfull(sim['x'],sim['K']).exp().cpu().numpy()
             metrics=evaluate(F,arrays['K'],out,truth,bp)
