@@ -130,16 +130,16 @@ class MRHGAT(nn.Module):
         if self.int_channel != 'none':
             base_logits = base_logits.masked_fill(self_mask, -torch.inf)
         logp = [torch.log_softmax(base_logits, 1)]
-        # compet's query is hid (inflow context); comp's query is its own local
-        # supply. Both channels' key is destination supply (candidate j's own
-        # z['comp'][j]) since "how does j's supply compare" matters for both
-        # directions (comp: go higher; compet: go same/lower) — 方案 234-235 行.
-        # compet additionally reads its own supply and the leave-one-out outflow
-        # term that comp already had, giving compet a strictly larger information
-        # budget (inflow + inflow-source-supply inside hid, plus these two) to
-        # match its inherently compound defining condition without collapsing
-        # comp/compet back into structurally identical, swappable twins.
-        destination_query = {'comp': z['comp'], 'compet': hid}
+        # Inflow (hid) only informs the GATE (how much of node i's mass is
+        # compensation vs competition overall). The destination choice (which
+        # specific j) uses the SAME kind of information for both channels —
+        # own supply, outflow, destination supply — since "where does this
+        # edge go" is an outflow-flavored question for both mechanisms; only
+        # each channel's own separately-learned P/Q/e/a/B/r/s parameters make
+        # comp's and compet's destination scoring differ, not different input
+        # categories. Both channels' key is destination supply (candidate j's
+        # own z['comp'][j]) — 方案 234-235 行.
+        destination_query = {'comp': z['comp'], 'compet': z['comp']}
         destination_key = {'comp': z['comp'], 'compet': z['comp']}
         for c in ('comp','compet'):
             zq, zk = destination_query[c], destination_key[c]
