@@ -51,10 +51,11 @@ def fit_baseline(data, train_rows=None, eval_rows=None, epochs=400, patience=20)
     return model, {'best_epoch': best_epoch, 'ce': best}
 
 def fit(data, variant, seed, base_state, train_rows=None, eval_rows=None, epochs=400, patience=20,
-        dependence_weight=0, discrimination_weight=0):
+        dependence_weight=0, discrimination_weight=0, model_kwargs=None):
     seed_all(seed)
     cls = SeparatedMRHGAT if discrimination_weight else MRHGAT
-    model = cls(int_channel=variant, base_beta=base_state['beta'], base_topo=base_state['topo']).to(data['x'].device)
+    model = cls(int_channel=variant, base_beta=base_state['beta'], base_topo=base_state['topo'],
+                **(model_kwargs or {})).to(data['x'].device)
     opt = torch.optim.Adam(model.parameters(), lr=.02)
     share = shares(data['F'])
     rows = data['F'].sum(1) > 0 if train_rows is None else train_rows
