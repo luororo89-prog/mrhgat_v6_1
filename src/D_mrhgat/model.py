@@ -4,11 +4,19 @@ from torch import nn
 from torch.nn import functional as fn
 
 class MRHGAT(nn.Module):
-    def __init__(self, dim=16, int_channel='nested', base_beta=None, base_topo=None):
+    def __init__(self, dim=16, int_channel='nested', base_beta=None, base_topo=None,
+                 compet_own_supply_gate=True, compet_own_supply_bias=True, compet_outflow=True):
         super().__init__()
         if int_channel not in ('nested', 'independent', 'none'):
             raise ValueError(int_channel)
         self.int_channel = int_channel
+        # Toggles for the 2026-09-30 ablation grid: which of compet's three
+        # added information channels (own-supply gate term, own-supply
+        # destination-attention bias, leave-one-out outflow term) are active.
+        # Defaults preserve prior committed behavior (all on).
+        self.compet_own_supply_gate = compet_own_supply_gate
+        self.compet_own_supply_bias = compet_own_supply_bias
+        self.compet_outflow = compet_outflow
         self.projection = nn.ModuleDict({c: nn.Linear(9, dim) for c in ('comp','in','int')})
         self.A_s = nn.Parameter(torch.empty(dim, dim))
         self.A_t = nn.Parameter(torch.empty(dim, dim))
@@ -100,7 +108,9 @@ class MRHGAT(nn.Module):
         hid_out_loo = fn.leaky_relu(h_out_loo @ self.U_out +
             sigma_out_loo.clamp_min(1e-8).log()[:,:,None] * self.g_out + self.bu_out, .2)
         comp = z['comp'] @ self.w1 + self.c1
-        compet = hid @ self.u2 + z['comp'] @ self.u2b + self.c2
+        compet = hid @ self.u2 + self.c2
+        if self.compet_own_supply_gate:
+            compet = compet + z['comp'] @ self.u2b
         base = torch.zeros_like(comp)
         if self.int_channel == 'none':
             log_rho = torch.log_softmax(torch.stack([base, comp, compet], 1), 1)
@@ -138,7 +148,10 @@ class MRHGAT(nn.Module):
             if c == 'comp':
                 logits = logits + hid_out_loo @ self.r_comp
             else:
-                logits = logits + hid_out_loo @ self.r_compet + (z['comp'] @ self.s_compet)[:,None]
+                if self.compet_outflow:
+                    logits = logits + hid_out_loo @ self.r_compet
+                if self.compet_own_supply_bias:
+                    logits = logits + (z['comp'] @ self.s_compet)[:,None]
             logp.append(torch.log_softmax(logits.masked_fill(self_mask, -torch.inf), 1))
         if self.int_channel != 'none':
             logp.append(torch.zeros_like(F).masked_fill(~self_mask, -torch.inf))
