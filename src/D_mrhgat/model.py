@@ -5,7 +5,8 @@ from torch.nn import functional as fn
 
 class MRHGAT(nn.Module):
     def __init__(self, dim=16, int_channel='nested', base_beta=None, base_topo=None,
-                 compet_own_supply_gate=False, compet_own_supply_bias=True, compet_outflow=False):
+                 compet_own_supply_gate=False, compet_own_supply_bias=True, compet_outflow=False,
+                 compet_monotonic=True):
         super().__init__()
         if int_channel not in ('nested', 'independent', 'none'):
             raise ValueError(int_channel)
@@ -19,6 +20,7 @@ class MRHGAT(nn.Module):
         self.compet_own_supply_gate = compet_own_supply_gate
         self.compet_own_supply_bias = compet_own_supply_bias
         self.compet_outflow = compet_outflow
+        self.compet_monotonic = compet_monotonic
         self.projection = nn.ModuleDict({c: nn.Linear(9, dim) for c in ('comp','in','int')})
         self.A_s = nn.Parameter(torch.empty(dim, dim))
         self.A_t = nn.Parameter(torch.empty(dim, dim))
@@ -162,7 +164,8 @@ class MRHGAT(nn.Module):
                     logits = logits + hid_out_loo @ self.r_compet
                 if self.compet_own_supply_bias:
                     logits = logits + (z['comp'] @ self.s_compet)[:,None]
-                logits = logits - fn.softplus(self.theta_compet) * supply_level[None,:]
+                if self.compet_monotonic:
+                    logits = logits - fn.softplus(self.theta_compet) * supply_level[None,:]
             logp.append(torch.log_softmax(logits.masked_fill(self_mask, -torch.inf), 1))
         if self.int_channel != 'none':
             logp.append(torch.zeros_like(F).masked_fill(~self_mask, -torch.inf))
