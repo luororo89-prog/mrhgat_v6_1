@@ -132,16 +132,13 @@ class MRHGAT(nn.Module):
         if self.int_channel != 'none':
             base_logits = base_logits.masked_fill(self_mask, -torch.inf)
         logp = [torch.log_softmax(base_logits, 1)]
-        # Inflow (hid) only informs the GATE (how much of node i's mass is
-        # compensation vs competition overall). The destination choice (which
-        # specific j) uses the SAME kind of information for both channels —
-        # own supply, outflow, destination supply — since "where does this
-        # edge go" is an outflow-flavored question for both mechanisms; only
-        # each channel's own separately-learned P/Q/e/a/B/r/s parameters make
-        # comp's and compet's destination scoring differ, not different input
-        # categories. Both channels' key is destination supply (candidate j's
-        # own z['comp'][j]) — 方案 234-235 行.
-        destination_query = {'comp': z['comp'], 'compet': z['comp']}
+        # Reverted 2026-09-30: using z['comp'] (own supply) as compet's query
+        # tested worse and less stable than hid (inflow) when combined with the
+        # chosen gate=0/bias=1/outflow=0 toggles (see reports/D6_model_selection.md).
+        # compet's query is hid (inflow context); comp's query is its own local
+        # supply. Both channels' key is destination supply (candidate j's own
+        # z['comp'][j]) — 方案 234-235 行.
+        destination_query = {'comp': z['comp'], 'compet': hid}
         destination_key = {'comp': z['comp'], 'compet': z['comp']}
         for c in ('comp','compet'):
             zq, zk = destination_query[c], destination_key[c]
