@@ -49,6 +49,16 @@ class MRHGAT(nn.Module):
         self.u2b = nn.Parameter(torch.empty(dim))
         self.r_compet = nn.Parameter(torch.empty(dim))
         self.s_compet = nn.Parameter(torch.empty(dim))
+        # Sign-constrained (monotonic) destination-supply term for compet, per
+        # Sill 1998 / Runje & Shankaranarayana 2023 "constrained monotonic neural
+        # networks" and the classical sign-constrained-coefficient convention in
+        # discrete-choice/gravity models (Train; Wilson 1971): softplus(theta)
+        # is provably >=0 for any real theta, so subtracting
+        # softplus(theta_compet)*supply_level structurally forces compet's score
+        # to be non-increasing in destination supply, while the magnitude is
+        # still freely learned. Uses x.mean(1) (the composite supply summary
+        # 执行方案 already designates for comparison purposes), not a derived Δ.
+        self.theta_compet = nn.Parameter(torch.tensor(0.))
         self.w1 = nn.Parameter(torch.empty(dim))
         self.u2 = nn.Parameter(torch.empty(dim))
         self.w3 = nn.Parameter(torch.empty(dim))
@@ -140,6 +150,7 @@ class MRHGAT(nn.Module):
         # z['comp'][j]) — 方案 234-235 行.
         destination_query = {'comp': z['comp'], 'compet': hid}
         destination_key = {'comp': z['comp'], 'compet': z['comp']}
+        supply_level = x.mean(1)
         for c in ('comp','compet'):
             zq, zk = destination_query[c], destination_key[c]
             logits = fn.leaky_relu((zq @ self.P[c])[:,None,:] +
@@ -151,6 +162,7 @@ class MRHGAT(nn.Module):
                     logits = logits + hid_out_loo @ self.r_compet
                 if self.compet_own_supply_bias:
                     logits = logits + (z['comp'] @ self.s_compet)[:,None]
+                logits = logits - fn.softplus(self.theta_compet) * supply_level[None,:]
             logp.append(torch.log_softmax(logits.masked_fill(self_mask, -torch.inf), 1))
         if self.int_channel != 'none':
             logp.append(torch.zeros_like(F).masked_fill(~self_mask, -torch.inf))
