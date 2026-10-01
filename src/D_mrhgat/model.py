@@ -5,18 +5,20 @@ from torch.nn import functional as fn
 
 class MRHGAT(nn.Module):
     def __init__(self, dim=16, int_channel='nested', base_beta=None, base_topo=None,
-                 compet_own_supply_gate=False, compet_own_supply_bias=True, compet_outflow=False,
-                 compet_monotonic=True):
+                 compet_own_supply_gate=False, compet_own_supply_bias=True, compet_outflow=True,
+                 compet_monotonic=False):
         super().__init__()
         if int_channel not in ('nested', 'independent', 'none'):
             raise ValueError(int_channel)
         self.int_channel = int_channel
         # Toggles for the 2026-09-30 ablation grid: which of compet's three
         # added information channels (own-supply gate term, own-supply
-        # destination-attention bias, leave-one-out outflow term) are active.
-        # Defaults are the chosen configuration (gate=0,bias=1,outflow=0): best
-        # necessary-gate result found (3/4 metrics passed, smallest shortfall
-        # on the remaining one) — see reports/D6_model_selection.md.
+        # destination-attention bias, leave-one-out outflow term) are active,
+        # plus the sign-constrained monotonic destination-supply term.
+        # Defaults are the best configuration found (gate=0,bias=1,outflow=1,
+        # monotonic=0), combined with the unrestricted compet_edge_auc metric
+        # (benchmarks.py): first config where all four necessary-gate metrics
+        # pass on a 2-seed mean on real data — see reports/D8_real_supply_flow_data.md.
         self.compet_own_supply_gate = compet_own_supply_gate
         self.compet_own_supply_bias = compet_own_supply_bias
         self.compet_outflow = compet_outflow
