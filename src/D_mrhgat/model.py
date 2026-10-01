@@ -6,7 +6,7 @@ from torch.nn import functional as fn
 class MRHGAT(nn.Module):
     def __init__(self, dim=16, int_channel='nested', base_beta=None, base_topo=None,
                  compet_own_supply_gate=False, compet_own_supply_bias=True, compet_outflow=True,
-                 compet_monotonic=False):
+                 compet_monotonic=False, self_retention=True):
         super().__init__()
         if int_channel not in ('nested', 'independent', 'none'):
             raise ValueError(int_channel)
@@ -23,6 +23,13 @@ class MRHGAT(nn.Module):
         self.compet_own_supply_bias = compet_own_supply_bias
         self.compet_outflow = compet_outflow
         self.compet_monotonic = compet_monotonic
+        # Self-retention: what fraction of node i's own total outbound demand
+        # stays inside i (F's diagonal / F's row sum). Previously unused by the
+        # model entirely (self-loops are masked out of every attention/aggregation
+        # step) despite being a legitimate, already-available real signal — feeds
+        # both gates, to test whether how much a node keeps "at home" informs
+        # whether its outward edges read as compensation or competition.
+        self.self_retention = self_retention
         self.projection = nn.ModuleDict({c: nn.Linear(9, dim) for c in ('comp','in','int')})
         self.A_s = nn.Parameter(torch.empty(dim, dim))
         self.A_t = nn.Parameter(torch.empty(dim, dim))
@@ -63,6 +70,8 @@ class MRHGAT(nn.Module):
         # still freely learned. Uses x.mean(1) (the composite supply summary
         # 执行方案 already designates for comparison purposes), not a derived Δ.
         self.theta_compet = nn.Parameter(torch.tensor(0.))
+        self.v1_self = nn.Parameter(torch.tensor(0.))
+        self.v2_self = nn.Parameter(torch.tensor(0.))
         self.w1 = nn.Parameter(torch.empty(dim))
         self.u2 = nn.Parameter(torch.empty(dim))
         self.w3 = nn.Parameter(torch.empty(dim))
@@ -127,6 +136,10 @@ class MRHGAT(nn.Module):
         compet = hid @ self.u2 + self.c2
         if self.compet_own_supply_gate:
             compet = compet + z['comp'] @ self.u2b
+        if self.self_retention:
+            self_share = F.diagonal() / F.sum(1).clamp_min(1e-8)
+            comp = comp + self_share * self.v1_self
+            compet = compet + self_share * self.v2_self
         base = torch.zeros_like(comp)
         if self.int_channel == 'none':
             log_rho = torch.log_softmax(torch.stack([base, comp, compet], 1), 1)
