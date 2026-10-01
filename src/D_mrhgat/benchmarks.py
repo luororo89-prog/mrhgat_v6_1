@@ -15,7 +15,7 @@ def evaluate(F, K, out, truth, baseline_probability):
     positive = F>0
     delta = truth['delta']
     comp_edges = positive & (K!=0) & (delta>0)
-    compet_edges = positive & (K!=0) & (delta<=0)
+    compet_edges = positive & (K!=0)
     valid = F.sum(1)>0
     node = np.divide(M.sum(2),F.sum(1)[:,None],out=np.zeros((len(F),r.shape[1])),where=F.sum(1)[:,None]>0)
     residual = np.log((F+1e-4)/(F.sum(1)[:,None]*baseline_probability+1e-4))
