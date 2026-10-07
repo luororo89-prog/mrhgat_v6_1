@@ -1,4 +1,4 @@
-name: walk_v4_pca5_v10_k3_joint_full
+name: walk_v4_pca5_v11_k3_s10
 supply_file: /Users/luoxuan/Documents/博后三胎/input/联通人口_新的九项医疗供给指标_2018_等时圈.xlsx
 flow_file: /Users/luoxuan/Documents/博后三胎/input/medical_network_15min_walk.csv
 adjacency_file: /Users/luoxuan/Documents/博后三胎/input/adjacency_15min_walk_bike.csv
@@ -11,6 +11,11 @@ seeds:
 - 2
 - 3
 - 4
+- 5
+- 6
+- 7
+- 8
+- 9
 n_channels: 3
 iters: 5
 epochs: 1000
@@ -27,3 +32,7 @@ perturb_scale: 0.01
 threads: 8
 move_all: true
 decoder: joint
+self_weight: one
+model: node
+out_weight: share
+load_from: results_lineb/walk_v4_pca5_v11_k3_s20
