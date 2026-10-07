@@ -1,0 +1,12 @@
+﻿end_tid,community_id,n_hospital_aoi,n_communities,probability,assignment_basis,destination_grid_records,original_grid_community_id
+7035,119,1,1,1.0,original_destination_centroid_inside_hospital_aoi,1015,119
+9249,50,1,1,1.0,original_destination_centroid_inside_hospital_aoi,6702,50
+9833,316,1,1,1.0,original_destination_centroid_inside_hospital_aoi,837,316
+10076,211,1,1,1.0,original_destination_centroid_inside_hospital_aoi,1302,211
+10992,514,1,1,1.0,original_destination_centroid_inside_hospital_aoi,1133,514
+13028,629,1,1,1.0,original_destination_centroid_inside_hospital_aoi,944,629
+13172,546,1,1,1.0,original_destination_centroid_inside_hospital_aoi,253,546
+14248,526,1,1,1.0,original_destination_centroid_inside_hospital_aoi,3664,526
+16941,610,1,1,1.0,original_destination_centroid_inside_hospital_aoi,253,610
+18661,568,1,1,1.0,original_destination_centroid_inside_hospital_aoi,3081,568
+20092,397,1,1,1.0,original_destination_centroid_inside_hospital_aoi,7815,397
