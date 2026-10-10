@@ -1,0 +1,139 @@
+{
+  "core_conclusion": "基层设施覆盖的行政社区更多，医院SA高值需要结合路网连通性和人口分母解释。",
+  "archetype": "quantitative grid",
+  "source_community_count": 666,
+  "road_snapshot_date": "2019-01-01",
+  "demand_source": "mobile_users",
+  "queen_directed_edges": 1124,
+  "figure": {
+    "panels": [
+      {
+        "panel": "a",
+        "metric": "RA",
+        "tier": "CHC",
+        "column": "RA_CHC",
+        "zero_count": 117,
+        "missing_count": 0,
+        "positive_quartile_breaks": [
+          1.050185873605948,
+          2.0446096654275094,
+          3.0650557620817844,
+          9.187732342007434
+        ]
+      },
+      {
+        "panel": "b",
+        "metric": "RA",
+        "tier": "SH",
+        "column": "RA_SH",
+        "zero_count": 633,
+        "missing_count": 0,
+        "positive_quartile_breaks": [
+          0.8125,
+          0.9,
+          1.3375,
+          1.75
+        ]
+      },
+      {
+        "panel": "c",
+        "metric": "RA",
+        "tier": "TH",
+        "column": "RA_TH",
+        "zero_count": 623,
+        "missing_count": 0,
+        "positive_quartile_breaks": [
+          0.866358024691358,
+          1.0555555555555556,
+          1.2407407407407407,
+          2.1117283950617285
+        ]
+      },
+      {
+        "panel": "d",
+        "metric": "SA",
+        "tier": "CHC",
+        "column": "SA_CHC_per_10000",
+        "zero_count": 118,
+        "missing_count": 0,
+        "positive_quartile_breaks": [
+          0.16494683072343114,
+          0.2636044303864986,
+          0.44103852015762135,
+          75.72463768115941
+        ]
+      },
+      {
+        "panel": "e",
+        "metric": "SA",
+        "tier": "SH",
+        "column": "SA_SH_per_10000",
+        "zero_count": 633,
+        "missing_count": 0,
+        "positive_quartile_breaks": [
+          0.48502862153895704,
+          0.7621926529582507,
+          1.4906281413823526,
+          2.6692056150477
+        ]
+      },
+      {
+        "panel": "f",
+        "metric": "SA",
+        "tier": "TH",
+        "column": "SA_TH_per_10000",
+        "zero_count": 623,
+        "missing_count": 0,
+        "positive_quartile_breaks": [
+          1.0569270444898342,
+          1.6018518831637714,
+          2.1355480005646608,
+          4.2685607693653935
+        ]
+      },
+      {
+        "panel": "g",
+        "metric": "TC",
+        "tier": "CHC",
+        "column": "TC_CHC",
+        "zero_count": 118,
+        "missing_count": 0,
+        "positive_quartile_breaks": [
+          0.04768019056583901,
+          0.092529315573431,
+          0.15214699973267137,
+          0.8960713641540189
+        ]
+      },
+      {
+        "panel": "h",
+        "metric": "TC",
+        "tier": "SH",
+        "column": "TC_SH",
+        "zero_count": 633,
+        "missing_count": 0,
+        "positive_quartile_breaks": [
+          0.10038960284684373,
+          0.15628409898803253,
+          0.23247203312292053,
+          0.7772179540127171
+        ]
+      },
+      {
+        "panel": "i",
+        "metric": "TC",
+        "tier": "TH",
+        "column": "TC_TH",
+        "zero_count": 623,
+        "missing_count": 0,
+        "positive_quartile_breaks": [
+          0.09653591361530661,
+          0.1370056997539374,
+          0.21679689916813577,
+          0.7831824370063668
+        ]
+      }
+    ],
+    "alignment_verdict": "PASS"
+  }
+}

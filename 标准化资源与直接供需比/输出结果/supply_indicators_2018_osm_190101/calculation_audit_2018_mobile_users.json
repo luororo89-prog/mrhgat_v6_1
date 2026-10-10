@@ -1,0 +1,150 @@
+{
+  "created_at": "2026-10-01T11:17:21",
+  "inputs": {
+    "community": "D:\\多功能网络构建\\shp\\深圳社区objectid.shp",
+    "population_centers": "D:\\多功能网络构建\\等时圈\\等时圈wgs84拆分\\Shenzhen_人口重心\\深圳社区_联通人口重心result.shp",
+    "resident_population_grids_250m": "D:\\多功能网络构建\\2018年11月非通勤出行\\网格_人口_社区\\网格_人口_社区\\深圳250m网格_人口_所在社区.shp",
+    "roads": "D:\\多功能网络构建\\outputs\\道路预处理\\geofabrik_2019_01_01\\shenzhen_osm_roads_190101.gpkg",
+    "road_snapshot": "https://download.geofabrik.de/asia/china-190101.osm.pbf",
+    "road_snapshot_date": "2019-01-01",
+    "road_snapshot_sha256": "e0744f857dfc9b0892fbf4967367d94a19d6ffa94d70b0bfdca573a3fd8cf7b2",
+    "road_license": "ODbL 1.0",
+    "hospitals": "D:\\多功能网络构建\\26上实验\\medical_identification_validation\\results\\hospital_beds_year\\hospital_beds_amap_v3_all_2018_wgs84\\hospital_beds.shp",
+    "chc": "D:\\多功能网络构建\\26上实验\\medical_identification_validation\\results\\chc_relocation\\2018年深圳CHC.csv"
+  },
+  "demand_definition": {
+    "source": "mobile_users",
+    "field": "联通人",
+    "rule": "250米居住网格人口取网格中心点；行政社区需求为所辖居住网格人口之和",
+    "positive_demand_grid_count": 25496,
+    "community_count": 666,
+    "communities_with_positive_demand": 666,
+    "total_population_demand": 5667519.0,
+    "excluded_without_community": {
+      "grid_count": 1,
+      "mobile_users": 2.0,
+      "census_expanded": 4.872380154
+    }
+  },
+  "facility_definition": {
+    "CHC": "chc_relocation目录中的2018年社康点位",
+    "SH": "hospital_beds_year目录中明确为二级的综合医院、中医医院、妇幼保健院、儿童医院",
+    "TH": "hospital_beds_year目录中明确为三级的综合医院、中医医院、妇幼保健院、儿童医院",
+    "maternal_child_health_hospitals_in_source": 0,
+    "counts": {
+      "CHC": 912,
+      "SH": 17,
+      "TH": 23
+    }
+  },
+  "resource_availability": {
+    "formula": "RA_c^l = sum_j[(1-lambda)+lambda*(C_j/median_l)]",
+    "lambda": 0.5,
+    "capacity": {
+      "CHC": "服务能力评分",
+      "SH": "床位数",
+      "TH": "床位数"
+    },
+    "positive_capacity_median": {
+      "CHC": 1.345,
+      "SH": 400.0,
+      "TH": 810.0
+    },
+    "area_used": false
+  },
+  "spatial_accessibility": {
+    "method": "Facility capacity divided by total population in its tier-specific service catchment, summed over facilities in each community's 15-minute neighborhood",
+    "gaussian_decay": "not used in SA",
+    "catchment_minutes": {
+      "CHC": 25.0,
+      "SH": 40.0,
+      "TH": 70.0
+    },
+    "modes": {
+      "CHC": "cycle",
+      "SH": "drive",
+      "TH": "drive"
+    },
+    "primary_cycle_speed_kmh": 9.0,
+    "secondary_tertiary_drive_speed": "OSM highway类别默认速度，并以有效maxspeed限速作为上限；见道路提取元数据",
+    "supply": {
+      "CHC": "服务能力评分",
+      "SH": "床位数",
+      "TH": "床位数"
+    },
+    "competition_demand": "设施分层服务范围内250米居住网格人口",
+    "aggregation": "生活圈内同层级设施的服务能力与其服务范围内人口之比求和"
+  },
+  "travel_convenience": {
+    "facility_membership": "设施实际点位到行政社区人口重心的OSM步行最短路不超过15分钟",
+    "walking_speed_kmh": 4.8,
+    "bands_minutes": [
+      [
+        0.0,
+        5.0
+      ],
+      [
+        5.0,
+        10.0
+      ],
+      [
+        10.0,
+        15.0
+      ]
+    ],
+    "topsis_weights": [
+      0.5,
+      0.3,
+      0.2
+    ],
+    "aggregation": "各250米居住网格分档内可达设施数的人口加权平均，再分层TOPSIS"
+  },
+  "network": {
+    "crs": "EPSG:32650",
+    "driving_respects_oneway": true,
+    "hospital_access_direction": "居住网格到医院；以反向驾车图从医院计算最短路径",
+    "junctions_by_shared_osm_node_id": true,
+    "walking_and_cycling_use_osm_access_tags": true,
+    "method": "设施实际点位、行政社区人口重心和250米人口网格中心点接入OSM道路线段；按通行方式使用道路最短距离或驾车最短时间",
+    "artificial_bridge_tolerance_m": 0.0,
+    "road_segment_count": 311476,
+    "network_node_count": 288129,
+    "road_segments_by_mode": {
+      "walk": 275464,
+      "cycle": 230627,
+      "drive": 242079
+    },
+    "snap_distance_m": {
+      "facility_walk_to_road": {
+        "median": 29.88264847908533,
+        "p95": 164.9796111323487,
+        "max": 19857.85521663306
+      },
+      "community_center_walk_to_road": {
+        "median": 36.92205373460818,
+        "p95": 177.27890776361403,
+        "max": 545.5231684966511
+      },
+      "resident_grid_center_walk_to_road": {
+        "median": 58.49687310438069,
+        "p95": 331.67843166659156,
+        "max": 1678.2454328503509
+      }
+    }
+  },
+  "candidate_relations": {
+    "total": 1521,
+    "community_center_count": 666,
+    "facilities_without_candidate_community": 245,
+    "communities_without_facility_by_tier": {
+      "CHC": 117,
+      "SH": 633,
+      "TH": 623
+    }
+  },
+  "validation": {
+    "output_rows": 666,
+    "all_communities_present": true,
+    "nonnegative_main_indicators": true
+  }
+}

@@ -1,0 +1,689 @@
+{
+  "package_name": "标准化资源与直接供需比",
+  "packaged_date": "2026-10-10",
+  "original_files_preserved": true,
+  "copied_file_count": 85,
+  "copied_bytes": 494685532.0,
+  "files": [
+    {
+      "category": "输入数据",
+      "source_path": "D:\\多功能网络构建\\shp\\深圳社区objectid.cpg",
+      "package_relative_path": "输入数据\\shp\\深圳社区objectid.cpg",
+      "bytes": 5,
+      "sha256": "3AD3031F5503A4404AF825262EE8232CC04D4EA6683D42C5DD0A2F2A27AC9824",
+      "source_matches_copy": true
+    },
+    {
+      "category": "输入数据",
+      "source_path": "D:\\多功能网络构建\\shp\\深圳社区objectid.dbf",
+      "package_relative_path": "输入数据\\shp\\深圳社区objectid.dbf",
+      "bytes": 264122,
+      "sha256": "07B7E5C66D3EC68FC464BB515CE91E239B4D8D99DD44DA72A101FB1514D027C8",
+      "source_matches_copy": true
+    },
+    {
+      "category": "输入数据",
+      "source_path": "D:\\多功能网络构建\\shp\\深圳社区objectid.prj",
+      "package_relative_path": "输入数据\\shp\\深圳社区objectid.prj",
+      "bytes": 430,
+      "sha256": "5DF4BA1CC8298DBD7C69BF4283F9EB09C48B89089F4B72C737FBB68A7B04491B",
+      "source_matches_copy": true
+    },
+    {
+      "category": "输入数据",
+      "source_path": "D:\\多功能网络构建\\shp\\深圳社区objectid.sbn",
+      "package_relative_path": "输入数据\\shp\\深圳社区objectid.sbn",
+      "bytes": 6916,
+      "sha256": "21E076258AFBAE6548465A4978D1B8B02960CCED27233E72FC4B9935C8EF3EFC",
+      "source_matches_copy": true
+    },
+    {
+      "category": "输入数据",
+      "source_path": "D:\\多功能网络构建\\shp\\深圳社区objectid.sbx",
+      "package_relative_path": "输入数据\\shp\\深圳社区objectid.sbx",
+      "bytes": 596,
+      "sha256": "E7EFE0EE8BDBF43D744A54D4EEE036A045A3FABC5AA340D16C10536D8BE919AD",
+      "source_matches_copy": true
+    },
+    {
+      "category": "输入数据",
+      "source_path": "D:\\多功能网络构建\\shp\\深圳社区objectid.shp",
+      "package_relative_path": "输入数据\\shp\\深圳社区objectid.shp",
+      "bytes": 2385908,
+      "sha256": "2B9FA91217A6D86FFE516DBB954D6CF686B6BDE06ED95ADA61345EC1905BAC07",
+      "source_matches_copy": true
+    },
+    {
+      "category": "输入数据",
+      "source_path": "D:\\多功能网络构建\\shp\\深圳社区objectid.shx",
+      "package_relative_path": "输入数据\\shp\\深圳社区objectid.shx",
+      "bytes": 5428,
+      "sha256": "DE14DE28AE3FD8EC575563897575655CB9872E99F59F10E47E155CD57AA249C3",
+      "source_matches_copy": true
+    },
+    {
+      "category": "输入数据",
+      "source_path": "D:\\多功能网络构建\\等时圈\\等时圈wgs84拆分\\Shenzhen_人口重心\\深圳社区_联通人口重心result.cpg",
+      "package_relative_path": "输入数据\\等时圈\\等时圈wgs84拆分\\Shenzhen_人口重心\\深圳社区_联通人口重心result.cpg",
+      "bytes": 5,
+      "sha256": "3AD3031F5503A4404AF825262EE8232CC04D4EA6683D42C5DD0A2F2A27AC9824",
+      "source_matches_copy": true
+    },
+    {
+      "category": "输入数据",
+      "source_path": "D:\\多功能网络构建\\等时圈\\等时圈wgs84拆分\\Shenzhen_人口重心\\深圳社区_联通人口重心result.dbf",
+      "package_relative_path": "输入数据\\等时圈\\等时圈wgs84拆分\\Shenzhen_人口重心\\深圳社区_联通人口重心result.dbf",
+      "bytes": 216676,
+      "sha256": "45CFBFD53906B05FFB147109DB99B7A23EA2A8B9BBF78134BAAFA5BA04454057",
+      "source_matches_copy": true
+    },
+    {
+      "category": "输入数据",
+      "source_path": "D:\\多功能网络构建\\等时圈\\等时圈wgs84拆分\\Shenzhen_人口重心\\深圳社区_联通人口重心result.prj",
+      "package_relative_path": "输入数据\\等时圈\\等时圈wgs84拆分\\Shenzhen_人口重心\\深圳社区_联通人口重心result.prj",
+      "bytes": 145,
+      "sha256": "A02A27B1D1982C8516D83398E85A3C8B1AEF1713C13EF4D84D7BDE17430C07C4",
+      "source_matches_copy": true
+    },
+    {
+      "category": "输入数据",
+      "source_path": "D:\\多功能网络构建\\等时圈\\等时圈wgs84拆分\\Shenzhen_人口重心\\深圳社区_联通人口重心result.sbn",
+      "package_relative_path": "输入数据\\等时圈\\等时圈wgs84拆分\\Shenzhen_人口重心\\深圳社区_联通人口重心result.sbn",
+      "bytes": 6916,
+      "sha256": "FE84EA00348E8C17B36889230134995FB74394E80CC4B1B890E040A410D9AFBC",
+      "source_matches_copy": true
+    },
+    {
+      "category": "输入数据",
+      "source_path": "D:\\多功能网络构建\\等时圈\\等时圈wgs84拆分\\Shenzhen_人口重心\\深圳社区_联通人口重心result.sbx",
+      "package_relative_path": "输入数据\\等时圈\\等时圈wgs84拆分\\Shenzhen_人口重心\\深圳社区_联通人口重心result.sbx",
+      "bytes": 588,
+      "sha256": "E959E7E4D3EE661CD350B16612D248E8307EA514C1C25FEBE8DEC42E5B20A6C6",
+      "source_matches_copy": true
+    },
+    {
+      "category": "输入数据",
+      "source_path": "D:\\多功能网络构建\\等时圈\\等时圈wgs84拆分\\Shenzhen_人口重心\\深圳社区_联通人口重心result.shp",
+      "package_relative_path": "输入数据\\等时圈\\等时圈wgs84拆分\\Shenzhen_人口重心\\深圳社区_联通人口重心result.shp",
+      "bytes": 18748,
+      "sha256": "62541D933F6ABF3EA5C8EE0BB5CCDA1F186B27FD9CFC9A37C39D70E643211894",
+      "source_matches_copy": true
+    },
+    {
+      "category": "输入数据",
+      "source_path": "D:\\多功能网络构建\\等时圈\\等时圈wgs84拆分\\Shenzhen_人口重心\\深圳社区_联通人口重心result.shx",
+      "package_relative_path": "输入数据\\等时圈\\等时圈wgs84拆分\\Shenzhen_人口重心\\深圳社区_联通人口重心result.shx",
+      "bytes": 5428,
+      "sha256": "642C780F3BE2CEDC96B200CB0914E79DDD5A9B6D328CD058AFBCE607A4516572",
+      "source_matches_copy": true
+    },
+    {
+      "category": "输入数据",
+      "source_path": "D:\\多功能网络构建\\等时圈\\等时圈wgs84拆分\\Shenzhen_人口重心\\深圳社区_联通人口重心result.SQNAME.atx",
+      "package_relative_path": "输入数据\\等时圈\\等时圈wgs84拆分\\Shenzhen_人口重心\\深圳社区_联通人口重心result.SQNAME.atx",
+      "bytes": 14336,
+      "sha256": "CA803AE1CEECCCEFFAD7AE7FE7F7DC9D5C8AD628EC0956910F1762A57E042F79",
+      "source_matches_copy": true
+    },
+    {
+      "category": "输入数据",
+      "source_path": "D:\\多功能网络构建\\2018年11月非通勤出行\\网格_人口_社区\\网格_人口_社区\\深圳250m网格_人口_所在社区.cpg",
+      "package_relative_path": "输入数据\\2018年11月非通勤出行\\网格_人口_社区\\网格_人口_社区\\深圳250m网格_人口_所在社区.cpg",
+      "bytes": 5,
+      "sha256": "3AD3031F5503A4404AF825262EE8232CC04D4EA6683D42C5DD0A2F2A27AC9824",
+      "source_matches_copy": true
+    },
+    {
+      "category": "输入数据",
+      "source_path": "D:\\多功能网络构建\\2018年11月非通勤出行\\网格_人口_社区\\网格_人口_社区\\深圳250m网格_人口_所在社区.dbf",
+      "package_relative_path": "输入数据\\2018年11月非通勤出行\\网格_人口_社区\\网格_人口_社区\\深圳250m网格_人口_所在社区.dbf",
+      "bytes": 6015226,
+      "sha256": "FAF245BE7F2C16F6AC924B03D716B6A5D01E97B608CC0FC6CE62A36DA91FE269",
+      "source_matches_copy": true
+    },
+    {
+      "category": "输入数据",
+      "source_path": "D:\\多功能网络构建\\2018年11月非通勤出行\\网格_人口_社区\\网格_人口_社区\\深圳250m网格_人口_所在社区.prj",
+      "package_relative_path": "输入数据\\2018年11月非通勤出行\\网格_人口_社区\\网格_人口_社区\\深圳250m网格_人口_所在社区.prj",
+      "bytes": 145,
+      "sha256": "A02A27B1D1982C8516D83398E85A3C8B1AEF1713C13EF4D84D7BDE17430C07C4",
+      "source_matches_copy": true
+    },
+    {
+      "category": "输入数据",
+      "source_path": "D:\\多功能网络构建\\2018年11月非通勤出行\\网格_人口_社区\\网格_人口_社区\\深圳250m网格_人口_所在社区.sbn",
+      "package_relative_path": "输入数据\\2018年11月非通勤出行\\网格_人口_社区\\网格_人口_社区\\深圳250m网格_人口_所在社区.sbn",
+      "bytes": 441340,
+      "sha256": "78A77C4EE73F2D2CEEA6AD3810916CCD12F4F81A31FE44AB84AB21608C610D24",
+      "source_matches_copy": true
+    },
+    {
+      "category": "输入数据",
+      "source_path": "D:\\多功能网络构建\\2018年11月非通勤出行\\网格_人口_社区\\网格_人口_社区\\深圳250m网格_人口_所在社区.sbx",
+      "package_relative_path": "输入数据\\2018年11月非通勤出行\\网格_人口_社区\\网格_人口_社区\\深圳250m网格_人口_所在社区.sbx",
+      "bytes": 29716,
+      "sha256": "087952AFB189A30179F876634696A9758FB23A9E68B8172CDE71CAA6BF57594D",
+      "source_matches_copy": true
+    },
+    {
+      "category": "输入数据",
+      "source_path": "D:\\多功能网络构建\\2018年11月非通勤出行\\网格_人口_社区\\网格_人口_社区\\深圳250m网格_人口_所在社区.shp",
+      "package_relative_path": "输入数据\\2018年11月非通勤出行\\网格_人口_社区\\网格_人口_社区\\深圳250m网格_人口_所在社区.shp",
+      "bytes": 5885092,
+      "sha256": "99890F48A49CBBBEC3992A9A8EB96D3E675FBB99668CE21A60A704C0EA11FFFF",
+      "source_matches_copy": true
+    },
+    {
+      "category": "输入数据",
+      "source_path": "D:\\多功能网络构建\\2018年11月非通勤出行\\网格_人口_社区\\网格_人口_社区\\深圳250m网格_人口_所在社区.shx",
+      "package_relative_path": "输入数据\\2018年11月非通勤出行\\网格_人口_社区\\网格_人口_社区\\深圳250m网格_人口_所在社区.shx",
+      "bytes": 346276,
+      "sha256": "00BF6C047E527D5C70B0927858785C29C73957519FCCB9B47A9284BA48858A90",
+      "source_matches_copy": true
+    },
+    {
+      "category": "输入数据",
+      "source_path": "D:\\多功能网络构建\\26上实验\\medical_identification_validation\\results\\hospital_beds_year\\hospital_beds_amap_v3_all_2018_wgs84\\hospital_beds.cpg",
+      "package_relative_path": "输入数据\\26上实验\\medical_identification_validation\\results\\hospital_beds_year\\hospital_beds_amap_v3_all_2018_wgs84\\hospital_beds.cpg",
+      "bytes": 5,
+      "sha256": "3AD3031F5503A4404AF825262EE8232CC04D4EA6683D42C5DD0A2F2A27AC9824",
+      "source_matches_copy": true
+    },
+    {
+      "category": "输入数据",
+      "source_path": "D:\\多功能网络构建\\26上实验\\medical_identification_validation\\results\\hospital_beds_year\\hospital_beds_amap_v3_all_2018_wgs84\\hospital_beds.dbf",
+      "package_relative_path": "输入数据\\26上实验\\medical_identification_validation\\results\\hospital_beds_year\\hospital_beds_amap_v3_all_2018_wgs84\\hospital_beds.dbf",
+      "bytes": 58467,
+      "sha256": "272D0963B8EC2135E0D8DA70BCA49E51070E4773DE6FAD16FCA6C424428ED219",
+      "source_matches_copy": true
+    },
+    {
+      "category": "输入数据",
+      "source_path": "D:\\多功能网络构建\\26上实验\\medical_identification_validation\\results\\hospital_beds_year\\hospital_beds_amap_v3_all_2018_wgs84\\hospital_beds.prj",
+      "package_relative_path": "输入数据\\26上实验\\medical_identification_validation\\results\\hospital_beds_year\\hospital_beds_amap_v3_all_2018_wgs84\\hospital_beds.prj",
+      "bytes": 145,
+      "sha256": "A02A27B1D1982C8516D83398E85A3C8B1AEF1713C13EF4D84D7BDE17430C07C4",
+      "source_matches_copy": true
+    },
+    {
+      "category": "输入数据",
+      "source_path": "D:\\多功能网络构建\\26上实验\\medical_identification_validation\\results\\hospital_beds_year\\hospital_beds_amap_v3_all_2018_wgs84\\hospital_beds.shp",
+      "package_relative_path": "输入数据\\26上实验\\medical_identification_validation\\results\\hospital_beds_year\\hospital_beds_amap_v3_all_2018_wgs84\\hospital_beds.shp",
+      "bytes": 3992,
+      "sha256": "249528290FEFC24AC1B0510318AB75D125CC1A90F2F5E9DA3A4637A2E5D15DA3",
+      "source_matches_copy": true
+    },
+    {
+      "category": "输入数据",
+      "source_path": "D:\\多功能网络构建\\26上实验\\medical_identification_validation\\results\\hospital_beds_year\\hospital_beds_amap_v3_all_2018_wgs84\\hospital_beds.shx",
+      "package_relative_path": "输入数据\\26上实验\\medical_identification_validation\\results\\hospital_beds_year\\hospital_beds_amap_v3_all_2018_wgs84\\hospital_beds.shx",
+      "bytes": 1212,
+      "sha256": "A8D8AA14F6BB5EF0AFB09A9EAB79228999297A544B99041656EBFDA13E7D2856",
+      "source_matches_copy": true
+    },
+    {
+      "category": "输入数据",
+      "source_path": "D:\\多功能网络构建\\26上实验\\medical_identification_validation\\results\\chc_relocation\\2018年深圳CHC.csv",
+      "package_relative_path": "输入数据\\26上实验\\medical_identification_validation\\results\\chc_relocation\\2018年深圳CHC.csv",
+      "bytes": 227079,
+      "sha256": "66B5B5D40E2DAAD057ED4AD4F6C2B0EE106DDC37BBDC93F51CA5F8CE1908965F",
+      "source_matches_copy": true
+    },
+    {
+      "category": "输入数据",
+      "source_path": "D:\\多功能网络构建\\outputs\\道路预处理\\geofabrik_2019_01_01\\shenzhen_osm_roads_190101.gpkg",
+      "package_relative_path": "输入数据\\outputs\\道路预处理\\geofabrik_2019_01_01\\shenzhen_osm_roads_190101.gpkg",
+      "bytes": 70447104,
+      "sha256": "4456DC26BCA23CDD954FD3F947399C424683A50124F55CD363B5985AE8C02E00",
+      "source_matches_copy": true
+    },
+    {
+      "category": "输入数据",
+      "source_path": "D:\\多功能网络构建\\outputs\\道路预处理\\geofabrik_2019_01_01\\shenzhen_osm_roads_190101.json",
+      "package_relative_path": "输入数据\\outputs\\道路预处理\\geofabrik_2019_01_01\\shenzhen_osm_roads_190101.json",
+      "bytes": 1845,
+      "sha256": "8D1B07A06B02F8DFEEB84E6DE91CE3A6BE958028AB1937887854A963CE1307AE",
+      "source_matches_copy": true
+    },
+    {
+      "category": "代码",
+      "source_path": "D:\\多功能网络构建\\26上实验\\medical_identification_validation\\src\\calculate_supply_indicators_2018.py",
+      "package_relative_path": "代码\\26上实验\\medical_identification_validation\\src\\calculate_supply_indicators_2018.py",
+      "bytes": 51278,
+      "sha256": "813398C0876FC306243D6B9ABD2003CD9C705199F9C94416DBA00364567C4CE4",
+      "source_matches_copy": true
+    },
+    {
+      "category": "代码",
+      "source_path": "D:\\多功能网络构建\\26上实验\\medical_identification_validation\\src\\visualize_supply_spatial_distribution.py",
+      "package_relative_path": "代码\\26上实验\\medical_identification_validation\\src\\visualize_supply_spatial_distribution.py",
+      "bytes": 18048,
+      "sha256": "5F4F999918D56FDAA09ACF0F8CAB9D6E784442F37AC5A0BD16B1C9CFD28CC39D",
+      "source_matches_copy": true
+    },
+    {
+      "category": "代码",
+      "source_path": "D:\\多功能网络构建\\26上实验\\medical_identification_validation\\src\\highlight_supply_high_value_communities.py",
+      "package_relative_path": "代码\\26上实验\\medical_identification_validation\\src\\highlight_supply_high_value_communities.py",
+      "bytes": 6487,
+      "sha256": "2B2B34BC92EB03E7FCE435992C9E6DFD162334F363A851583D8956B7EAFE1BAA",
+      "source_matches_copy": true
+    },
+    {
+      "category": "代码",
+      "source_path": "C:\\Users\\lx554\\.codex\\skills\\nature-figure\\scripts\\audit_panel_alignment.py",
+      "package_relative_path": "代码\\26上实验\\medical_identification_validation\\src\\audit_panel_alignment.py",
+      "bytes": 39364,
+      "sha256": "43958E6B49D897F326FF64E73CBED0BF057E17C06533B5B57D3DEDEDF8111E76",
+      "source_matches_copy": true
+    },
+    {
+      "category": "输出结果",
+      "source_path": "D:\\多功能网络构建\\26上实验\\medical_identification_validation\\results\\supply_indicators_2018_osm_190101\\联通人口_九项医疗供给指标_2018.xlsx",
+      "package_relative_path": "输出结果\\supply_indicators_2018_osm_190101\\联通人口_九项医疗供给指标_2018.xlsx",
+      "bytes": 56466,
+      "sha256": "BC1171C309B8A32F51FF639DB6C3C7B8525E65F9224129C8D4B9E3445E3A77A0",
+      "source_matches_copy": true
+    },
+    {
+      "category": "输出结果",
+      "source_path": "D:\\多功能网络构建\\26上实验\\medical_identification_validation\\results\\supply_indicators_2018_osm_190101\\calculation_audit_2018_mobile_users.json",
+      "package_relative_path": "输出结果\\supply_indicators_2018_osm_190101\\calculation_audit_2018_mobile_users.json",
+      "bytes": 5509,
+      "sha256": "37C6C000F8D1C8717B84C8E2CB19354DDC8B7F24E9D6D6C669D75A08AC47DF1E",
+      "source_matches_copy": true
+    },
+    {
+      "category": "输出结果",
+      "source_path": "D:\\多功能网络构建\\26上实验\\medical_identification_validation\\results\\supply_indicators_2018_osm_190101\\calculation_audit_2018.json",
+      "package_relative_path": "输出结果\\supply_indicators_2018_osm_190101\\calculation_audit_2018.json",
+      "bytes": 5521,
+      "sha256": "7F16A722D336AD97D52CC103EDB8C0F70DAF586E1D88738F938CE02D70634163",
+      "source_matches_copy": true
+    },
+    {
+      "category": "输出结果",
+      "source_path": "D:\\多功能网络构建\\26上实验\\medical_identification_validation\\results\\supply_indicators_2018_osm_190101\\community_supply_indicators_2018_mobile_users.csv",
+      "package_relative_path": "输出结果\\supply_indicators_2018_osm_190101\\community_supply_indicators_2018_mobile_users.csv",
+      "bytes": 214908,
+      "sha256": "0A210EAACF49DA842C4897274D6316DB82F9E54A1312BF5342E17FDB461D9B07",
+      "source_matches_copy": true
+    },
+    {
+      "category": "输出结果",
+      "source_path": "D:\\多功能网络构建\\26上实验\\medical_identification_validation\\results\\supply_indicators_2018_osm_190101\\community_supply_indicators_2018_mobile_users.gpkg",
+      "package_relative_path": "输出结果\\supply_indicators_2018_osm_190101\\community_supply_indicators_2018_mobile_users.gpkg",
+      "bytes": 3178496,
+      "sha256": "439DD4D20B2D7839EB82E597B197B45140BB3E8EE0F47CFA1F59E315E8A8C586",
+      "source_matches_copy": true
+    },
+    {
+      "category": "输出结果",
+      "source_path": "D:\\多功能网络构建\\26上实验\\medical_identification_validation\\results\\supply_indicators_2018_osm_190101\\community_supply_indicators_2018.csv",
+      "package_relative_path": "输出结果\\supply_indicators_2018_osm_190101\\community_supply_indicators_2018.csv",
+      "bytes": 221664,
+      "sha256": "DB6C6184335F003142EA6471888B4858BB7C97B9CF45002AE0FD5C11CD7EDF7C",
+      "source_matches_copy": true
+    },
+    {
+      "category": "输出结果",
+      "source_path": "D:\\多功能网络构建\\26上实验\\medical_identification_validation\\results\\supply_indicators_2018_osm_190101\\community_supply_indicators_2018.gpkg",
+      "package_relative_path": "输出结果\\supply_indicators_2018_osm_190101\\community_supply_indicators_2018.gpkg",
+      "bytes": 3178496,
+      "sha256": "9FBCFE14D388C88894A03014647E75D1CB79762790D09E5B29DB4394DC9B3B6A",
+      "source_matches_copy": true
+    },
+    {
+      "category": "输出结果",
+      "source_path": "D:\\多功能网络构建\\26上实验\\medical_identification_validation\\results\\supply_indicators_2018_osm_190101\\facility_community_15min.csv",
+      "package_relative_path": "输出结果\\supply_indicators_2018_osm_190101\\facility_community_15min.csv",
+      "bytes": 212358,
+      "sha256": "DEF4378A0676E82AD9112F42405DB98A035FA54D3715AAA13501427B3E7E2D59",
+      "source_matches_copy": true
+    },
+    {
+      "category": "输出结果",
+      "source_path": "D:\\多功能网络构建\\26上实验\\medical_identification_validation\\results\\supply_indicators_2018_osm_190101\\facility_supply_audit_2018_mobile_users.csv",
+      "package_relative_path": "输出结果\\supply_indicators_2018_osm_190101\\facility_supply_audit_2018_mobile_users.csv",
+      "bytes": 237388,
+      "sha256": "E26ACC5E27010ED5D3E4488163472E8008844D32406BC388FB56FE2696FC3DF4",
+      "source_matches_copy": true
+    },
+    {
+      "category": "输出结果",
+      "source_path": "D:\\多功能网络构建\\26上实验\\medical_identification_validation\\results\\supply_indicators_2018_osm_190101\\facility_supply_audit_2018.csv",
+      "package_relative_path": "输出结果\\supply_indicators_2018_osm_190101\\facility_supply_audit_2018.csv",
+      "bytes": 245887,
+      "sha256": "88C81240CC44AC098A6EAC83EE3553C728F56D95BF0ACC918A48924B2F43BD11",
+      "source_matches_copy": true
+    },
+    {
+      "category": "输出结果",
+      "source_path": "D:\\多功能网络构建\\26上实验\\medical_identification_validation\\results\\supply_indicators_2018_osm_190101\\grid_supply_diagnostics_2018_mobile_users.csv",
+      "package_relative_path": "输出结果\\supply_indicators_2018_osm_190101\\grid_supply_diagnostics_2018_mobile_users.csv",
+      "bytes": 3546268,
+      "sha256": "0F910709873F0D787E532130465D01317980D67DD65D8100EC73538872F06534",
+      "source_matches_copy": true
+    },
+    {
+      "category": "输出结果",
+      "source_path": "D:\\多功能网络构建\\26上实验\\medical_identification_validation\\results\\supply_indicators_2018_osm_190101\\grid_supply_diagnostics_2018.csv",
+      "package_relative_path": "输出结果\\supply_indicators_2018_osm_190101\\grid_supply_diagnostics_2018.csv",
+      "bytes": 3711625,
+      "sha256": "8B03595219CAEF808BA0F79C1658E51826AB25A31819789935F008E6E497ABC9",
+      "source_matches_copy": true
+    },
+    {
+      "category": "输出结果",
+      "source_path": "D:\\多功能网络构建\\26上实验\\medical_identification_validation\\results\\supply_indicators_2018_osm_190101\\spatial_visualization\\高值与零值核查_2018.md",
+      "package_relative_path": "输出结果\\supply_indicators_2018_osm_190101\\spatial_visualization\\高值与零值核查_2018.md",
+      "bytes": 7717,
+      "sha256": "444D2F7359CCC4ADB327803528DBD93649B4FE51A03B6A7E18511A540070392E",
+      "source_matches_copy": true
+    },
+    {
+      "category": "输出结果",
+      "source_path": "D:\\多功能网络构建\\26上实验\\medical_identification_validation\\results\\supply_indicators_2018_osm_190101\\spatial_visualization\\空间分布合理性检查.md",
+      "package_relative_path": "输出结果\\supply_indicators_2018_osm_190101\\spatial_visualization\\空间分布合理性检查.md",
+      "bytes": 2281,
+      "sha256": "57BFD7B0F5F46C4AD0FA6BD0585769A9008E46E9FB2042A489443B57D923ABC0",
+      "source_matches_copy": true
+    },
+    {
+      "category": "输出结果",
+      "source_path": "D:\\多功能网络构建\\26上实验\\medical_identification_validation\\results\\supply_indicators_2018_osm_190101\\spatial_visualization\\figure_metadata.json",
+      "package_relative_path": "输出结果\\supply_indicators_2018_osm_190101\\spatial_visualization\\figure_metadata.json",
+      "bytes": 3519,
+      "sha256": "3B1C3365C37D789D90A79FFD45AA8AB8040E8D7A0E2EA65995C2FD2F4B56C92C",
+      "source_matches_copy": true
+    },
+    {
+      "category": "输出结果",
+      "source_path": "D:\\多功能网络构建\\26上实验\\medical_identification_validation\\results\\supply_indicators_2018_osm_190101\\spatial_visualization\\indicator_consistency_diagnostics.csv",
+      "package_relative_path": "输出结果\\supply_indicators_2018_osm_190101\\spatial_visualization\\indicator_consistency_diagnostics.csv",
+      "bytes": 549,
+      "sha256": "5C6B6848CE016F07569F5FDF2056B610ECACE375C80BF0FCD93A0619800D66C6",
+      "source_matches_copy": true
+    },
+    {
+      "category": "输出结果",
+      "source_path": "D:\\多功能网络构建\\26上实验\\medical_identification_validation\\results\\supply_indicators_2018_osm_190101\\spatial_visualization\\indicator_top5_communities.csv",
+      "package_relative_path": "输出结果\\supply_indicators_2018_osm_190101\\spatial_visualization\\indicator_top5_communities.csv",
+      "bytes": 2605,
+      "sha256": "051B6C40969084056DD531E117120325C568C6EF5E4270642DA503E80AFC2A99",
+      "source_matches_copy": true
+    },
+    {
+      "category": "输出结果",
+      "source_path": "D:\\多功能网络构建\\26上实验\\medical_identification_validation\\results\\supply_indicators_2018_osm_190101\\spatial_visualization\\spatial_autocorrelation_diagnostics.csv",
+      "package_relative_path": "输出结果\\supply_indicators_2018_osm_190101\\spatial_visualization\\spatial_autocorrelation_diagnostics.csv",
+      "bytes": 1014,
+      "sha256": "7F919688AD3CCBF8BEAEB90495DBC491F5005979654ADC9768EE31A1C690A43B",
+      "source_matches_copy": true
+    },
+    {
+      "category": "输出结果",
+      "source_path": "D:\\多功能网络构建\\26上实验\\medical_identification_validation\\results\\supply_indicators_2018_osm_190101\\spatial_visualization\\supply_spatial_distribution_highlights.alignment.json",
+      "package_relative_path": "输出结果\\supply_indicators_2018_osm_190101\\spatial_visualization\\supply_spatial_distribution_highlights.alignment.json",
+      "bytes": 5602,
+      "sha256": "F3557522FEA98EC217B6E98F18EEE58DF4B09CA3AC213158FFA4910FEBF0E333",
+      "source_matches_copy": true
+    },
+    {
+      "category": "输出结果",
+      "source_path": "D:\\多功能网络构建\\26上实验\\medical_identification_validation\\results\\supply_indicators_2018_osm_190101\\spatial_visualization\\supply_spatial_distribution_highlights.alignment.svg",
+      "package_relative_path": "输出结果\\supply_indicators_2018_osm_190101\\spatial_visualization\\supply_spatial_distribution_highlights.alignment.svg",
+      "bytes": 2229,
+      "sha256": "A89041756302748EC5F027241775E090675F0ED8D20E7F85475DEEC06AAAD1B5",
+      "source_matches_copy": true
+    },
+    {
+      "category": "输出结果",
+      "source_path": "D:\\多功能网络构建\\26上实验\\medical_identification_validation\\results\\supply_indicators_2018_osm_190101\\spatial_visualization\\supply_spatial_distribution_highlights.collision-audit.json",
+      "package_relative_path": "输出结果\\supply_indicators_2018_osm_190101\\spatial_visualization\\supply_spatial_distribution_highlights.collision-audit.json",
+      "bytes": 679,
+      "sha256": "B22E3251199CCB150502185F1CFFF08E9D3981146792E78DB16002E7776B975E",
+      "source_matches_copy": true
+    },
+    {
+      "category": "输出结果",
+      "source_path": "D:\\多功能网络构建\\26上实验\\medical_identification_validation\\results\\supply_indicators_2018_osm_190101\\spatial_visualization\\supply_spatial_distribution_highlights.csv",
+      "package_relative_path": "输出结果\\supply_indicators_2018_osm_190101\\spatial_visualization\\supply_spatial_distribution_highlights.csv",
+      "bytes": 2383,
+      "sha256": "093A79FA606926FAAD0FFA08112D820E37E45E33F5EB8F52C98A7FEFE97861C5",
+      "source_matches_copy": true
+    },
+    {
+      "category": "输出结果",
+      "source_path": "D:\\多功能网络构建\\26上实验\\medical_identification_validation\\results\\supply_indicators_2018_osm_190101\\spatial_visualization\\supply_spatial_distribution_highlights.pdf",
+      "package_relative_path": "输出结果\\supply_indicators_2018_osm_190101\\spatial_visualization\\supply_spatial_distribution_highlights.pdf",
+      "bytes": 14274533,
+      "sha256": "E960F79FEAD8629BF154DBB3DE55D221D6DB2E7382994559521C791052C20F08",
+      "source_matches_copy": true
+    },
+    {
+      "category": "输出结果",
+      "source_path": "D:\\多功能网络构建\\26上实验\\medical_identification_validation\\results\\supply_indicators_2018_osm_190101\\spatial_visualization\\supply_spatial_distribution_highlights.png",
+      "package_relative_path": "输出结果\\supply_indicators_2018_osm_190101\\spatial_visualization\\supply_spatial_distribution_highlights.png",
+      "bytes": 1494074,
+      "sha256": "1ACD000F396B766F2FE38112D74891D753CAF01FDA0BE9F282D58FB0C30EFE53",
+      "source_matches_copy": true
+    },
+    {
+      "category": "输出结果",
+      "source_path": "D:\\多功能网络构建\\26上实验\\medical_identification_validation\\results\\supply_indicators_2018_osm_190101\\spatial_visualization\\supply_spatial_distribution_highlights.svg",
+      "package_relative_path": "输出结果\\supply_indicators_2018_osm_190101\\spatial_visualization\\supply_spatial_distribution_highlights.svg",
+      "bytes": 51745703,
+      "sha256": "05B20FEE1A0D7AFD4FE155044333FA177A4693F2A8632CCE87C56878F8E4D0F5",
+      "source_matches_copy": true
+    },
+    {
+      "category": "输出结果",
+      "source_path": "D:\\多功能网络构建\\26上实验\\medical_identification_validation\\results\\supply_indicators_2018_osm_190101\\spatial_visualization\\supply_spatial_distribution.alignment.json",
+      "package_relative_path": "输出结果\\supply_indicators_2018_osm_190101\\spatial_visualization\\supply_spatial_distribution.alignment.json",
+      "bytes": 5609,
+      "sha256": "7B8953DC65ECE932E4A2CAEBEAD9EC327FFE83535DA4099A3B3594EA53CB2E81",
+      "source_matches_copy": true
+    },
+    {
+      "category": "输出结果",
+      "source_path": "D:\\多功能网络构建\\26上实验\\medical_identification_validation\\results\\supply_indicators_2018_osm_190101\\spatial_visualization\\supply_spatial_distribution.alignment.svg",
+      "package_relative_path": "输出结果\\supply_indicators_2018_osm_190101\\spatial_visualization\\supply_spatial_distribution.alignment.svg",
+      "bytes": 2229,
+      "sha256": "021197A71940DCF35A8EC847F0BAFEA80C00020629F15736B2C2AF8CB6192F1F",
+      "source_matches_copy": true
+    },
+    {
+      "category": "输出结果",
+      "source_path": "D:\\多功能网络构建\\26上实验\\medical_identification_validation\\results\\supply_indicators_2018_osm_190101\\spatial_visualization\\supply_spatial_distribution.collision-audit.json",
+      "package_relative_path": "输出结果\\supply_indicators_2018_osm_190101\\spatial_visualization\\supply_spatial_distribution.collision-audit.json",
+      "bytes": 668,
+      "sha256": "ECFBC762F18986B1F01BAB043250B590337BB4410B6400A9F4D116C7F6A61CCB",
+      "source_matches_copy": true
+    },
+    {
+      "category": "输出结果",
+      "source_path": "D:\\多功能网络构建\\26上实验\\medical_identification_validation\\results\\supply_indicators_2018_osm_190101\\spatial_visualization\\supply_spatial_distribution.pdf",
+      "package_relative_path": "输出结果\\supply_indicators_2018_osm_190101\\spatial_visualization\\supply_spatial_distribution.pdf",
+      "bytes": 14246726,
+      "sha256": "19BA71448F1A78AF6192E585E2327BC13F1C3ACF021B7D5EE22D1AB09DB6CEB4",
+      "source_matches_copy": true
+    },
+    {
+      "category": "输出结果",
+      "source_path": "D:\\多功能网络构建\\26上实验\\medical_identification_validation\\results\\supply_indicators_2018_osm_190101\\spatial_visualization\\supply_spatial_distribution.png",
+      "package_relative_path": "输出结果\\supply_indicators_2018_osm_190101\\spatial_visualization\\supply_spatial_distribution.png",
+      "bytes": 1480194,
+      "sha256": "D6BDA44AD04E69E5DD72522F11B3ACCC22B82CA3D9C8F1740FF955EC2968AB63",
+      "source_matches_copy": true
+    },
+    {
+      "category": "输出结果",
+      "source_path": "D:\\多功能网络构建\\26上实验\\medical_identification_validation\\results\\supply_indicators_2018_osm_190101\\spatial_visualization\\supply_spatial_distribution.svg",
+      "package_relative_path": "输出结果\\supply_indicators_2018_osm_190101\\spatial_visualization\\supply_spatial_distribution.svg",
+      "bytes": 51708667,
+      "sha256": "B193091068868892D3FC8322FAB95DFA4E06C71D039111415D0B34B422FB2AD0",
+      "source_matches_copy": true
+    },
+    {
+      "category": "输出结果",
+      "source_path": "D:\\多功能网络构建\\26上实验\\medical_identification_validation\\results\\supply_indicators_2018_osm_190101\\spatial_visualization\\supply_spatial_distribution.tiff",
+      "package_relative_path": "输出结果\\supply_indicators_2018_osm_190101\\spatial_visualization\\supply_spatial_distribution.tiff",
+      "bytes": 61701806,
+      "sha256": "38FD3B2525DEE92D9DC808EDB0C13CD10194F92DC9CBB11666C86E59BE3C3F84",
+      "source_matches_copy": true
+    },
+    {
+      "category": "输出结果",
+      "source_path": "D:\\多功能网络构建\\26上实验\\medical_identification_validation\\results\\supply_indicators_2018_osm_190101\\spatial_visualization_mobile_users\\空间分布合理性检查.md",
+      "package_relative_path": "输出结果\\supply_indicators_2018_osm_190101\\spatial_visualization_mobile_users\\空间分布合理性检查.md",
+      "bytes": 2275,
+      "sha256": "ED80AE6211A5944252BF037CFF254F2F6E9C92753DEDA13CCEAD36F4552109CE",
+      "source_matches_copy": true
+    },
+    {
+      "category": "输出结果",
+      "source_path": "D:\\多功能网络构建\\26上实验\\medical_identification_validation\\results\\supply_indicators_2018_osm_190101\\spatial_visualization_mobile_users\\figure_metadata.json",
+      "package_relative_path": "输出结果\\supply_indicators_2018_osm_190101\\spatial_visualization_mobile_users\\figure_metadata.json",
+      "bytes": 3510,
+      "sha256": "37C99FD0BEFF48E493CF351001F1021354A0A4FACA8F1F2AA8D5F7EAAC51EA05",
+      "source_matches_copy": true
+    },
+    {
+      "category": "输出结果",
+      "source_path": "D:\\多功能网络构建\\26上实验\\medical_identification_validation\\results\\supply_indicators_2018_osm_190101\\spatial_visualization_mobile_users\\indicator_consistency_diagnostics.csv",
+      "package_relative_path": "输出结果\\supply_indicators_2018_osm_190101\\spatial_visualization_mobile_users\\indicator_consistency_diagnostics.csv",
+      "bytes": 547,
+      "sha256": "D2EFF60FF24BA38822889ACB26A34DE4020EE2F9F846ECBC618681209F3A6D52",
+      "source_matches_copy": true
+    },
+    {
+      "category": "输出结果",
+      "source_path": "D:\\多功能网络构建\\26上实验\\medical_identification_validation\\results\\supply_indicators_2018_osm_190101\\spatial_visualization_mobile_users\\indicator_top5_communities.csv",
+      "package_relative_path": "输出结果\\supply_indicators_2018_osm_190101\\spatial_visualization_mobile_users\\indicator_top5_communities.csv",
+      "bytes": 2165,
+      "sha256": "80003923F817A74DC4F1350957C1F114FA7416DE568EFDF67818A8A153FD61FF",
+      "source_matches_copy": true
+    },
+    {
+      "category": "输出结果",
+      "source_path": "D:\\多功能网络构建\\26上实验\\medical_identification_validation\\results\\supply_indicators_2018_osm_190101\\spatial_visualization_mobile_users\\spatial_autocorrelation_diagnostics.csv",
+      "package_relative_path": "输出结果\\supply_indicators_2018_osm_190101\\spatial_visualization_mobile_users\\spatial_autocorrelation_diagnostics.csv",
+      "bytes": 1006,
+      "sha256": "71D96154975E5A62F63FFA43E25FDCB7E277EC028DD371ED31B5AC5C683E51E5",
+      "source_matches_copy": true
+    },
+    {
+      "category": "输出结果",
+      "source_path": "D:\\多功能网络构建\\26上实验\\medical_identification_validation\\results\\supply_indicators_2018_osm_190101\\spatial_visualization_mobile_users\\supply_spatial_distribution_highlights.alignment.json",
+      "package_relative_path": "输出结果\\supply_indicators_2018_osm_190101\\spatial_visualization_mobile_users\\supply_spatial_distribution_highlights.alignment.json",
+      "bytes": 5602,
+      "sha256": "F3557522FEA98EC217B6E98F18EEE58DF4B09CA3AC213158FFA4910FEBF0E333",
+      "source_matches_copy": true
+    },
+    {
+      "category": "输出结果",
+      "source_path": "D:\\多功能网络构建\\26上实验\\medical_identification_validation\\results\\supply_indicators_2018_osm_190101\\spatial_visualization_mobile_users\\supply_spatial_distribution_highlights.alignment.svg",
+      "package_relative_path": "输出结果\\supply_indicators_2018_osm_190101\\spatial_visualization_mobile_users\\supply_spatial_distribution_highlights.alignment.svg",
+      "bytes": 2229,
+      "sha256": "A89041756302748EC5F027241775E090675F0ED8D20E7F85475DEEC06AAAD1B5",
+      "source_matches_copy": true
+    },
+    {
+      "category": "输出结果",
+      "source_path": "D:\\多功能网络构建\\26上实验\\medical_identification_validation\\results\\supply_indicators_2018_osm_190101\\spatial_visualization_mobile_users\\supply_spatial_distribution_highlights.collision-audit.json",
+      "package_relative_path": "输出结果\\supply_indicators_2018_osm_190101\\spatial_visualization_mobile_users\\supply_spatial_distribution_highlights.collision-audit.json",
+      "bytes": 692,
+      "sha256": "2BCBAC5F771D758906E5E37D843F28E03E4B62DAD3948224558E37FE78FCFD85",
+      "source_matches_copy": true
+    },
+    {
+      "category": "输出结果",
+      "source_path": "D:\\多功能网络构建\\26上实验\\medical_identification_validation\\results\\supply_indicators_2018_osm_190101\\spatial_visualization_mobile_users\\supply_spatial_distribution_highlights.csv",
+      "package_relative_path": "输出结果\\supply_indicators_2018_osm_190101\\spatial_visualization_mobile_users\\supply_spatial_distribution_highlights.csv",
+      "bytes": 2237,
+      "sha256": "B5FF7FD2A718DC9759B49D5594CD083D72E0F7C855A813D9F8AA228085B09480",
+      "source_matches_copy": true
+    },
+    {
+      "category": "输出结果",
+      "source_path": "D:\\多功能网络构建\\26上实验\\medical_identification_validation\\results\\supply_indicators_2018_osm_190101\\spatial_visualization_mobile_users\\supply_spatial_distribution_highlights.pdf",
+      "package_relative_path": "输出结果\\supply_indicators_2018_osm_190101\\spatial_visualization_mobile_users\\supply_spatial_distribution_highlights.pdf",
+      "bytes": 14275292,
+      "sha256": "6160F94442222B79B5FB1C01907D1E65CE2F309EA60EADD37108A14D4B6DCFB6",
+      "source_matches_copy": true
+    },
+    {
+      "category": "输出结果",
+      "source_path": "D:\\多功能网络构建\\26上实验\\medical_identification_validation\\results\\supply_indicators_2018_osm_190101\\spatial_visualization_mobile_users\\supply_spatial_distribution_highlights.png",
+      "package_relative_path": "输出结果\\supply_indicators_2018_osm_190101\\spatial_visualization_mobile_users\\supply_spatial_distribution_highlights.png",
+      "bytes": 1494499,
+      "sha256": "1031859CED2505670BE268FEE7FACDD1FE2DCE1301A332D6ABA1F5148BEC7531",
+      "source_matches_copy": true
+    },
+    {
+      "category": "输出结果",
+      "source_path": "D:\\多功能网络构建\\26上实验\\medical_identification_validation\\results\\supply_indicators_2018_osm_190101\\spatial_visualization_mobile_users\\supply_spatial_distribution_highlights.svg",
+      "package_relative_path": "输出结果\\supply_indicators_2018_osm_190101\\spatial_visualization_mobile_users\\supply_spatial_distribution_highlights.svg",
+      "bytes": 51745698,
+      "sha256": "0DFF3C3B49ADA878C812BBA2F000579A3243FB93B0B54D17C347C68F189AE845",
+      "source_matches_copy": true
+    },
+    {
+      "category": "输出结果",
+      "source_path": "D:\\多功能网络构建\\26上实验\\medical_identification_validation\\results\\supply_indicators_2018_osm_190101\\spatial_visualization_mobile_users\\supply_spatial_distribution.alignment.json",
+      "package_relative_path": "输出结果\\supply_indicators_2018_osm_190101\\spatial_visualization_mobile_users\\supply_spatial_distribution.alignment.json",
+      "bytes": 5609,
+      "sha256": "7B8953DC65ECE932E4A2CAEBEAD9EC327FFE83535DA4099A3B3594EA53CB2E81",
+      "source_matches_copy": true
+    },
+    {
+      "category": "输出结果",
+      "source_path": "D:\\多功能网络构建\\26上实验\\medical_identification_validation\\results\\supply_indicators_2018_osm_190101\\spatial_visualization_mobile_users\\supply_spatial_distribution.alignment.svg",
+      "package_relative_path": "输出结果\\supply_indicators_2018_osm_190101\\spatial_visualization_mobile_users\\supply_spatial_distribution.alignment.svg",
+      "bytes": 2229,
+      "sha256": "021197A71940DCF35A8EC847F0BAFEA80C00020629F15736B2C2AF8CB6192F1F",
+      "source_matches_copy": true
+    },
+    {
+      "category": "输出结果",
+      "source_path": "D:\\多功能网络构建\\26上实验\\medical_identification_validation\\results\\supply_indicators_2018_osm_190101\\spatial_visualization_mobile_users\\supply_spatial_distribution.collision-audit.json",
+      "package_relative_path": "输出结果\\supply_indicators_2018_osm_190101\\spatial_visualization_mobile_users\\supply_spatial_distribution.collision-audit.json",
+      "bytes": 681,
+      "sha256": "CCF10BA5054430722F82F9D5E27DB790E2E1D9255114F6FE6DCD3275A76DC3ED",
+      "source_matches_copy": true
+    },
+    {
+      "category": "输出结果",
+      "source_path": "D:\\多功能网络构建\\26上实验\\medical_identification_validation\\results\\supply_indicators_2018_osm_190101\\spatial_visualization_mobile_users\\supply_spatial_distribution.pdf",
+      "package_relative_path": "输出结果\\supply_indicators_2018_osm_190101\\spatial_visualization_mobile_users\\supply_spatial_distribution.pdf",
+      "bytes": 14247453,
+      "sha256": "E034CBE45C528533A4AAAAFB7B182DE9A1D07550ED1E6659728D90821B68CFD6",
+      "source_matches_copy": true
+    },
+    {
+      "category": "输出结果",
+      "source_path": "D:\\多功能网络构建\\26上实验\\medical_identification_validation\\results\\supply_indicators_2018_osm_190101\\spatial_visualization_mobile_users\\supply_spatial_distribution.png",
+      "package_relative_path": "输出结果\\supply_indicators_2018_osm_190101\\spatial_visualization_mobile_users\\supply_spatial_distribution.png",
+      "bytes": 1480894,
+      "sha256": "7CC7225AEB76AC267DA4001EA705041BFA818643F5BFACBFE7B5B0EB360D7A2F",
+      "source_matches_copy": true
+    },
+    {
+      "category": "输出结果",
+      "source_path": "D:\\多功能网络构建\\26上实验\\medical_identification_validation\\results\\supply_indicators_2018_osm_190101\\spatial_visualization_mobile_users\\supply_spatial_distribution.svg",
+      "package_relative_path": "输出结果\\supply_indicators_2018_osm_190101\\spatial_visualization_mobile_users\\supply_spatial_distribution.svg",
+      "bytes": 51708662,
+      "sha256": "C92F24C7808F2C2112E6C5A0ABC9A4BBA85F2BC8EF8ACD184631111AED1033F8",
+      "source_matches_copy": true
+    },
+    {
+      "category": "输出结果",
+      "source_path": "D:\\多功能网络构建\\26上实验\\medical_identification_validation\\results\\supply_indicators_2018_osm_190101\\spatial_visualization_mobile_users\\supply_spatial_distribution.tiff",
+      "package_relative_path": "输出结果\\supply_indicators_2018_osm_190101\\spatial_visualization_mobile_users\\supply_spatial_distribution.tiff",
+      "bytes": 61701806,
+      "sha256": "1C1037CFF1FC30A4AC036AB33E89C1CE841B000E033B45364522CB7A03B7C59D",
+      "source_matches_copy": true
+    }
+  ]
+}

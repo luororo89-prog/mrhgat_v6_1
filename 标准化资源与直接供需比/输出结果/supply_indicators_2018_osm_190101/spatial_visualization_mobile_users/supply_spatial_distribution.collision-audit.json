@@ -1,0 +1,23 @@
+{
+  "pdf": "D:\\多功能网络构建\\26上实验\\medical_identification_validation\\results\\supply_indicators_2018_osm_190101\\spatial_visualization_mobile_users\\supply_spatial_distribution.pdf",
+  "auditable": true,
+  "verdict": "PASS",
+  "page_count": 1,
+  "visible_text_box_count": 76,
+  "text_trace_count": 76,
+  "stroke_path_count": 52277,
+  "filled_region_count": 6887,
+  "image_region_count": 0,
+  "summary": {
+    "fail": 0,
+    "warn": 0,
+    "contained_fill_overlays": 0,
+    "contained_image_overlays": 0
+  },
+  "thresholds": {
+    "text_inset_pt": 0.6,
+    "min_overlap_ratio": 0.05,
+    "clipping_tolerance_pt": 0.5
+  },
+  "findings": []
+}
