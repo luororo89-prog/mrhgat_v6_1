@@ -62,5 +62,8 @@ def load_labels(path, g):
     k = a['mechanism'].map({m: c for c, m in enumerate(MECHANISMS)}).to_numpy()
     f = g['W'][o, d]
     keep = (f > 0) & (o != d)
-    return {'origin': o[keep], 'dest': d[keep], 'mech': k[keep], 'flow': f[keep],
-            'confidence': a['confidence'].to_numpy()[keep], 'dropped_below_threshold': int((~keep).sum())}
+    out = {'origin': o[keep], 'dest': d[keep], 'mech': k[keep], 'flow': f[keep],
+           'confidence': a['confidence'].to_numpy()[keep], 'dropped_below_threshold': int((~keep).sum())}
+    if 'outer_fold' in a:
+        out['fold'] = a['outer_fold'].to_numpy()[keep]
+    return out
