@@ -1,0 +1,78 @@
+{
+  "band": 0.1,
+  "min_share": 0.1,
+  "solver_status": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+  "mip_gap": 0.0,
+  "cells": 43272,
+  "cells_changed": 141,
+  "changed_assigned_share_quantiles": {
+    "0.0": 0.159,
+    "0.1": 0.271,
+    "0.5": 0.423,
+    "0.9": 0.489,
+    "1.0": 0.5
+  },
+  "changed_share_lt_0.3": 21,
+  "max_area": {
+    "misplaced_km2": 119.621,
+    "ratio_quantiles": {
+      "0.0": 0.398,
+      "0.05": 0.804,
+      "0.5": 1.0,
+      "0.95": 1.147,
+      "1.0": 1.965
+    },
+    "ratio_lt_0.8": 33,
+    "ratio_gt_1.2": 18,
+    "outside_allowed": 135,
+    "mean_abs_dev": 0.0683,
+    "offset_ratio_quantiles": {
+      "0.0": 0.0,
+      "0.05": 0.069,
+      "0.5": 0.222,
+      "0.95": 0.586,
+      "1.0": 0.993
+    },
+    "one_grid": 7,
+    "multi_part_communities": 108,
+    "core_small_n": 88,
+    "core_small_ratio_range": [
+      0.398,
+      1.965
+    ],
+    "core_small_mean_abs_dev": 0.2019,
+    "core_small_offset_ratio_median": 0.478,
+    "core_small_own_area_covered_median": 0.742
+  },
+  "assigned": {
+    "misplaced_km2": 120.465,
+    "ratio_quantiles": {
+      "0.0": 0.812,
+      "0.05": 0.916,
+      "0.5": 1.0,
+      "0.95": 1.087,
+      "1.0": 1.194
+    },
+    "ratio_lt_0.8": 0,
+    "ratio_gt_1.2": 0,
+    "outside_allowed": 0,
+    "mean_abs_dev": 0.0373,
+    "offset_ratio_quantiles": {
+      "0.0": 0.0,
+      "0.05": 0.069,
+      "0.5": 0.227,
+      "0.95": 0.602,
+      "1.0": 1.3
+    },
+    "one_grid": 0,
+    "multi_part_communities": 104,
+    "core_small_n": 88,
+    "core_small_ratio_range": [
+      0.812,
+      1.194
+    ],
+    "core_small_mean_abs_dev": 0.0722,
+    "core_small_offset_ratio_median": 0.526,
+    "core_small_own_area_covered_median": 0.748
+  }
+}

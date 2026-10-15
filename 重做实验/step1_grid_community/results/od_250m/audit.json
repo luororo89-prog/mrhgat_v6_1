@@ -1,0 +1,76 @@
+{
+  "od_records": 810338,
+  "od_trips": 1850158,
+  "grid250_cells": 43272,
+  "grid250_outside_grid500": 476,
+  "grid500_children_count": {
+    "1": 11,
+    "2": 151,
+    "3": 181,
+    "4": 10485
+  },
+  "origin_grids": 7960,
+  "origin_grids_by_basis": {
+    "250m_population": 6812,
+    "250m_area": 1146,
+    "500m_one_to_one": 2
+  },
+  "origin_trips_by_basis": {
+    "250m_population": 1830109,
+    "250m_area": 19824,
+    "500m_one_to_one": 225
+  },
+  "origin_grids_split_to_multi_community": 2533,
+  "destination_grids": 1623,
+  "destination_grids_by_basis": {
+    "250m_area": 1623
+  },
+  "destination_trips_by_basis": {
+    "250m_area": 1850158
+  },
+  "destination_grids_split_to_multi_community": 654,
+  "assigned_trips": 1850158,
+  "self_trips": 40010,
+  "self_share": 0.021625180119751935,
+  "nonzero_od_pairs": 244084,
+  "community_zero_out": 1,
+  "community_zero_in": 50,
+  "community_out_lt1_fraction": 1,
+  "community_in_lt1_fraction": 50,
+  "community_out_quantiles": {
+    "0.0": 0.0,
+    "0.05": 191.0,
+    "0.25": 914.25,
+    "0.5": 2006.0,
+    "0.75": 4002.5,
+    "0.95": 7482.5,
+    "1.0": 23658.0
+  },
+  "community_in_quantiles": {
+    "0.0": 0.0,
+    "0.05": 0.0,
+    "0.25": 652.5,
+    "0.5": 1787.0,
+    "0.75": 4133.5,
+    "0.95": 8053.5,
+    "1.0": 20815.0
+  },
+  "former_zero_grid500_communities": 32,
+  "former_zero_grid500_out_trips_min_median": [
+    3,
+    575.5
+  ],
+  "former_zero_grid500_in_trips_min_median": [
+    0,
+    569.5
+  ],
+  "community_n_grid250_quantiles": {
+    "0.0": 1.0,
+    "0.05": 3.0,
+    "0.25": 9.0,
+    "0.5": 27.0,
+    "0.75": 86.0,
+    "0.95": 241.25,
+    "1.0": 718.0
+  }
+}

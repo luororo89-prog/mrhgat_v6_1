@@ -1,0 +1,3 @@
+﻿in_any_life_circle,社康数,share_林地,share_灌木,share_草地,share_耕地,share_建设用地,share_裸地,share_水体,share_草本湿地,share_红树林,dist_to_populated_grid_centre_m,dist_to_own_community_centre_m
+不在任何生活圈内,131,0.155,0.0,0.001,0.012,0.601,0.102,0.0,0.0,0.0,90.643,1093.501
+在某个生活圈内,780,0.104,0.0,0.0,0.004,0.793,0.047,0.0,0.0,0.0,84.589,416.524
