@@ -1,0 +1,57 @@
+{
+  "seeds": [
+    0,
+    1,
+    2
+  ],
+  "torch_version": "2.5.1+cpu",
+  "threads": 8,
+  "variants": {
+    "fix1": [
+      true,
+      false
+    ]
+  },
+  "loss": "origin-normalized flow CE + Adam coupled L2",
+  "selection": "minimum validation CE with unchanged early stopping",
+  "baseline_reused": false,
+  "data_sha256": {
+    "重做实验/step4_v13_input/supply_v13.xlsx": "5dafd29889255ab7abad601a32283eddd9b5afea14009395dc229a8146744d6b",
+    "重做实验/step4_v13_input/network_d0.25.csv": "70112da0310145496617ee5db3b3f2b70c614f60d0f4cc738f073dbcc0cda7af",
+    "重做实验/step4_v13_input/topology_pairs_d0.25.csv": "b7b9fd4318c7a0d46f8f6297fb452e836414e8ecc19051a4b9373ab226d4e4cd",
+    "data/processed/road_walk_km_osm190101.npz": "afa005a58f43855e37f02b758b4e8cb0ccad7538bd6cc4639a1b862e54d7b33e",
+    "重做实验/step4_v13_input/node_typing/ruler.json": "53ff0406dda1583264a01218fc18a034f31d16af6d2eda094211743bbd354dcb"
+  },
+  "notes": [
+    "Only fix1 is selected by the published config.",
+    "Five routing layers, seven iterations, two channels of 32 dimensions.",
+    "Layer 1 and the OD-pair prediction head retain the original pair mappings.",
+    "Layers 2 through 5 use independently optimized half-identity pair mappings.",
+    "The prediction head, pressure terms, attention, topology and distance are unchanged.",
+    "No residual, auxiliary loss or cross-seed consistency loss is added.",
+    "Three seeds were trained in the four-way experiment; compact results are selected unchanged.",
+    "Training source hashes describe the original experiment implementation.",
+    "Published source omits unused head ablations and selects fix1; all three checkpoint outputs are replay-verified.",
+    "Test CE/CPC/NRMSE are conditional hidden nonself destination metrics.",
+    "CPC/NRMSE use supplied hidden-origin totals, not predicted totals.",
+    "Large checkpoints, score arrays and edge consensus remain in the delivered experiment archive."
+  ],
+  "training_source_sha256": {
+    "model_v13.py": "24ea68d7d64f59f1c8ad771a9f6cc4d811750347a49cd1123e64799c7ee56bc1",
+    "model_od_relation_v13.py": "28144f4ee6f0e735a818d0a54bb78b8d98eb47ed1d0a0dfdccb54b233c76b940",
+    "run_od_relation_v13.py": "5135875184449aa3a688e9dede9e4dad546aa202b65791fb266b67c8888f9c50",
+    "model_od_ablation_v13.py": "88fbd6ccf5ebe83d7d86d3ff7d17901dc9bd48521810dceb924ee5ebc36fb661",
+    "run_od_ablation_v13.py": "913acf8eac262894a83cc7eed2876525afbdc2ba0b03eba1121fd20c95a6e7f5"
+  },
+  "published_source_sha256": {
+    "5lineb/v13_geoflow/configs/redo_d0.25_od_ablation_v13.yaml": "513b0ed9cff62602a3ebb223e7092cc86ef1fc607dc6d911e048d6d7fab90de3",
+    "5lineb/v13_geoflow/configs/redo_d0.25_od_relation_v13.yaml": "d95795358513cb64163312fecd025d7d3bb71667c1b3aa67e33076494976f1c8",
+    "5lineb/v13_geoflow/model_od_ablation_v13.py": "977b6d03a0d8f545bcc60d5b448bab7a3d54ff79354f53d81dc5a85d5d1c8252",
+    "5lineb/v13_geoflow/model_od_relation_v13.py": "28144f4ee6f0e735a818d0a54bb78b8d98eb47ed1d0a0dfdccb54b233c76b940",
+    "5lineb/v13_geoflow/model_v13.py": "24ea68d7d64f59f1c8ad771a9f6cc4d811750347a49cd1123e64799c7ee56bc1",
+    "5lineb/v13_geoflow/run_od_ablation_v13.py": "d41145025c9d1d0f23d9b34fddc33ce02db78f2c3689e615b133d9782c1a097e",
+    "5lineb/v13_geoflow/run_od_relation_v13.py": "5135875184449aa3a688e9dede9e4dad546aa202b65791fb266b67c8888f9c50",
+    "5lineb/v13_geoflow/tests/test_od_ablation_v13.py": "e5fb6136eee9bdb547e89c3d2dfc018f1ee125b3dce2cbf8be8c34f7fb973028",
+    "5lineb/v13_geoflow/tests/test_od_relation_v13.py": "857754e2724738008f0171d6e70938dedc6a2e1ef1237fe93441ac8e0af6b262"
+  }
+}

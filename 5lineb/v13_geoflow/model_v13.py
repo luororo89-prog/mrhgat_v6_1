@@ -83,6 +83,13 @@ score_AB = log(sum_k q_AB,k p_AB,k) - softplus(beta) t_AB + B0[topology_AB] (sim
 with consistency_sim the destination similarity of the channels is added back, + sum_k p_AB,k h_B,k . h_A,k / tau_k.
 With rule_distance the distance term - softplus(beta_k) t_AB of every channel rule is kept next to the topology offset
 (t the road impedance when road_impedance is given).
+With od_pair_head, a candidate's supply pair is compared separately with the origin's aggregated channels,
+       e_AB,k = l2(zr_A,k W_o,k + zr_B,k W_d,k),   a_AB,k = e_AB,k . l2(h_A,k) / exp(tau_k) + f_A . u_k,
+       score_AB = sum_k p_AB,k a_AB,k + B0[topology_AB] - softplus(beta) t_AB.
+The pair uses the initial supply embeddings, not the destination's aggregated representation. The pair maps are
+shared with OD routing when present. Pressure is channel-specific inside the routing-weighted score; topology and
+distance correct the OD score. The candidate softmax includes the internal option. This head requires route_score
+and rule_origin and is used by the CE plus Adam L2 comparison runner without auxiliary losses.
 Held-out edges (holdout_share > 0): a fixed random share of the observed outflow edges (holdout_seed) never carries
 messages, is no target and is left out of the candidate destinations during training; evaluated with all other
 observed edges as messages over the candidate destinations without messages and self loop:
@@ -144,7 +151,7 @@ class MechNet(NodeDisen):
                  attention=True, outflow=True, base=True, emb=None, n2v=None, dest_fe=False, n=None, gravity_mlp=0,
                  fc_head=False, dropout=0.0, proj='omega', routing_layers=1, channel_score=False, route_score=False,
                  route_distance=False, rule_topology=False, rule_origin=False, rule_distance=False,
-                 consistency_score=False, consistency_sim=False):
+                 consistency_score=False, consistency_sim=False, od_pair_head=False):
         super().__init__(d=d, iters=iters, n_channels=n_channels, out_weight=out_weight, inflow=pressure, etype=etype)
         self.attention, self.outflow, self.base = attention, outflow, base
         self.off, self.base_off = set(), False
@@ -188,6 +195,12 @@ class MechNet(NodeDisen):
             self.fc = nn.Linear(self.K * d, n)
         if attention:
             self.att = nn.Parameter(torch.zeros(self.K, 2 * d))
+        self.od_pair_head = od_pair_head
+        if od_pair_head:
+            assert route_score and rule_origin, 'od_pair_head needs route_score and rule_origin'
+            identity = torch.eye(d).repeat(self.K, 1, 1)
+            self.pair_origin = nn.Parameter(0.5 * identity.clone())
+            self.pair_destination = nn.Parameter(0.5 * identity.clone())
         self.n2v = n2v if emb is not None else None
         if self.n2v:
             self.register_buffer('emb', torch.as_tensor(np.asarray(emb), dtype=torch.float32))
@@ -217,6 +230,18 @@ class MechNet(NodeDisen):
         if self.proj == 'linear':
             return torch.relu(self.lin(x)).view(len(x), self.K, -1)
         return super().embed(x)
+
+    def od_pair_scores(self, z, h, p, t, R):
+        """Candidate supply pair against the origin's two aggregated channels."""
+        supply = l2n(z)
+        origin = torch.einsum('nkd,kde->nke', supply, self.pair_origin)
+        destination = torch.einsum('nkd,kde->nke', supply, self.pair_destination)
+        pair = l2n(origin[:, None] + destination[None, :])
+        similarity = torch.einsum('uvkd,ukd->ukv', pair, l2n(h))
+        rule = similarity / torch.exp(self.cs_tau)[None, :, None]
+        if self.inflow is not None:
+            rule = rule + (self.inflow @ self.cs_u[:, 9:].T)[:, :, None]
+        return (p * rule).sum(1) + self.B0[R] - fn.softplus(self.beta) * t
 
     def route_layers(self, x, share, msg, tau, t=None):
         """Stacked parameter-free routing layers (DisenGCN-pytorch), the inflow pressure in the first layer."""
@@ -285,7 +310,10 @@ class MechNet(NodeDisen):
             agg = torch.einsum('ukv,vkd->ukd', mass, zr)
         out['c'] = l2n(a[:, None, None] * zr + agg)
         hc = fn.dropout(out['c'], self.dropout, self.training) if self.dropout else out['c']
-        if self.consistency_score:
+        if self.od_pair_head:
+            score = self.od_pair_scores(out['z'], hc, p, t, R)
+            out['q'] = p
+        elif self.consistency_score:
             o = x if self.inflow is None else torch.cat([x, self.inflow], 1)
             qa = torch.softmax((o @ self.cq_u.T)[:, :, None] + self.cq_topo[:, R].permute(1, 0, 2), 1)
             agree = (qa * p).sum(1)
@@ -322,6 +350,7 @@ class MechNet(NodeDisen):
             score = score + self.c_B[None, :]
         if self.n2v in ('score', 'both'):
             score = score + self.Eo(self.emb) @ self.Ed(self.emb).T + (self.emb @ self.w_e)[None, :]
+        out['score'] = score
         out['logpi'] = torch.log_softmax(score.masked_fill(~(cand & ~msg), -1e9), 1)
         return out
 
