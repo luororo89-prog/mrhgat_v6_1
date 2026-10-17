@@ -1,1 +1,25 @@
 input_sources/** -text
+深圳市2018/深圳市_餐饮服务.dbf filter=lfs diff=lfs merge=lfs -text
+深圳市2018/深圳市_地名地址信息.dbf filter=lfs diff=lfs merge=lfs -text
+深圳市2018/深圳市_公司企业.dbf filter=lfs diff=lfs merge=lfs -text
+深圳市2018/深圳市_购物服务.dbf filter=lfs diff=lfs merge=lfs -text
+深圳市2018/深圳市_交通设施服务.dbf filter=lfs diff=lfs merge=lfs -text
+深圳市2018/深圳市_科教文化服务.dbf filter=lfs diff=lfs merge=lfs -text
+深圳市2018/深圳市_商务住宅.dbf filter=lfs diff=lfs merge=lfs -text
+深圳市2018/深圳市_生活服务.dbf filter=lfs diff=lfs merge=lfs -text
+深圳市2018/深圳市_室内设施.dbf filter=lfs diff=lfs merge=lfs -text
+深圳市2018/深圳市_体育休闲服务.dbf filter=lfs diff=lfs merge=lfs -text
+深圳市2018/深圳市_通行设施.dbf filter=lfs diff=lfs merge=lfs -text
+深圳市2018/深圳市_医疗保健服务.dbf filter=lfs diff=lfs merge=lfs -text
+深圳市2018/深圳市_政府机构及社会团体.dbf filter=lfs diff=lfs merge=lfs -text
+深圳市2018/深圳市_住宿服务.dbf filter=lfs diff=lfs merge=lfs -text
+深圳市2018/poi/dining/中餐厅.dbf filter=lfs diff=lfs merge=lfs -text
+深圳市2018/poi/shoping/购物相关场所.dbf filter=lfs diff=lfs merge=lfs -text
+深圳市2018/poi/shoping/专卖店.dbf filter=lfs diff=lfs merge=lfs -text
+深圳市2018/weibo/dining/餐饮.dbf filter=lfs diff=lfs merge=lfs -text
+深圳市2018/weibo/recreation/公园.dbf filter=lfs diff=lfs merge=lfs -text
+深圳市2018/weibo/recreation/景点.dbf filter=lfs diff=lfs merge=lfs -text
+深圳市2018/weibo/shopping/购物.dbf filter=lfs diff=lfs merge=lfs -text
+深圳市2018/weibo/shopping/商场.dbf filter=lfs diff=lfs merge=lfs -text
+深圳市2018/weibo/shopping/商圈.dbf filter=lfs diff=lfs merge=lfs -text
+深圳市2018/weibo/transfer/地铁站.dbf filter=lfs diff=lfs merge=lfs -text
