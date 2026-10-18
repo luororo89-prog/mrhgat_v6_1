@@ -17,6 +17,7 @@ matching the task of predicting hidden edges among non-message candidates.
 import argparse
 from itertools import combinations
 import json
+import io
 from pathlib import Path
 import sys
 import time
@@ -199,8 +200,11 @@ def train_one(variant, seed, cfg, g, tensors, H, Hv, output):
     torch.save(model.state_dict(), output / 'model.pt')
     pd.DataFrame(history).to_csv(output / 'history.csv', index=False)
     (output / 'metrics.json').write_text(json.dumps(metrics, indent=2))
-    np.savez_compressed(output / 'arrays.npz', p=probability, scores=result['score'].numpy(),
-                        h=result['c'].numpy())
+    buffer = io.BytesIO()
+    np.savez_compressed(buffer, p=probability, scores=result['score'].numpy(), h=result['c'].numpy())
+    temporary = output / 'arrays.npz.tmp'
+    temporary.write_bytes(buffer.getvalue())
+    temporary.replace(output / 'arrays.npz')
     log('DONE ' + json.dumps(metrics))
     log_file.close()
 

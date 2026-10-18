@@ -1,5 +1,7 @@
 # Mechanism identifiability audit
 
+The active ranking experiment uses origin inflow pressure associated with outward substitution as the competition convention. Its implementation and weak-reference definitions are in `README_mechanism_rank.md`. The destination-pressure proposal discussed below is not the operative convention for that experiment.
+
 ## Scope and decision
 
 This audit concerns the saved outpatient d=0.25 M1 and M2 experiments with seeds 0, 1 and 2. It changes documentation only. The operational definitions follow `Manuscript0423_Section_Keywords_and_Key_Sentences.md` in the manuscript `major` directory, especially the definitions of outflow compensation and inflow competition in sections 2.2 and 3.4.
@@ -107,3 +109,4 @@ Preserve prediction loss, candidate sets, fixed splits, CE, CPC, NRMSE, early st
 All four saved fixed splits equal the current reconstructed splits. All 24 checkpoints reproduce saved scores and dense gate arrays exactly, and their CE, CPC and NRMSE agree within `1e−12`. All existing result file hashes remained unchanged during replay. The 17 existing mechanism and relation tests pass.
 
 The M2 manifests match all four recorded code files and all five recorded input files. The M1 manifest matches the model, `model_v13.py` and every recorded input. Its hashes for `run_od_mechanism_v13.py` and `run_od_relation_v13.py` differ from the current files. Exact replay establishes current numerical reproducibility of those saved checkpoints. It does not establish byte identity between the current runners and the runners recorded at M1 training time.
+

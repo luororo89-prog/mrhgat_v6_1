@@ -73,7 +73,7 @@ Stability uses unchanged gate order and reports every seed pair. Correlations,
 MAD, MSE and ordering agreement are unweighted over the declared OD population.
 These differ from older flow-weighted, optionally permuted diagnostic summaries.
 
-Validation acceptance, fixed before the new completed results, requires all
+Validation acceptance, fixed before completed E3 results, requires all
 three seeds to meet both gates' matched rank agreement above 0.55, own-reference
 agreement exceeding the cross-reference agreement by 0.02, and exceeding the
 other gate on the same reference by 0.02. Gate variance must exceed 0.0001 and
@@ -98,3 +98,7 @@ references, response diagnostics and exact score replay verification. Root files
 save the split, proxy rules and source/data hashes. Existing M1/M2 outputs are
 not overwritten. Existing ablation results remain historical comparisons, while
 fresh E0 is the same-environment comparator for the new ranking runs.
+
+## Archived checkpoints
+
+Per-seed binary outputs are preserved in `archives/<setting>_seed<n>.zip` under the new result directory. Extract each archive into that result directory before replaying or rebuilding summaries. The archive restores the setting and seed subdirectories. Root tables and figures are directly readable.
