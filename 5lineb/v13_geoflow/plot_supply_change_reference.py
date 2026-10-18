@@ -1,6 +1,7 @@
 """Reference-style alluvial and bubble figure from three-seed mean changes."""
 from pathlib import Path
 import itertools
+import argparse
 import numpy as np
 import pandas as pd
 import matplotlib
@@ -11,8 +12,18 @@ from matplotlib.patches import PathPatch, Rectangle
 from matplotlib.colors import to_rgb
 ROOT=Path(__file__).resolve().parents[2]
 OUT=ROOT/'results_od_mechanism/outpatient_d0.25_joint_ridge_v13'
-d=pd.read_csv(OUT/'node_seed_consistency.csv')
+parser=argparse.ArgumentParser()
+parser.add_argument('--seed', type=int, default=None)
+args=parser.parse_args()
+suffix='' if args.seed is None else f'_seed{args.seed}'
+if args.seed is None:
+    d=pd.read_csv(OUT/'node_seed_consistency.csv')
+else:
+    d=pd.read_csv(OUT/'node_results.csv')
+    d=d.loc[d.seed.eq(args.seed)].copy()
+    d=d.rename(columns={'retained':'retained_mean', **{f'delta_PC{i}':f'delta_PC{i}_mean' for i in (1,2,3)}})
 d=d.loc[d.eligible].copy()
+assert len(d)==664 and d.community_id.is_unique
 colors=['#397bb5','#9464af','#399952','#df4640']
 names=['Scarcity','CHC-dominant','TH–SH','TH–CHC']
 plt.rcParams.update({'font.family':'Nimbus Sans','font.size':11,'svg.fonttype':'none','pdf.fonttype':42})
@@ -93,7 +104,7 @@ leg.text(0,.49,'Effective type')
 for y,c,l in [(.42,'#c7c7c7','Retained'),(.35,'#555555','Changed')]: leg.scatter(.12,y,s=90,c=c);leg.text(.28,y,l,va='center')
 leg.text(0,.23,'Component')
 for y,m,c,l in [(.16,'^','#202020','Rise'),(.09,'v','#b5b5b5','Decline')]: leg.scatter(.12,y,s=70,c=c,marker=m);leg.text(.28,y,l,va='center')
-fig.text(.5,.025,'Three-seed mean supply change · Fixed PC projection · 664 communities',ha='center',color='#555555',fontsize=10)
-pd.DataFrame(rows).to_csv(OUT/'supply_change_reference_counts.csv',index=False)
-for ext in ['png','svg','pdf']: fig.savefig(OUT/f'supply_change_reference.{ext}',dpi=300,facecolor='white')
+fig.text(.5,.025,('Three-seed mean supply change' if args.seed is None else f'Seed {args.seed} supply change')+' · Fixed PC projection · 664 communities',ha='center',color='#555555',fontsize=10)
+pd.DataFrame(rows).to_csv(OUT/f'supply_change_reference{suffix}_counts.csv',index=False)
+for ext in ['png','svg','pdf']: fig.savefig(OUT/f'supply_change_reference{suffix}.{ext}',dpi=300,facecolor='white')
 print('Saved reference-style figure. Counts:',d.groupby('baseline_type').retained_mean.agg(['size','sum']).to_dict())
