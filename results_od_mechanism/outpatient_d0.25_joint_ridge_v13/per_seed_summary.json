@@ -1,0 +1,116 @@
+[
+  {
+    "seed": 0,
+    "alpha": 0.0001,
+    "fold_alphas": [
+      0.0001,
+      0.0001,
+      0.0001,
+      0.0001,
+      0.0001
+    ],
+    "oof_rmse": 0.010696203207275134,
+    "oof_min_r2": 0.9995359023546174,
+    "oof_before_type_agreement": 1.0,
+    "eligible_n": 664,
+    "retained": 307,
+    "changed": 357,
+    "oof_vs_full_after_type_agreement": 1.0,
+    "mean_delta_pc": [
+      0.7445348052344285,
+      -0.5966135144946184,
+      1.3612261660353087
+    ],
+    "positive_pc_count": [
+      552,
+      313,
+      563
+    ],
+    "negative_pc_count": [
+      112,
+      351,
+      101
+    ],
+    "pc_oof_rmse_tolerance": [
+      0.00032155898619843807,
+      0.0003174703516866453,
+      0.0002826026007318316
+    ]
+  },
+  {
+    "seed": 1,
+    "alpha": 0.0001,
+    "fold_alphas": [
+      0.0001,
+      0.0001,
+      0.0001,
+      0.0001,
+      0.0001
+    ],
+    "oof_rmse": 0.012381564115110617,
+    "oof_min_r2": 0.9994020123297068,
+    "oof_before_type_agreement": 1.0,
+    "eligible_n": 664,
+    "retained": 238,
+    "changed": 426,
+    "oof_vs_full_after_type_agreement": 1.0,
+    "mean_delta_pc": [
+      -0.22603083981136785,
+      1.8611845728777792,
+      0.45878614455274463
+    ],
+    "positive_pc_count": [
+      402,
+      592,
+      393
+    ],
+    "negative_pc_count": [
+      262,
+      72,
+      271
+    ],
+    "pc_oof_rmse_tolerance": [
+      0.00019610700439091046,
+      4.888319437963913e-05,
+      7.386448113846202e-05
+    ]
+  },
+  {
+    "seed": 2,
+    "alpha": 0.0001,
+    "fold_alphas": [
+      0.0001,
+      0.0001,
+      0.0001,
+      0.0001,
+      0.0001
+    ],
+    "oof_rmse": 0.008580251703022118,
+    "oof_min_r2": 0.9996390030620829,
+    "oof_before_type_agreement": 1.0,
+    "eligible_n": 664,
+    "retained": 307,
+    "changed": 357,
+    "oof_vs_full_after_type_agreement": 1.0,
+    "mean_delta_pc": [
+      0.5768637945628329,
+      0.616315865541285,
+      0.09398385826932482
+    ],
+    "positive_pc_count": [
+      546,
+      556,
+      330
+    ],
+    "negative_pc_count": [
+      118,
+      108,
+      334
+    ],
+    "pc_oof_rmse_tolerance": [
+      0.00043864236842117393,
+      0.0004948460373081818,
+      0.00024030963896970806
+    ]
+  }
+]

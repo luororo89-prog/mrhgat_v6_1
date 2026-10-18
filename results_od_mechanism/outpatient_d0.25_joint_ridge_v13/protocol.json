@@ -1,0 +1,45 @@
+{
+  "setting": "E3_w1",
+  "seeds": [
+    0,
+    1,
+    2
+  ],
+  "source_commit": "2575596b012ee763eed3f0a8c488efd70abde5ed",
+  "source_joint_decoder": "5lineb/v10_edgedisen/consensus_v10.py",
+  "alphas": [
+    0.0001,
+    0.00031622776601683794,
+    0.001,
+    0.0031622776601683794,
+    0.01,
+    0.03162277660168379,
+    0.1,
+    0.31622776601683794,
+    1.0,
+    3.1622776601683795,
+    10.0,
+    31.622776601683793,
+    100.0,
+    316.2277660168379,
+    1000.0
+  ],
+  "fit": "RidgeCV(S,X); native feature scales; intercept=True; internal default leave-one-out alpha selection",
+  "S": "[h_base, value.comp(x_i), value.compete([x_i,t_ii,onehot(R_ii)])]",
+  "C": "[h_base,h_comp,h_compete]",
+  "delta": "D(C)-D(S)",
+  "after": "X+delta",
+  "local_reference": "Constructed local message reference; not a tensor exposed by the historical model",
+  "main_graph": "all thresholded nonself OD edges; model parameters frozen",
+  "reconstruction_validation": "5 saved spatial folds; encoder and ruler remain transductive",
+  "normalization": "none added; preserve native mechanism channel magnitudes",
+  "fixed_type_names": [
+    "稀缺型（三甲低·二级低·社康低）",
+    "社康主导型（三甲低·二级低·社康高）",
+    "三甲二级型（三甲高·二级高·社康中）",
+    "三甲社康型（三甲高·二级低·社康高）"
+  ],
+  "eligible": "positive outgoing total, internal flow included",
+  "robust_type_rule": "at least 80% of seeds agree with type from mean delta; with 3 seeds this requires unanimity",
+  "interpretation": "model-estimated change under the declared local reference; no independently measured post-interaction supply"
+}
