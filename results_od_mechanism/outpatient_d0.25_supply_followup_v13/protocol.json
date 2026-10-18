@@ -1,0 +1,33 @@
+{
+  "source_commit": "3463723e8fe425dc40e094a1ab0f5493032bbf3f",
+  "setting": "E3_w1",
+  "model_seeds": [
+    0,
+    1,
+    2
+  ],
+  "decoder_split_seed": 731,
+  "node_split": [
+    0.6,
+    0.2,
+    0.2
+  ],
+  "decoder_validation": "transductive node holdout, not unseen-node GNN validation",
+  "adequate_validation_rmse_max": 0.5,
+  "adequate_validation_each_r2_min": 0.0,
+  "incremental_validation_mse_gain_min": 0.01,
+  "incremental_test_block_ci_lower_min": 0.0,
+  "thresholds_status": "exploratory operational criteria, declared before decoding",
+  "community_algorithm": "Leiden directed RBConfiguration",
+  "resolution": 1.0,
+  "community_seed": 0,
+  "self_flows": "included in directed partition and internal flow; excluded from external messages",
+  "type_names": [
+    "稀缺型（三甲低·二级低·社康低）",
+    "社康主导型（三甲低·二级低·社康高）",
+    "三甲二级型（三甲高·二级高·社康中）",
+    "三甲社康型（三甲高·二级低·社康高）"
+  ],
+  "supply_units": "frozen transformed standardized indicators",
+  "interpretation": "Reconstruction targets are baseline indicators, not measured post-interaction supply. Passing this audit is necessary but insufficient for substantive supply-change inference."
+}

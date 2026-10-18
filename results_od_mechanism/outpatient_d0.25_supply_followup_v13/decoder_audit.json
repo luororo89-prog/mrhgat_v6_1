@@ -1,0 +1,47 @@
+[
+  {
+    "seed": 0,
+    "val_rmse_full": 0.4590997561576216,
+    "val_rmse_base": 0.5261788899351552,
+    "test_rmse_full": 0.48129203629593376,
+    "test_rmse_base": 0.6162664953301019,
+    "val_min_r2": 0.5832874073014445,
+    "val_relative_mse_gain": 0.23871498131323976,
+    "test_mse_gain": 0.14814236906456021,
+    "test_gain_ci_low": 0.014661087217608311,
+    "test_gain_ci_high": 0.24908296747825182,
+    "reconstruction_adequate": true,
+    "external_increment": true,
+    "substantive_supply_change_supported": false
+  },
+  {
+    "seed": 1,
+    "val_rmse_full": 0.5404201870948722,
+    "val_rmse_base": 0.6604251518225875,
+    "test_rmse_full": 0.5728321512377514,
+    "test_rmse_base": 0.6983426745501936,
+    "val_min_r2": 0.3974503332184638,
+    "val_relative_mse_gain": 0.3303992713820858,
+    "test_mse_gain": 0.15954581760624748,
+    "test_gain_ci_low": -0.012461646055795292,
+    "test_gain_ci_high": 0.351582975890826,
+    "reconstruction_adequate": false,
+    "external_increment": false,
+    "substantive_supply_change_supported": false
+  },
+  {
+    "seed": 2,
+    "val_rmse_full": 0.4138644826076583,
+    "val_rmse_base": 0.43161464114697595,
+    "test_rmse_full": 0.4968963100903958,
+    "test_rmse_base": 0.48004250005291094,
+    "val_min_r2": 0.6746323936127353,
+    "val_relative_mse_gain": 0.08055876290988628,
+    "test_mse_gain": -0.01646514112440171,
+    "test_gain_ci_low": -0.055562143813258955,
+    "test_gain_ci_high": 0.05318485980992741,
+    "reconstruction_adequate": true,
+    "external_increment": false,
+    "substantive_supply_change_supported": false
+  }
+]
