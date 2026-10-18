@@ -1,0 +1,38 @@
+{
+  "seeds": [
+    0,
+    1,
+    2
+  ],
+  "torch_version": "2.8.0",
+  "variants": {
+    "mech_full": {
+      "channels": [
+        "base",
+        "comp",
+        "compete"
+      ],
+      "pair_path": true
+    }
+  },
+  "loss": "origin-normalized flow CE + Adam coupled L2 + 100.0 x two-view gate consistency",
+  "selection": "minimum validation CE with early stopping",
+  "source_sha256": {
+    "model_od_mechanism_v13.py": "2f0603e2d24c2975879ca1ec9a9bd7a695c43406ebc49e80319a309bbc31142e",
+    "run_od_mechanism_v13.py": "852370fbc581860c60e93a3db14ccc8f0fca8da56a373e85cb608b30a5c0314b",
+    "run_od_relation_v13.py": "1a02cf0d68451359cae320de697e20431c489b0e3f8f36d84e33e587e1f5547b",
+    "model_v13.py": "24ea68d7d64f59f1c8ad771a9f6cc4d811750347a49cd1123e64799c7ee56bc1"
+  },
+  "data_sha256": {
+    "重做实验/step4_v13_input_outpatient/supply_v13.xlsx": "3236944f543afb2b8c6e6b8094b84ff1555efb90054fa64c2103e24d5e0bb3ec",
+    "重做实验/step4_v13_input_outpatient/network_d0.25.csv": "5a8b5b8d80c74a4383ee0dd0d14a39a67199db9595ec2d29427a9f836f4f8654",
+    "重做实验/step4_v13_input_outpatient/topology_pairs_d0.25.csv": "1e2f10724debe603d7f98c8bdbfd7199543d24df52ee273334f19c2fd01f5495",
+    "data/processed/road_walk_km_osm190101.npz": "afa005a58f43855e37f02b758b4e8cb0ccad7538bd6cc4639a1b862e54d7b33e",
+    "重做实验/step3_od_demand_outpatient/results/node_typing/ruler.json": "31b0553a91f5f8bb85a5627b2bc17dce3559a10306f717f38fe50b0912bc8243"
+  },
+  "notes": [
+    "Within-community trips F_ii enter the base channel and the propensities; the training target keeps the within-community option (reference train_one); test and validation metrics are non-self only.",
+    "Gates of pairs without a message use a zero flow input; routing diagnostics use the observed edges outside the test set in the test context.",
+    "Channel correspondence between seeds is chosen on the training edges only."
+  ]
+}

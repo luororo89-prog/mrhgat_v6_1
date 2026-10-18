@@ -1,0 +1,42 @@
+{
+  "seeds": [
+    0,
+    1
+  ],
+  "torch_version": "2.8.0",
+  "threads": 8,
+  "variants": {
+    "pair_gatv2": {
+      "aggregation": "GATv2 per channel",
+      "routing": "OD pair vs origin pair"
+    }
+  },
+  "loss": "origin-normalized flow CE + indep_weight x channel nHSIC + Adam coupled L2",
+  "selection": "minimum validation CE with unchanged early stopping",
+  "baseline_reused": false,
+  "source_sha256": {
+    "model_v13.py": "24ea68d7d64f59f1c8ad771a9f6cc4d811750347a49cd1123e64799c7ee56bc1",
+    "model_od_relation_v13.py": "28144f4ee6f0e735a818d0a54bb78b8d98eb47ed1d0a0dfdccb54b233c76b940",
+    "run_od_relation_v13.py": "e184f5aa5a00924693b72f599d4b5cfe7885340fbf3597b6aa6575355af4648e",
+    "model_od_ablation_v13.py": "e0bbea164162b8b4ff80d6fd9eeaeadc6d1752e1bc65e3e4ac1d7f38715b0f0e",
+    "run_od_ablation_v13.py": "3394c858fdeeed4285aa85e4a5bde15e1e6d0417afc513b38efea3b0295ebb93"
+  },
+  "data_sha256": {
+    "重做实验/step4_v13_input_time_filtered/supply_v13.xlsx": "8ec726e96ba5c6ca61d6b027b6940e8747475e4bd99f2500f3e8485a9bc9d70c",
+    "重做实验/step4_v13_input_time_filtered/network_d0.25.csv": "50e2cecb24bb95422ecfacd27567f622cdfaeb21f4d60df84850869ec931f605",
+    "重做实验/step4_v13_input_time_filtered/topology_pairs_d0.25.csv": "536e28cd601c9eaef419fd68eebdc26da4dc2964ac68fcfba2e52ac177e5fb2f",
+    "data/processed/road_walk_km_osm190101.npz": "afa005a58f43855e37f02b758b4e8cb0ccad7538bd6cc4639a1b862e54d7b33e",
+    "重做实验/step3_od_demand_time_filtered/results/node_typing/ruler.json": "48422651223ec6cc076d15a0d6d681542107e0c48adffda274eb659277fc73d6"
+  },
+  "notes": [
+    "pair_gatv2: fix1 OD-pair routing per layer, the origin pair e_ii initialises the centre.",
+    "pair_gatv2: GATv2 aggregation inside every channel, routing mass pi_ij p_ij,k as attention prior.",
+    "pair_gatv2: layer output keeps its length; the gravity head reads dropout(relu(h)) of layer 5.",
+    "pair_gatv2: loss = CE + 0.1 x mean nHSIC between the channels of layer 5.",
+    "No residual or auxiliary objective is added.",
+    "Test CE/CPC/NRMSE are conditional nonself hidden-destination metrics.",
+    "CPC/NRMSE use the supplied hidden-origin totals, not predicted totals.",
+    "Within-community error is a diagnostic, not independent held-out evaluation.",
+    "Legacy inactive parameters are retained; parameter counts include them."
+  ]
+}

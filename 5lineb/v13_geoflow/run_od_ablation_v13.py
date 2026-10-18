@@ -28,6 +28,8 @@ ROOT = HERE.parents[1]
 sys.path.insert(0, str(HERE))
 import run_od_relation_v13 as reference
 from model_od_ablation_v13 import make_ablation_model, VARIANTS
+from model_od_disen_v13 import DISEN_VARIANTS
+from model_od_pairgat_v13 import PAIRGAT_VARIANTS
 from model_v13 import holdout_mask, road_matrix
 from model_v9 import l2n
 from graph import build_graph
@@ -105,7 +107,7 @@ def reuse_original(source, output, cfg, g, tensors, H, Hv):
 
 def align(a, b, weights):
     C = np.array([[reference.weighted_corr(a[:, i], b[:, j], weights)
-                   for j in range(2)] for i in range(2)])
+                   for j in range(b.shape[1])] for i in range(a.shape[1])])
     _, perm = linear_sum_assignment(-np.nan_to_num(C, nan=0))
     return b[:, perm], perm
 
@@ -119,8 +121,8 @@ def layer_diagnostics(model, variant, g, tensors, context, tau):
         v = l2n(centre).double()
         n = len(v)
         cos = ((v.sum(0).square().sum(-1) - v.square().sum((0, 2))) / (n * (n-1))).numpy()
-        rows.append(dict(layer=len(rows)+1, node_cos_C1=float(cos[0]),
-                         node_cos_C2=float(cos[1]), node_cos_max=float(cos.max())))
+        rows.append(dict(layer=len(rows)+1, **{f'node_cos_C{k+1}': float(cos[k]) for k in range(len(cos))},
+                         node_cos_max=float(cos.max())))
         return centre
 
     with torch.no_grad(), patch.object(model, '_centres', side_effect=capture):
@@ -144,10 +146,13 @@ def summarize(output, cfg, g, tensors, H, Hv):
             saved = np.load(directory / 'arrays.npz')
             probabilities = saved['p']
             runs[seed], metrics_by_seed[seed] = probabilities, metrics
-            hard_C1 = float(np.average(probabilities.argmax(1) == 0, weights=weights))
+            hard = [float(np.average(probabilities.argmax(1) == k, weights=weights)) for k in range(probabilities.shape[1])]
+            hard_C1 = hard[0]
             metrics.update(
                 hard_C1_flow_share=hard_C1,
-                dominant_hard_channel_flow_share=max(hard_C1, 1-hard_C1),
+                hard_flow_share=hard,
+                soft_flow_share=[float(np.average(probabilities[:, k], weights=weights)) for k in range(probabilities.shape[1])],
+                dominant_hard_channel_flow_share=max(hard),
                 soft_C1_flow_share=float(np.average(probabilities[:,0], weights=weights)),
                 training_origin=metrics.get('training_origin', 'trained_this_comparison'))
             model = make_ablation_model(variant, cfg, len(W), tensors[2])
@@ -156,10 +161,10 @@ def summarize(output, cfg, g, tensors, H, Hv):
             metrics['parameter_count'] = sum(v.numel() for v in model.parameters())
             layers, val_result = layer_diagnostics(model, variant, g, tensors, W*visible, cfg['tau_final'])
             layers_rows += [dict(variant=variant, seed=seed, **row) for row in layers]
-            metrics['layer5_node_cos_C1'] = layers[-1]['node_cos_C1']
-            metrics['layer5_node_cos_C2'] = layers[-1]['node_cos_C2']
+            channel_cos = {key: value for key, value in layers[-1].items() if key.startswith('node_cos_C')}
+            metrics.update({f'layer5_{key}': value for key, value in channel_cos.items()})
             metrics['layer5_node_cos_max'] = layers[-1]['node_cos_max']
-            metrics['layer5_channels_cos_ge_099'] = int(layers[-1]['node_cos_C1'] >= .99) + int(layers[-1]['node_cos_C2'] >= .99)
+            metrics['layer5_channels_cos_ge_099'] = int(sum(value >= .99 for value in channel_cos.values()))
             val_metrics = reference.evaluate_scores(val_result['score'], W, Hv, visible, excluded=H)
             np.testing.assert_allclose(val_metrics['ce'], metrics['best_val_ce'], atol=2e-6, rtol=0)
             with torch.no_grad():
@@ -177,16 +182,17 @@ def summarize(output, cfg, g, tensors, H, Hv):
             agreement = (a.argmax(1) == bb.argmax(1))
             stability_rows.append(dict(
                 variant=variant, seed_a=sa, seed_b=sb, channel_permutation=','.join(map(str,perm)),
-                routing_corr=reference.weighted_corr(a[:,0], bb[:,0], weights),
+                routing_corr=float(np.mean([reference.weighted_corr(a[:,k], bb[:,k], weights) for k in range(a.shape[1])])),
                 hard_agreement=float(agreement.mean()),
                 hard_agreement_flow_weighted=float(np.average(agreement, weights=weights)),
-                probability_abs_difference=float(np.average(abs(a[:,0]-bb[:,0]),weights=weights))))
+                probability_abs_difference=float(np.average(abs(a-bb).mean(1),weights=weights))))
         ref_seed = min(cfg['seeds'], key=lambda s:metrics_by_seed[s]['best_val_ce'])
         stack = np.stack([align(runs[ref_seed], runs[s], weights)[0] for s in cfg['seeds']])
+        K = stack.shape[2]
         pd.DataFrame(dict(origin_id=g['ids'][oi], destination_id=g['ids'][di], flow=weights,
-                          p_C1=stack[:,:,0].mean(0), p_C2=stack[:,:,1].mean(0),
+                          **{f'p_C{k+1}': stack[:,:,k].mean(0) for k in range(K)},
                           p_C1_std=stack[:,:,0].std(0),
-                          channel_agreement=np.maximum((stack.argmax(2)==0).mean(0),(stack.argmax(2)==1).mean(0))))\
+                          channel_agreement=np.max([(stack.argmax(2)==k).mean(0) for k in range(K)], 0)))\
             .to_csv(output/f'{variant}_edge_consensus.csv',index=False)
     M, S, L = pd.DataFrame(metrics_rows), pd.DataFrame(stability_rows), pd.DataFrame(layers_rows)
     M.to_csv(output/'metrics_summary.csv',index=False)
@@ -216,8 +222,9 @@ def main():
     args=parser.parse_args()
     cfg,g,tensors,H,Hv=setup(args.config)
     variants=cfg.get('variants', ['fix1'])
-    if not variants or any(v not in VARIANTS for v in variants):
-        raise ValueError(f'variants must select from {list(VARIANTS)}')
+    known={**VARIANTS,**DISEN_VARIANTS,**PAIRGAT_VARIANTS}
+    if not variants or any(v not in known for v in variants):
+        raise ValueError(f'variants must select from {list(known)}')
     if args.reuse_original and 'original' not in variants:
         raise ValueError('--reuse-original requires original in variants')
     output=ROOT/'results_od_ablation'/cfg['name'];output.mkdir(parents=True,exist_ok=True)
@@ -227,7 +234,7 @@ def main():
     data_files=[Path(cfg[k]) for k in ('supply_file','flow_file','adjacency_file')]
     data_files += [ROOT/cfg['road_impedance'], ROOT/cfg['ruler_from']/'ruler.json']
     manifest=dict(seeds=cfg['seeds'],torch_version=torch.__version__,threads=cfg['threads'],
-                  variants={v:VARIANTS[v] for v in variants},loss='origin-normalized flow CE + Adam coupled L2',
+                  variants={v:known[v] for v in variants},loss='origin-normalized flow CE + Adam coupled L2',
                   selection='minimum validation CE with unchanged early stopping',
                   baseline_reused=bool(args.reuse_original),
                   source_sha256={name:digest(HERE/name) for name in source_files},
@@ -241,6 +248,28 @@ def main():
                          'CPC/NRMSE use the supplied hidden-origin totals, not predicted totals.',
                          'Within-community error is a diagnostic, not independent held-out evaluation.',
                          'Legacy inactive parameters are retained; parameter counts include them.'])
+    if cfg.get('gravity_mlp', 0):
+        manifest['notes'][0] = 'Layer 1 uses the original pair projection in every variant.'
+        manifest['notes'][2] = (f'The OD-pair head is replaced by the gravity head MLP([H_A, H_B, t_AB]) with '
+                                f'{cfg["gravity_mlp"]} hidden units; CE reaches the routing through H.')
+        manifest['notes'][3] = 'Attention, routing topology bias, distance, within-community target treatment are unchanged.'
+    if any(v in DISEN_VARIANTS for v in variants):
+        manifest['notes'][:4] = [
+            'disen variants: parameter-free routing layers, the message of A -> B is v_B (DisenGCN official).',
+            'disen variants: GATv2 neighbour weights per layer, a starting at zero; _flow adds log flow share.',
+            'disen variants: the last routing iteration keeps its length; the head reads dropout(relu(u)) of layer 5.',
+            'disen variants: no attention re-aggregation; pressure, routing topology bias, tau, distance unchanged.']
+    if any(v in PAIRGAT_VARIANTS for v in variants):
+        manifest['notes'][:4] = [
+            'pair_gatv2: fix1 OD-pair routing per layer, the origin pair e_ii initialises the centre.',
+            'pair_gatv2: GATv2 aggregation inside every channel, routing mass pi_ij p_ij,k as attention prior.',
+            'pair_gatv2: layer output keeps its length; the gravity head reads dropout(relu(h)) of layer 5.',
+            f'pair_gatv2: loss = CE + {cfg.get("indep_weight", 0)} x mean nHSIC between the channels of layer 5.']
+        manifest['loss'] = 'origin-normalized flow CE' + ''.join(
+            f' + {cfg[k]} x {name}' for k, name in (('indep_weight', 'channel nHSIC'), ('dec_weight', 'DEC KL')) if cfg.get(k)) \
+            + ' + Adam coupled L2'
+        manifest['notes'] += [f'{v}: options {PAIRGAT_VARIANTS[v]}, dec_weight {cfg.get("dec_weight", 0)}'
+                              for v in variants if v in PAIRGAT_VARIANTS]
     if not args.summarize_only:
         (output/'experiment_manifest.json').write_text(json.dumps(manifest,indent=2,ensure_ascii=False))
         if args.reuse_original:

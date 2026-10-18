@@ -1,0 +1,22 @@
+16:55:58 mech_base_only seed=1 START destination CE + Adam L2, fixed holdout seed 0
+16:56:08 mech_base_only seed=1 epoch=25 ce=4.5807 val_ce=4.0928 val_cpc=0.4481
+16:56:18 mech_base_only seed=1 epoch=50 ce=4.4627 val_ce=3.9807 val_cpc=0.4566
+16:56:28 mech_base_only seed=1 epoch=75 ce=4.4036 val_ce=3.9231 val_cpc=0.4693
+16:56:39 mech_base_only seed=1 epoch=100 ce=4.3840 val_ce=3.8944 val_cpc=0.4680
+16:56:49 mech_base_only seed=1 epoch=125 ce=4.3918 val_ce=3.8828 val_cpc=0.4691
+16:56:59 mech_base_only seed=1 epoch=150 ce=4.3568 val_ce=3.8731 val_cpc=0.4773
+16:57:09 mech_base_only seed=1 epoch=175 ce=4.3515 val_ce=3.8242 val_cpc=0.4930
+16:57:19 mech_base_only seed=1 epoch=200 ce=4.3339 val_ce=3.8240 val_cpc=0.4896
+16:57:29 mech_base_only seed=1 epoch=225 ce=4.3515 val_ce=3.8253 val_cpc=0.4830
+16:57:39 mech_base_only seed=1 epoch=250 ce=4.3550 val_ce=3.8081 val_cpc=0.4970
+16:57:49 mech_base_only seed=1 epoch=275 ce=4.3058 val_ce=3.8075 val_cpc=0.4844
+16:57:59 mech_base_only seed=1 epoch=300 ce=4.3060 val_ce=3.7849 val_cpc=0.4933
+16:58:09 mech_base_only seed=1 epoch=325 ce=4.2938 val_ce=3.7878 val_cpc=0.5035
+16:58:19 mech_base_only seed=1 epoch=350 ce=4.2815 val_ce=3.7927 val_cpc=0.4867
+16:58:29 mech_base_only seed=1 epoch=375 ce=4.3281 val_ce=3.8150 val_cpc=0.4760
+16:58:38 mech_base_only seed=1 epoch=400 ce=4.2562 val_ce=3.7702 val_cpc=0.5139
+16:58:48 mech_base_only seed=1 epoch=425 ce=4.2883 val_ce=3.7658 val_cpc=0.5017
+16:58:58 mech_base_only seed=1 epoch=450 ce=4.3070 val_ce=3.7653 val_cpc=0.4984
+16:59:08 mech_base_only seed=1 epoch=475 ce=4.2774 val_ce=3.7677 val_cpc=0.4930
+16:59:18 mech_base_only seed=1 epoch=500 ce=4.2993 val_ce=3.7727 val_cpc=0.4986
+16:59:19 mech_base_only seed=1 DONE {"ce": 4.065341779081091, "ce_trips": 3.812742841677702, "cpc": 0.6104430203448583, "nrmse": 4.673331326169341, "internal_error_conditional": 0.022850854710084988, "internal_error_full_diagnostic": 0.006584544075229513, "variant": "mech_base_only", "seed": 1, "epochs": 501, "best_epoch": 451, "best_val_ce": 3.7315957724202775, "seconds": 200.29309606552124, "routing_entropy_normalized": 0.9859967407600039, "routing_probability_std_C1": 0.04622703398679039, "confident_flow_share_p08": 0.0}

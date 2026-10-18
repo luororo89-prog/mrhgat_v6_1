@@ -1,0 +1,13 @@
+17:01:08 mech_base_compete seed=1 START destination CE + Adam L2, fixed holdout seed 0
+17:01:19 mech_base_compete seed=1 epoch=25 ce=4.3295 val_ce=3.7766 val_cpc=0.5148
+17:01:29 mech_base_compete seed=1 epoch=50 ce=4.2218 val_ce=3.5734 val_cpc=0.5787
+17:01:39 mech_base_compete seed=1 epoch=75 ce=4.1823 val_ce=3.5548 val_cpc=0.5815
+17:01:50 mech_base_compete seed=1 epoch=100 ce=4.1455 val_ce=3.4883 val_cpc=0.6011
+17:02:00 mech_base_compete seed=1 epoch=125 ce=4.1568 val_ce=3.5081 val_cpc=0.5899
+17:02:11 mech_base_compete seed=1 epoch=150 ce=4.1208 val_ce=3.4656 val_cpc=0.6105
+17:02:21 mech_base_compete seed=1 epoch=175 ce=4.1467 val_ce=3.4576 val_cpc=0.6173
+17:02:31 mech_base_compete seed=1 epoch=200 ce=4.1141 val_ce=3.4785 val_cpc=0.6012
+17:02:42 mech_base_compete seed=1 epoch=225 ce=4.1251 val_ce=3.4369 val_cpc=0.6170
+17:02:52 mech_base_compete seed=1 epoch=250 ce=4.1259 val_ce=3.4601 val_cpc=0.6070
+17:03:03 mech_base_compete seed=1 epoch=275 ce=4.0984 val_ce=3.4760 val_cpc=0.5953
+17:03:10 mech_base_compete seed=1 DONE {"ce": 3.7950286685059393, "ce_trips": 3.582804108253654, "cpc": 0.6900425711811976, "nrmse": 4.029529179647173, "internal_error_conditional": 0.026602091578649335, "internal_error_full_diagnostic": 0.007949215833569891, "variant": "mech_base_compete", "seed": 1, "epochs": 290, "best_epoch": 240, "best_val_ce": 3.4121568587891185, "seconds": 121.2363760471344, "routing_entropy_normalized": 0.8666077938226227, "routing_probability_std_C1": 0.04622703398679039, "confident_flow_share_p08": 0.15754784695625185}

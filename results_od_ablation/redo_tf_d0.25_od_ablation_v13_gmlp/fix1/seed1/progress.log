@@ -1,0 +1,10 @@
+00:52:35 fix1 seed=1 START destination CE + Adam L2, fixed holdout seed 0
+00:53:06 fix1 seed=1 epoch=25 ce=4.7593 val_ce=4.3466 val_cpc=0.3496
+00:53:34 fix1 seed=1 epoch=50 ce=4.6621 val_ce=4.2626 val_cpc=0.3741
+00:54:10 fix1 seed=1 epoch=75 ce=4.6363 val_ce=4.3136 val_cpc=0.3323
+00:54:46 fix1 seed=1 epoch=100 ce=4.6467 val_ce=4.2536 val_cpc=0.3574
+00:55:23 fix1 seed=1 epoch=125 ce=4.5963 val_ce=4.2204 val_cpc=0.3791
+00:55:59 fix1 seed=1 epoch=150 ce=4.6180 val_ce=4.2219 val_cpc=0.3713
+00:56:33 fix1 seed=1 epoch=175 ce=4.5955 val_ce=4.2500 val_cpc=0.3581
+00:57:09 fix1 seed=1 epoch=200 ce=4.6440 val_ce=4.2436 val_cpc=0.3618
+00:57:38 fix1 seed=1 DONE {"ce": 4.343927970263587, "ce_trips": 3.9372977371366837, "cpc": 0.5194487274562105, "nrmse": 5.522814988637703, "internal_error_conditional": 0.038758136885169124, "internal_error_full_diagnostic": 0.01790943386343473, "variant": "fix1", "seed": 1, "epochs": 219, "best_epoch": 169, "best_val_ce": 4.192516246297399, "seconds": 302.6487329006195, "routing_entropy_normalized": 0.5570288281569773, "routing_probability_std_C1": 0.10903609950132871, "confident_flow_share_p08": 0.6282778540342568}

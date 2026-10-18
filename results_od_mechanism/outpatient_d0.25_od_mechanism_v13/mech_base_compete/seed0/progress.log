@@ -1,0 +1,9 @@
+16:51:12 mech_base_compete seed=0 START destination CE + Adam L2, fixed holdout seed 0
+16:51:23 mech_base_compete seed=0 epoch=25 ce=4.3472 val_ce=3.7763 val_cpc=0.5184
+16:51:34 mech_base_compete seed=0 epoch=50 ce=4.2773 val_ce=3.6749 val_cpc=0.5339
+16:51:46 mech_base_compete seed=0 epoch=75 ce=4.2091 val_ce=3.6052 val_cpc=0.5497
+16:51:56 mech_base_compete seed=0 epoch=100 ce=4.1559 val_ce=3.5011 val_cpc=0.5990
+16:52:07 mech_base_compete seed=0 epoch=125 ce=4.1895 val_ce=3.4985 val_cpc=0.5909
+16:52:18 mech_base_compete seed=0 epoch=150 ce=4.1172 val_ce=3.5300 val_cpc=0.5701
+16:52:30 mech_base_compete seed=0 epoch=175 ce=4.1385 val_ce=3.5151 val_cpc=0.5764
+16:52:34 mech_base_compete seed=0 DONE {"ce": 3.824743880689463, "ce_trips": 3.6137214455712297, "cpc": 0.6766694439834373, "nrmse": 4.234049831654854, "internal_error_conditional": 0.02734035056372599, "internal_error_full_diagnostic": 0.008408736858838025, "variant": "mech_base_compete", "seed": 0, "epochs": 184, "best_epoch": 134, "best_val_ce": 3.454494037471052, "seconds": 82.00016379356384, "routing_entropy_normalized": 0.8450458277364248, "routing_probability_std_C1": 0.03485966077512452, "confident_flow_share_p08": 3.1870257567107675e-05}

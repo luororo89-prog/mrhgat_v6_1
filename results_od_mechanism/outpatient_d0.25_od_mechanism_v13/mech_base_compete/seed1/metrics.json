@@ -1,0 +1,17 @@
+{
+  "ce": 3.7950286685059393,
+  "ce_trips": 3.582804108253654,
+  "cpc": 0.6900425711811976,
+  "nrmse": 4.029529179647173,
+  "internal_error_conditional": 0.026602091578649335,
+  "internal_error_full_diagnostic": 0.007949215833569891,
+  "variant": "mech_base_compete",
+  "seed": 1,
+  "epochs": 290,
+  "best_epoch": 240,
+  "best_val_ce": 3.4121568587891185,
+  "seconds": 121.2363760471344,
+  "routing_entropy_normalized": 0.8666077938226227,
+  "routing_probability_std_C1": 0.04622703398679039,
+  "confident_flow_share_p08": 0.15754784695625185
+}

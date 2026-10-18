@@ -10,6 +10,7 @@ import torch
 from torch import nn
 from torch.nn import functional as F
 
+from model_od_disen_v13 import DISEN_VARIANTS, make_disen_model
 from model_od_relation_v13 import ODRelationNet
 from model_v9 import l2n
 
@@ -66,12 +67,20 @@ class ODAblationNet(ODRelationNet):
         return {'z': z, 'zr': zr, 'c': c, 'c_route': c, 'p': p}
 
 def make_ablation_model(variant, cfg, n, topology=None):
+    """With gravity_mlp > 0 in cfg the OD-pair head is replaced by the gravity head of MechNet,
+    score_AB = MLP([H_A, H_B, t_AB]) of the aggregated vectors of origin and destination."""
     import numpy as np
+    if variant in DISEN_VARIANTS:
+        return make_disen_model(variant, cfg, n, topology)
+    from model_od_pairgat_v13 import PAIRGAT_VARIANTS, make_pairgat_model
+    if variant in PAIRGAT_VARIANTS:
+        return make_pairgat_model(variant, cfg, n, topology)
     independent = VARIANTS[variant]
+    gravity = cfg.get('gravity_mlp', 0)
     return ODAblationNet(
         d=cfg['hid_dim'] // 2, iters=cfg['iters'], n_channels=2,
         out_weight='share', attention=cfg['attention'], base=False,
         pressure=np.zeros((n, 6)), etype=topology, n=n,
         proj='linear', routing_layers=cfg['routing_layers'], dropout=cfg['dropout'],
-        route_score=True, rule_origin=True, od_pair_head=True,
-        independent_layers=independent)
+        route_score=not gravity, rule_origin=not gravity, od_pair_head=not gravity,
+        gravity_mlp=gravity, independent_layers=independent)

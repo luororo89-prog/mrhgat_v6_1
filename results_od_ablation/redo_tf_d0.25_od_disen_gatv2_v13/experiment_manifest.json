@@ -1,0 +1,44 @@
+{
+  "seeds": [
+    0,
+    1,
+    2,
+    3,
+    4
+  ],
+  "torch_version": "2.8.0",
+  "threads": 4,
+  "variants": {
+    "disen_gatv2": {
+      "gat_flow": false
+    }
+  },
+  "loss": "origin-normalized flow CE + Adam coupled L2",
+  "selection": "minimum validation CE with unchanged early stopping",
+  "baseline_reused": false,
+  "source_sha256": {
+    "model_v13.py": "24ea68d7d64f59f1c8ad771a9f6cc4d811750347a49cd1123e64799c7ee56bc1",
+    "model_od_relation_v13.py": "28144f4ee6f0e735a818d0a54bb78b8d98eb47ed1d0a0dfdccb54b233c76b940",
+    "run_od_relation_v13.py": "5135875184449aa3a688e9dede9e4dad546aa202b65791fb266b67c8888f9c50",
+    "model_od_ablation_v13.py": "bbd2df34c0f5c7e3cc6d2b93b798be45ab25cf0c9ff3f3c18b92299ea5152391",
+    "run_od_ablation_v13.py": "4e8603d4732c8d6b4672cabd9968954c1d917e1af0522589284889e3ec373217"
+  },
+  "data_sha256": {
+    "重做实验/step4_v13_input_time_filtered/supply_v13.xlsx": "8ec726e96ba5c6ca61d6b027b6940e8747475e4bd99f2500f3e8485a9bc9d70c",
+    "重做实验/step4_v13_input_time_filtered/network_d0.25.csv": "50e2cecb24bb95422ecfacd27567f622cdfaeb21f4d60df84850869ec931f605",
+    "重做实验/step4_v13_input_time_filtered/topology_pairs_d0.25.csv": "536e28cd601c9eaef419fd68eebdc26da4dc2964ac68fcfba2e52ac177e5fb2f",
+    "data/processed/road_walk_km_osm190101.npz": "afa005a58f43855e37f02b758b4e8cb0ccad7538bd6cc4639a1b862e54d7b33e",
+    "重做实验/step3_od_demand_time_filtered/results/node_typing/ruler.json": "48422651223ec6cc076d15a0d6d681542107e0c48adffda274eb659277fc73d6"
+  },
+  "notes": [
+    "disen variants: parameter-free routing layers, the message of A -> B is v_B (DisenGCN official).",
+    "disen variants: GATv2 neighbour weights per layer, a starting at zero; _flow adds log flow share.",
+    "disen variants: the last routing iteration keeps its length; the head reads dropout(relu(u)) of layer 5.",
+    "disen variants: no attention re-aggregation; pressure, routing topology bias, tau, distance unchanged.",
+    "No residual or auxiliary objective is added.",
+    "Test CE/CPC/NRMSE are conditional nonself hidden-destination metrics.",
+    "CPC/NRMSE use the supplied hidden-origin totals, not predicted totals.",
+    "Within-community error is a diagnostic, not independent held-out evaluation.",
+    "Legacy inactive parameters are retained; parameter counts include them."
+  ]
+}

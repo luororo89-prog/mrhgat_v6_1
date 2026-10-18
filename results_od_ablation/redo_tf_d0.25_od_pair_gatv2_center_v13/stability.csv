@@ -1,0 +1,2 @@
+variant,seed_a,seed_b,channel_permutation,routing_corr,hard_agreement,hard_agreement_flow_weighted,probability_abs_difference
+pair_gatv2_center,0,1,"0,1",0.7056741175713996,0.9998331943286072,0.9999447050175317,0.020988109572489727

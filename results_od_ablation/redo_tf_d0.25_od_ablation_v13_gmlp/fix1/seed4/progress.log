@@ -1,0 +1,11 @@
+01:05:32 fix1 seed=4 START destination CE + Adam L2, fixed holdout seed 0
+01:06:09 fix1 seed=4 epoch=25 ce=4.8045 val_ce=4.4620 val_cpc=0.2994
+01:06:52 fix1 seed=4 epoch=50 ce=4.6676 val_ce=4.3830 val_cpc=0.3248
+01:07:55 fix1 seed=4 epoch=75 ce=4.6568 val_ce=4.2837 val_cpc=0.3618
+01:08:53 fix1 seed=4 epoch=100 ce=4.6225 val_ce=4.2897 val_cpc=0.3426
+01:09:57 fix1 seed=4 epoch=125 ce=4.6454 val_ce=4.2394 val_cpc=0.3669
+01:10:53 fix1 seed=4 epoch=150 ce=4.6108 val_ce=4.2227 val_cpc=0.3729
+01:11:53 fix1 seed=4 epoch=175 ce=4.6218 val_ce=4.2503 val_cpc=0.3746
+01:12:51 fix1 seed=4 epoch=200 ce=4.6255 val_ce=4.2513 val_cpc=0.3722
+01:13:51 fix1 seed=4 epoch=225 ce=4.6367 val_ce=4.2619 val_cpc=0.3581
+01:14:34 fix1 seed=4 DONE {"ce": 4.358414109540777, "ce_trips": 3.9466296263784004, "cpc": 0.5199849509189913, "nrmse": 5.6253629573502675, "internal_error_conditional": 0.038772466715407496, "internal_error_full_diagnostic": 0.018069559610824817, "variant": "fix1", "seed": 4, "epochs": 244, "best_epoch": 194, "best_val_ce": 4.200690022346323, "seconds": 541.6355509757996, "routing_entropy_normalized": 0.874033590125291, "routing_probability_std_C1": 0.1470429097736535, "confident_flow_share_p08": 0.16182564516233958}

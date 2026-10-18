@@ -1,0 +1,16 @@
+[
+  {
+    "variant": "pair_gatv2_sample20",
+    "seed": 0,
+    "test_scores_exact": true,
+    "test_routing_exact": true,
+    "validation_checkpoint_verified": true
+  },
+  {
+    "variant": "pair_gatv2_sample20",
+    "seed": 1,
+    "test_scores_exact": true,
+    "test_routing_exact": true,
+    "validation_checkpoint_verified": true
+  }
+]

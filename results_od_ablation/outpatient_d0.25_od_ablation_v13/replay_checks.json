@@ -1,0 +1,23 @@
+[
+  {
+    "variant": "fix1",
+    "seed": 0,
+    "test_scores_exact": true,
+    "test_routing_exact": true,
+    "validation_checkpoint_verified": true
+  },
+  {
+    "variant": "fix1",
+    "seed": 1,
+    "test_scores_exact": true,
+    "test_routing_exact": true,
+    "validation_checkpoint_verified": true
+  },
+  {
+    "variant": "fix1",
+    "seed": 2,
+    "test_scores_exact": true,
+    "test_routing_exact": true,
+    "validation_checkpoint_verified": true
+  }
+]

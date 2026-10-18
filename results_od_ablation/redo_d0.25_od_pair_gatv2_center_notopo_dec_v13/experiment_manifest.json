@@ -1,0 +1,44 @@
+{
+  "seeds": [
+    0,
+    1
+  ],
+  "torch_version": "2.8.0",
+  "threads": 4,
+  "variants": {
+    "pair_gatv2_center_notopo_dec": {
+      "route_centering": true,
+      "route_topology": false,
+      "dec": true
+    }
+  },
+  "loss": "origin-normalized flow CE + 1.0 x DEC KL + Adam coupled L2",
+  "selection": "minimum validation CE with unchanged early stopping",
+  "baseline_reused": false,
+  "source_sha256": {
+    "model_v13.py": "24ea68d7d64f59f1c8ad771a9f6cc4d811750347a49cd1123e64799c7ee56bc1",
+    "model_od_relation_v13.py": "28144f4ee6f0e735a818d0a54bb78b8d98eb47ed1d0a0dfdccb54b233c76b940",
+    "run_od_relation_v13.py": "a81d9fb5c51ef68cdf4e50e4f25230b979d178b982bc9672766db7c9692bca6d",
+    "model_od_ablation_v13.py": "e0bbea164162b8b4ff80d6fd9eeaeadc6d1752e1bc65e3e4ac1d7f38715b0f0e",
+    "run_od_ablation_v13.py": "1422e9aa321c1dca7d558bff2c9506fee46ad2b661b89e433db89e716fd6d2e9"
+  },
+  "data_sha256": {
+    "重做实验/step4_v13_input/supply_v13.xlsx": "5dafd29889255ab7abad601a32283eddd9b5afea14009395dc229a8146744d6b",
+    "重做实验/step4_v13_input/network_d0.25.csv": "70112da0310145496617ee5db3b3f2b70c614f60d0f4cc738f073dbcc0cda7af",
+    "重做实验/step4_v13_input/topology_pairs_d0.25.csv": "b7b9fd4318c7a0d46f8f6297fb452e836414e8ecc19051a4b9373ab226d4e4cd",
+    "data/processed/road_walk_km_osm190101.npz": "afa005a58f43855e37f02b758b4e8cb0ccad7538bd6cc4639a1b862e54d7b33e",
+    "重做实验/step4_v13_input/node_typing/ruler.json": "53ff0406dda1583264a01218fc18a034f31d16af6d2eda094211743bbd354dcb"
+  },
+  "notes": [
+    "pair_gatv2: fix1 OD-pair routing per layer, the origin pair e_ii initialises the centre.",
+    "pair_gatv2: GATv2 aggregation inside every channel, routing mass pi_ij p_ij,k as attention prior.",
+    "pair_gatv2: layer output keeps its length; the gravity head reads dropout(relu(h)) of layer 5.",
+    "pair_gatv2: loss = CE + 0 x mean nHSIC between the channels of layer 5.",
+    "No residual or auxiliary objective is added.",
+    "Test CE/CPC/NRMSE are conditional nonself hidden-destination metrics.",
+    "CPC/NRMSE use the supplied hidden-origin totals, not predicted totals.",
+    "Within-community error is a diagnostic, not independent held-out evaluation.",
+    "Legacy inactive parameters are retained; parameter counts include them.",
+    "pair_gatv2_center_notopo_dec: options {'route_centering': True, 'route_topology': False, 'dec': True}, dec_weight 1.0"
+  ]
+}

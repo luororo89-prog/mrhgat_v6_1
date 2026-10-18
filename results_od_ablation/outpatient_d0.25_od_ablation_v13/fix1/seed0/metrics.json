@@ -1,0 +1,34 @@
+{
+  "ce": 4.315776967749038,
+  "ce_trips": 4.033434006532143,
+  "cpc": 0.5160820923275106,
+  "nrmse": 6.8813370726618075,
+  "internal_error_conditional": 0.041748076769105025,
+  "internal_error_full_diagnostic": 0.011809369862239094,
+  "variant": "fix1",
+  "seed": 0,
+  "epochs": 201,
+  "best_epoch": 151,
+  "best_val_ce": 4.080527537696747,
+  "seconds": 382.7100307941437,
+  "routing_entropy_normalized": 0.7578226117329104,
+  "routing_probability_std_C1": 0.257638374210606,
+  "confident_flow_share_p08": 0.30991608422616246,
+  "hard_C1_flow_share": 0.6896571314551129,
+  "hard_flow_share": [
+    0.6896571314551129,
+    0.3103428685448872
+  ],
+  "soft_flow_share": [
+    0.4369097927095915,
+    0.5630902123205422
+  ],
+  "dominant_hard_channel_flow_share": 0.6896571314551129,
+  "soft_C1_flow_share": 0.4369097927095915,
+  "training_origin": "trained_this_comparison",
+  "parameter_count": 22957,
+  "layer5_node_cos_C1": 0.06528885046636304,
+  "layer5_node_cos_C2": 0.9999997195204444,
+  "layer5_node_cos_max": 0.9999997195204444,
+  "layer5_channels_cos_ge_099": 1
+}

@@ -70,11 +70,25 @@ def make_model(variant, cfg, n, topology=None):
                    route_score=True, rule_origin=True, od_pair_head=True)
 
 
+def retention_context(context, internal):
+    """Internal trips over internal plus available outgoing messages, standardised over communities with trips."""
+    total = internal + (context * ~np.eye(len(context), dtype=bool)).sum(1)
+    has = total > 0
+    r = np.zeros(len(context))
+    r[has] = internal[has] / total[has]
+    r[has] = (r[has] - r[has].mean()) / max(r[has].std(), 1e-12)
+    return r.astype(np.float32)
+
+
 def forward_context(model, variant, g, tensors, context_np, tau):
     x, distance, topology, candidates = tensors
     context = torch.as_tensor(context_np, dtype=torch.float32)
     pressure = torch.as_tensor(pressure_context(context_np, g['raw'], g['columns']))
     model.inflow.copy_(pressure)
+    if getattr(model, 'retention', None) is not None:
+        model.retention.copy_(torch.as_tensor(retention_context(context_np, np.diag(g['W']))))
+    if hasattr(model, 'set_context'):
+        model.set_context(context_np, np.diag(g['W']))
     share = context / context.sum(1, keepdim=True).clamp_min(1e-12)
     return model(x, distance, topology, candidates, share, context > 0, tau)
 
@@ -135,15 +149,25 @@ def train_one(variant, seed, cfg, g, tensors, H, Hv, output):
         result = forward_context(model, variant, g, tensors, context, tau)
         target = torch.as_tensor(W * ~msg * ~H * ~Hv, dtype=torch.float32)
         candidates = torch.as_tensor(~msg & ~H & ~Hv)
+        if cfg.get('exclude_internal_target'):
+            target = target * torch.as_tensor(off, dtype=torch.float32)
+            candidates = candidates & torch.as_tensor(off)
         ce = destination_ce(result['score'], target, candidates)
+        loss = ce
+        for key in ('indep', 'dec', 'stable'):
+            if cfg.get(f'{key}_weight') and key in result:
+                loss = loss + cfg[f'{key}_weight'] * result[key]
         opt.zero_grad()
-        ce.backward()
+        loss.backward()
         opt.step()
         model.eval()
         with torch.no_grad():
             validation = forward_context(model, variant, g, tensors, W * visible, tau)
             val = evaluate_scores(validation['score'], W, Hv, visible, excluded=H)
         history.append({'epoch': epoch + 1, 'ce': float(ce.detach()), 'val_ce': val['ce'], 'val_cpc': val['cpc']})
+        for key in ('indep', 'dec', 'stable'):
+            if key in result:
+                history[-1][key] = float(result[key].detach())
         if val['ce'] < best_ce:
             best_ce, best_epoch, since = val['ce'], epoch + 1, 0
             best = {key: value.detach().clone() for key, value in model.state_dict().items()}
@@ -166,7 +190,7 @@ def train_one(variant, seed, cfg, g, tensors, H, Hv, output):
     edge = ((W > 0) & off)
     probability = p.transpose(0, 2, 1)[edge]
     weights = W[edge]
-    entropy = -(probability * np.log(probability.clip(1e-30))).sum(1) / np.log(2)
+    entropy = -(probability * np.log(probability.clip(1e-30))).sum(1) / np.log(probability.shape[1])
     metrics['routing_entropy_normalized'] = float(np.average(entropy, weights=weights))
     metrics['routing_probability_std_C1'] = float(np.sqrt(np.average((probability[:, 0]-np.average(probability[:, 0], weights=weights))**2, weights=weights)))
     metrics['confident_flow_share_p08'] = float(np.average(probability.max(1) >= 0.8, weights=weights))

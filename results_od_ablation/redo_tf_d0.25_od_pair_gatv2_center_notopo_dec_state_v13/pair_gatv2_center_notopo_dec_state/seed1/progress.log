@@ -1,0 +1,10 @@
+13:39:20 pair_gatv2_center_notopo_dec_state seed=1 START destination CE + Adam L2, fixed holdout seed 0
+13:40:16 pair_gatv2_center_notopo_dec_state seed=1 epoch=25 ce=5.0169 val_ce=4.5553 val_cpc=0.2978
+13:41:06 pair_gatv2_center_notopo_dec_state seed=1 epoch=50 ce=4.8055 val_ce=4.3957 val_cpc=0.3336
+13:41:55 pair_gatv2_center_notopo_dec_state seed=1 epoch=75 ce=4.6801 val_ce=4.3147 val_cpc=0.3364
+13:42:42 pair_gatv2_center_notopo_dec_state seed=1 epoch=100 ce=4.7238 val_ce=4.3139 val_cpc=0.3378
+13:43:37 pair_gatv2_center_notopo_dec_state seed=1 epoch=125 ce=4.7096 val_ce=4.2792 val_cpc=0.3594
+13:44:39 pair_gatv2_center_notopo_dec_state seed=1 epoch=150 ce=4.6631 val_ce=4.2585 val_cpc=0.3636
+13:45:23 pair_gatv2_center_notopo_dec_state seed=1 epoch=175 ce=4.6553 val_ce=4.2869 val_cpc=0.3617
+13:45:59 pair_gatv2_center_notopo_dec_state seed=1 epoch=200 ce=4.6911 val_ce=4.2978 val_cpc=0.3561
+13:46:11 pair_gatv2_center_notopo_dec_state seed=1 DONE {"ce": 4.352711177793516, "ce_trips": 3.9392127902707283, "cpc": 0.5255312866964418, "nrmse": 5.325249421689357, "internal_error_conditional": 0.04342150672410907, "internal_error_full_diagnostic": 0.022743270587326118, "variant": "pair_gatv2_center_notopo_dec_state", "seed": 1, "epochs": 207, "best_epoch": 157, "best_val_ce": 4.210916806548819, "seconds": 410.995481967926, "routing_entropy_normalized": 0.3332358379701226, "routing_probability_std_C1": 0.4018162513360376, "confident_flow_share_p08": 0.8349086982260069}

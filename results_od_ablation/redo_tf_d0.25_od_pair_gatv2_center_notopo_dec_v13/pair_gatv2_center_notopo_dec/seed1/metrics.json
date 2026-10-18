@@ -1,0 +1,34 @@
+{
+  "ce": 4.471932610799543,
+  "ce_trips": 4.0547661609903285,
+  "cpc": 0.48472333871477996,
+  "nrmse": 6.137524138789942,
+  "internal_error_conditional": 0.044515173668938694,
+  "internal_error_full_diagnostic": 0.0215815148431169,
+  "variant": "pair_gatv2_center_notopo_dec",
+  "seed": 1,
+  "epochs": 275,
+  "best_epoch": 225,
+  "best_val_ce": 4.351254044671172,
+  "seconds": 323.7860150337219,
+  "routing_entropy_normalized": 0.5827451054308479,
+  "routing_probability_std_C1": 0.35064541711283487,
+  "confident_flow_share_p08": 0.6521555285224531,
+  "hard_C1_flow_share": 0.5428666219969945,
+  "dominant_hard_channel_flow_share": 0.5428666219969945,
+  "soft_C1_flow_share": 0.512881277994377,
+  "training_origin": "trained_this_comparison",
+  "parameter_count": 47763,
+  "layer5_node_cos_C1": 0.29170267257594357,
+  "layer5_node_cos_C2": 0.2634793198866823,
+  "layer5_node_cos_max": 0.29170267257594357,
+  "layer5_channels_cos_ge_099": 0,
+  "hard_flow_share": [
+    0.5428666219969945,
+    0.45713337800300546
+  ],
+  "soft_flow_share": [
+    0.512881277994377,
+    0.48711872194223044
+  ]
+}
