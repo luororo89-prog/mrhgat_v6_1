@@ -22,7 +22,7 @@ ROOT = HERE.parents[1]
 sys.path.insert(0, str(HERE.parent / 'v11_nodeedge'))
 import plot_type_change_v11 as ptc  # noqa: E402
 
-TYPE_EN = {'稀缺型（三甲低·二级低·社康低）': 'Scarcity', '二级主导型（三甲低·二级高·社康中）': 'SH-based',
+TYPE_EN = {'稀缺型（三甲低·二级低·社康低）': 'Scarcity', '三甲二级型（三甲高·二级高·社康中）': 'SH-based',
            '社康主导型（三甲低·二级低·社康高）': 'CHC-based', '三甲社康型（三甲高·二级低·社康高）': 'Abundance'}
 COLOR = {'Scarcity': '#3C78B4', 'SH-based': '#F28E2B', 'CHC-based': '#5AA84F', 'Abundance': '#D9473F'}
 
