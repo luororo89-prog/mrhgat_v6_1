@@ -154,7 +154,7 @@ def train_one(variant, seed, cfg, g, tensors, H, Hv, output):
             candidates = candidates & torch.as_tensor(off)
         ce = destination_ce(result['score'], target, candidates)
         loss = ce
-        for key in ('indep', 'dec', 'stable'):
+        for key in ('indep', 'dec', 'stable', 'comp_rank', 'compete_rank'):
             if cfg.get(f'{key}_weight') and key in result:
                 loss = loss + cfg[f'{key}_weight'] * result[key]
         opt.zero_grad()
@@ -165,9 +165,11 @@ def train_one(variant, seed, cfg, g, tensors, H, Hv, output):
             validation = forward_context(model, variant, g, tensors, W * visible, tau)
             val = evaluate_scores(validation['score'], W, Hv, visible, excluded=H)
         history.append({'epoch': epoch + 1, 'ce': float(ce.detach()), 'val_ce': val['ce'], 'val_cpc': val['cpc']})
-        for key in ('indep', 'dec', 'stable'):
+        for key in ('indep', 'dec', 'stable', 'comp_rank', 'compete_rank'):
             if key in result:
                 history[-1][key] = float(result[key].detach())
+        for key, value in result.get('rank_diagnostics', {}).items():
+            history[-1][key] = float(value)
         if val['ce'] < best_ce:
             best_ce, best_epoch, since = val['ce'], epoch + 1, 0
             best = {key: value.detach().clone() for key, value in model.state_dict().items()}
@@ -289,3 +291,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+
