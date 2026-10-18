@@ -1,0 +1,15 @@
+{
+  "direction_rank_min": 0.55,
+  "specificity_rank_difference_min": 0.02,
+  "quantile_top_bottom_min": 0.02,
+  "variance_min": 0.0001,
+  "tail_fraction_max": 0.95,
+  "validation_ce_allowance": 0.05,
+  "seeds_required": [
+    0,
+    1,
+    2
+  ],
+  "E4_consistency_weight": 10,
+  "no_test_selection": true
+}

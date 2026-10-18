@@ -1,0 +1,5 @@
+{
+  "E4_source": null,
+  "E4_status": "not run: E3 has not passed all validation requirements",
+  "selection_basis": "all three seeds, validation only; fixed labels; no test tuning"
+}

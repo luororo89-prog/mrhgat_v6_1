@@ -5,6 +5,7 @@ Every setting uses all configured seeds. E4 is conditional on validation gates.
 """
 import argparse
 import json
+import io
 from pathlib import Path
 from unittest.mock import patch
 import numpy as np
@@ -22,6 +23,14 @@ HERE=Path(__file__).resolve().parent
 ROOT=HERE.parents[1]
 
 
+def save_npz(path, **arrays):
+    buffer=io.BytesIO()
+    np.savez_compressed(buffer, **arrays)
+    temporary=path.with_suffix(path.suffix+'.tmp')
+    temporary.write_bytes(buffer.getvalue())
+    temporary.replace(path)
+
+
 def diagnostics(model, g, tensors, H, Hv, ref, directory):
     W=g['W'];off=~np.eye(len(W),dtype=bool)
     records=[];groups=[]
@@ -36,7 +45,7 @@ def diagnostics(model, g, tensors, H, Hv, ref, directory):
         q=out['p'].numpy().transpose(0,2,1)[oi,di]
         components=ref.components(context,oi,di)
         references,pairs=ref.pairs(context,oi,di,seed=999,max_pairs=32768,visible_only=False)
-        np.savez_compressed(directory/f'gates_{split}.npz',origin=oi,destination=di,q=q,
+        save_npz(directory/f'gates_{split}.npz',origin=oi,destination=di,q=q,
                             references=references,**components)
         for k,name in enumerate(('comp','compete')):
             a,b=pairs[k]

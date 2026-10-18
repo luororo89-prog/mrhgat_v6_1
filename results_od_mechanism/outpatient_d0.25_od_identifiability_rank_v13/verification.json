@@ -1,0 +1,11 @@
+{
+  "archives_verified": 30,
+  "archive_crc_pass": true,
+  "remote_blob_hashes_match": true,
+  "checkpoint_replays": 30,
+  "tests_passed": 26,
+  "split_matches_original": true,
+  "checkpoint_derived_array_recovery": [
+    "E3_w0.1/seed0"
+  ]
+}

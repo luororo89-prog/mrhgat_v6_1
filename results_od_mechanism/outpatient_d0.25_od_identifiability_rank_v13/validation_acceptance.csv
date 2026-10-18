@@ -1,0 +1,11 @@
+setting,mechanism_validation_pass,validation_prediction_pass,eligible_E4
+E0_w0,False,True,False
+E1_w0.01,False,True,False
+E1_w0.1,False,True,False
+E1_w1,False,True,False
+E2_w0.01,False,True,False
+E2_w0.1,False,True,False
+E2_w1,False,True,False
+E3_w0.01,False,True,False
+E3_w0.1,False,True,False
+E3_w1,False,True,False
