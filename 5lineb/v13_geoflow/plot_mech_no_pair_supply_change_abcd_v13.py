@@ -1,9 +1,11 @@
 """Four-panel relative supply-shift figure reconstructed from ``mech_no_pair``.
 
 Panel a shows the signs of shifts in the three frozen PCs relative to typical
-external aggregation.  Panel b compares the nine-indicator shift magnitude
-across baseline supply configurations.  Panel c maps the living-circle shift and summarizes it by within-cluster destination
-configuration.  Panel d relates cluster configuration diversity to mean shift.
+external aggregation. Panel b compares the nine-indicator shift magnitude
+across baseline supply configurations. Panel c maps living-circle shifts with
+cluster boundaries and shows cluster-level cumulative supply-shift profiles.
+Panel d relates baseline-configuration concentration to mean shift, with
+outgoing OD volume encoded by bubble area.
 
 The plotting script only consumes reconstruction outputs and fixed descriptive
 inputs.  It does not refit the decoder or alter model results.
@@ -26,11 +28,27 @@ from matplotlib.colors import Normalize, to_rgb
 from matplotlib.lines import Line2D
 from matplotlib.patches import PathPatch, Rectangle
 from matplotlib.path import Path as MplPath
+from shapely.geometry import shape
+from shapely.ops import unary_union
 
 TYPE_ORDER = (0, 1, 2, 3)
 TYPE_NAMES = ("scarcity", "chc-based", "sh-based", "abundance")
 TYPE_COLORS = ("#3B82B4", "#58A847", "#F28E1C", "#E34234")
 CLUSTER_ORDER = (4, 3, 5, 2, 1, 6)
+CLUSTER_IDS = (1, 2, 3, 4, 5, 6)
+CLUSTER_COLORS = {
+    1: "#0072B2",
+    2: "#009E73",
+    3: "#CC79A7",
+    4: "#56B4E9",
+    5: "#E69F00",
+    6: "#D55E00",
+}
+SUPPLY_BLOCKS = (
+    ("TH", ("delta_RA_TH", "delta_SA_TH_per_10000", "delta_TC_TH")),
+    ("SH", ("delta_RA_SH", "delta_SA_SH_per_10000", "delta_TC_SH")),
+    ("CHC", ("delta_RA_CHC", "delta_SA_CHC_per_10000", "delta_TC_CHC")),
+)
 
 
 def nature_style() -> None:
@@ -49,6 +67,8 @@ def nature_style() -> None:
         "ytick.major.size": 2.2,
         "legend.fontsize": 5.5,
         "legend.frameon": False,
+        "axes.spines.top": False,
+        "axes.spines.right": False,
         "svg.fonttype": "none",
         "pdf.fonttype": 42,
     })
@@ -96,6 +116,79 @@ def weighted_destination_summary(
             rows.append({"cluster": group, "destination_type": destination_type,
                          "weighted_change": value, "weight_sum": float(share[valid].sum()),
                          "origin_n": int(valid.sum())})
+    return pd.DataFrame(rows)
+
+
+def cluster_cumulative_summary(
+    data: pd.DataFrame,
+    cluster: np.ndarray,
+    cluster_ids: tuple[int, ...] = CLUSTER_IDS,
+) -> pd.DataFrame:
+    """Summarize cumulative nine-indicator RMS shift within each cluster."""
+    if len(data) != len(cluster):
+        raise ValueError("cluster labels must match node rows")
+    total_indicators = sum(len(columns) for _, columns in SUPPLY_BLOCKS)
+    block_energy = np.column_stack([
+        np.square(data.loc[:, columns].to_numpy(dtype=float)).sum(axis=1)
+        for _, columns in SUPPLY_BLOCKS
+    ])
+    cumulative = np.column_stack([
+        np.zeros(len(data), dtype=float),
+        np.sqrt(np.cumsum(block_energy, axis=1) / total_indicators),
+    ])
+    if "change_9" in data:
+        np.testing.assert_allclose(cumulative[:, -1], data.change_9.to_numpy(dtype=float),
+                                   rtol=1e-10, atol=1e-12)
+    stage_names = ("Baseline", *(f"+{name}" for name, _ in SUPPLY_BLOCKS))
+    rows: list[dict[str, float | int | str]] = []
+    for group in cluster_ids:
+        values = cumulative[cluster == group]
+        if not len(values):
+            continue
+        spread = values.std(axis=0, ddof=1) / np.sqrt(len(values)) if len(values) > 1 else np.zeros(4)
+        for stage, label in enumerate(stage_names):
+            rows.append({
+                "cluster": group,
+                "stage": stage,
+                "stage_name": label,
+                "mean_cumulative_shift": float(values[:, stage].mean()),
+                "se_cumulative_shift": float(spread[stage]),
+                "community_n": int(len(values)),
+            })
+    return pd.DataFrame(rows)
+
+
+def cluster_relation_summary(
+    data: pd.DataFrame,
+    cluster: np.ndarray,
+    W: np.ndarray,
+    cluster_ids: tuple[int, ...] = CLUSTER_IDS,
+) -> pd.DataFrame:
+    """Compute cluster concentration, mean shift, and outgoing OD volume."""
+    if len(data) != len(cluster) or W.shape != (len(data), len(data)):
+        raise ValueError("node rows, cluster labels, and OD matrix must align")
+    off_diagonal = W.copy()
+    np.fill_diagonal(off_diagonal, 0.0)
+    origin_outflow = off_diagonal.sum(axis=1)
+    baseline_type = data.baseline_type.to_numpy(dtype=int)
+    rows: list[dict[str, float | int]] = []
+    for group in cluster_ids:
+        member = cluster == group
+        weights = origin_outflow[member]
+        outgoing_flow = float(weights.sum())
+        if outgoing_flow <= 0:
+            raise ValueError(f"cluster {group} has no outgoing OD flow")
+        group_types = baseline_type[member]
+        proportions = np.array([
+            weights[group_types == supply_type].sum() for supply_type in TYPE_ORDER
+        ], dtype=float) / outgoing_flow
+        rows.append({
+            "cluster": group,
+            "configuration_concentration": float(np.sum(proportions ** 2)),
+            "mean_change": float(data.loc[member, "change_9"].mean()),
+            "outgoing_flow": outgoing_flow,
+            "community_n": int(member.sum()),
+        })
     return pd.DataFrame(rows)
 
 
@@ -211,97 +304,166 @@ def polygon_parts(geometry: dict) -> list[np.ndarray]:
     return [np.asarray(polygon[0], dtype=float) for polygon in polygons if polygon and polygon[0]]
 
 
-def polygon_centroid(points: np.ndarray) -> tuple[float, float]:
-    x, y = points[:, 0], points[:, 1]
-    cross = x[:-1] * y[1:] - x[1:] * y[:-1]
-    area = cross.sum() / 2
-    if abs(area) < 1e-12:
-        return float(x.mean()), float(y.mean())
-    return float(((x[:-1] + x[1:]) * cross).sum() / (6 * area)), float(((y[:-1] + y[1:]) * cross).sum() / (6 * area))
+def geometry_line_parts(geometry: object) -> list[np.ndarray]:
+    if getattr(geometry, "is_empty", True):
+        return []
+    if geometry.geom_type in {"LineString", "LinearRing"}:
+        return [np.asarray(geometry.coords, dtype=float)]
+    parts: list[np.ndarray] = []
+    for item in getattr(geometry, "geoms", []):
+        parts.extend(geometry_line_parts(item))
+    return parts
 
 
-def map_panel(ax: plt.Axes, geojson_path: Path, values: dict[int, float], clusters: dict[int, int]) -> tuple[mpl.cm.ScalarMappable, dict[int, tuple[float, float]]]:
+def map_panel(
+    ax: plt.Axes,
+    geojson_path: Path,
+    values: dict[int, float],
+    clusters: dict[int, int],
+) -> tuple[mpl.cm.ScalarMappable, dict[int, tuple[float, float]]]:
     geo = json.loads(geojson_path.read_text(encoding="utf-8"))
     valid_values = np.asarray(list(values.values()), dtype=float)
     norm = Normalize(vmin=float(valid_values.min()), vmax=float(valid_values.max()))
     cmap = mpl.colormaps["YlOrRd"]
     polygons, colors = [], []
-    centroid_rows: dict[int, list[tuple[float, float]]] = {}
+    cluster_parts: dict[int, list[object]] = {group: [] for group in CLUSTER_IDS}
     for feature in geo["features"]:
         community = int(feature["properties"]["community_id"])
         parts = polygon_parts(feature["geometry"])
         polygons.extend(parts)
         colors.extend([cmap(norm(values[community]))] * len(parts))
         if community in clusters:
-            centroid_rows.setdefault(clusters[community], []).extend(polygon_centroid(part) for part in parts)
+            geometry = shape(feature["geometry"])
+            group = clusters[community]
+            if group in cluster_parts:
+                cluster_parts[group].append(geometry if geometry.is_valid else geometry.buffer(0))
     collection = PolyCollection(
-        polygons, facecolors=colors, edgecolors="#333333", linewidths=0.18,
+        polygons, facecolors=colors, edgecolors="#A7A7A7", linewidths=0.14,
         rasterized=True, zorder=2,
     )
     ax.add_collection(collection)
     all_points = np.concatenate(polygons)
     ax.set_xlim(all_points[:, 0].min(), all_points[:, 0].max())
     ax.set_ylim(all_points[:, 1].min(), all_points[:, 1].max())
-    ax.set_aspect(1 / np.cos(np.deg2rad(all_points[:, 1].mean())))
+    ax.set_aspect(1 / np.cos(np.deg2rad(all_points[:, 1].mean())), adjustable="datalim")
     ax.set_axis_off()
-    centres = {group: tuple(np.mean(points, axis=0)) for group, points in centroid_rows.items()}
-    for group in range(1, 7):
-        if group in centres:
-            ax.text(*centres[group], str(group), ha="center", va="center", fontsize=5.5, fontweight="bold",
-                    color="#333333", zorder=4)
+    centres: dict[int, tuple[float, float]] = {}
+    for group in CLUSTER_IDS:
+        merged = unary_union(cluster_parts[group])
+        for points in geometry_line_parts(merged.boundary):
+            ax.plot(points[:, 0], points[:, 1], color="white", linewidth=1.9,
+                    solid_capstyle="round", solid_joinstyle="round", zorder=3)
+            ax.plot(points[:, 0], points[:, 1], color=CLUSTER_COLORS[group], linewidth=0.95,
+                    solid_capstyle="round", solid_joinstyle="round", zorder=4)
+        candidate_polygons = [merged] if merged.geom_type == "Polygon" else [
+            item for item in getattr(merged, "geoms", []) if item.geom_type == "Polygon"
+        ]
+        label_polygon = max(candidate_polygons, key=lambda item: item.area)
+        label_point = label_polygon.representative_point()
+        centres[group] = (float(label_point.x), float(label_point.y))
+    boundary_handles = [
+        Line2D([0], [0], color=CLUSTER_COLORS[group], linewidth=1.5, label=f"Cluster {group}")
+        for group in CLUSTER_IDS
+    ]
+    ax.legend(boundary_handles, [f"Cluster {group}" for group in CLUSTER_IDS],
+              title="Cluster boundary", loc="upper left", bbox_to_anchor=(0.0, 0.98),
+              ncol=3, handlelength=1.6, handletextpad=0.35, columnspacing=0.8,
+              fontsize=5, title_fontsize=5)
     ax.annotate("N", xy=(0.965, 0.92), xytext=(0.965, 0.77), xycoords="axes fraction", textcoords="axes fraction",
                 ha="center", va="center", fontsize=5.5, arrowprops={"arrowstyle": "-|>", "lw": 0.65})
     return mpl.cm.ScalarMappable(norm=norm, cmap=cmap), centres
 
 
-def cluster_bars(ax: plt.Axes, group: int, summary: pd.DataFrame, y_max: float) -> None:
-    table = summary.loc[summary.cluster == group].set_index("destination_type").reindex(TYPE_ORDER)
-    values = table.weighted_change.to_numpy(dtype=float)
-    for index, (value, color) in enumerate(zip(values, TYPE_COLORS)):
-        if np.isfinite(value):
-            ax.bar(index, value, color=color, width=0.68)
-            ax.text(index, value + y_max * 0.025, f"{value:.2f}", ha="center", va="bottom", fontsize=5)
-        else:
-            ax.text(index, y_max * 0.20, "No flow", ha="center", va="bottom", rotation=90,
-                    rotation_mode="anchor", fontsize=5, color="#777777")
-    ax.set_title(f"Cluster {group}", loc="left", fontweight="bold", pad=1.5)
-    ax.set_xlim(-0.55, 3.55)
-    ax.set_ylim(0, y_max)
-    ax.set_xticks(range(4), ("scarcity", "CHC", "SH", "abund."), rotation=35,
-                  ha="right", rotation_mode="anchor")
-
-
-def cluster_relation(ax: plt.Axes, data: pd.DataFrame, cluster: np.ndarray, W: np.ndarray) -> None:
-    rows = []
-    origin_volume = W.sum(axis=1)
-    for group in range(1, 7):
-        member = cluster == group
-        weight = origin_volume[member]
-        proportions = np.array([weight[data.loc[member, "baseline_type"].to_numpy(dtype=int) == supply_type].sum()
-                                for supply_type in TYPE_ORDER], dtype=float)
-        proportions /= proportions.sum()
-        rows.append({"cluster": group, "diversity": 1 - np.sum(proportions ** 2),
-                     "change": float(data.loc[member, "change_9"].mean())})
-    table = pd.DataFrame(rows)
-    pearson = pearsonr(table.diversity, table.change)
-    spearman = spearmanr(table.diversity, table.change)
-    fit = np.polyfit(table.diversity, table.change, 1)
-    x = np.linspace(table.diversity.min(), table.diversity.max(), 100)
-    ax.plot(x, np.polyval(fit, x), color="#3E88B8", linewidth=0.8)
-    ax.scatter(table.diversity, table.change, s=18, color="#3E88B8", edgecolor="white", linewidth=0.45, zorder=3)
-    ax.margins(x=0.10, y=0.12)
-    label_offsets = {1: (-12, 6), 2: (-12, -8), 4: (5, 7), 6: (10, -18)}
-    for row in table.itertuples():
-        offset = label_offsets.get(row.cluster, (3, 2))
-        ax.annotate(str(row.cluster), (row.diversity, row.change), xytext=offset,
-                    textcoords="offset points", fontsize=5)
-    ax.text(0.03, 0.03, f"r = {pearson.statistic:.3f}, p = {pearson.pvalue:.3f}\n"
-            f"ρ = {spearman.statistic:.3f}, p = {spearman.pvalue:.3f}\nn = 6 clusters",
-            transform=ax.transAxes, ha="left", va="bottom", fontsize=5)
-    ax.set_xlabel("Cluster type diversity")
-    ax.set_ylabel("Cluster mean relative-shift magnitude")
-    ax.text(0.5, -0.22, "Diversity uses four configuration shares\nweighted by origin OD volume.",
+def cluster_cumulative_plot(ax: plt.Axes, summary: pd.DataFrame) -> None:
+    x = np.arange(4, dtype=float)
+    series = {
+        group: summary.loc[summary.cluster == group].sort_values("stage")
+        for group in CLUSTER_IDS
+    }
+    end_values = {group: float(table.mean_cumulative_shift.iloc[-1]) for group, table in series.items()}
+    end_span = max(end_values.values()) - min(end_values.values())
+    min_gap = max(0.016, end_span * 0.19)
+    ordered = sorted(end_values, key=end_values.get)
+    end_label_y: dict[int, float] = {}
+    previous = -np.inf
+    for group in ordered:
+        end_label_y[group] = max(end_values[group], previous + min_gap)
+        previous = end_label_y[group]
+    excess = end_label_y[ordered[-1]] - (max(end_values.values()) + min_gap)
+    if excess > 0:
+        end_label_y = {group: value - excess for group, value in end_label_y.items()}
+    for group in CLUSTER_IDS:
+        table = series[group]
+        mean = table.mean_cumulative_shift.to_numpy(dtype=float)
+        se = table.se_cumulative_shift.to_numpy(dtype=float)
+        color = CLUSTER_COLORS[group]
+        ax.fill_between(x, np.maximum(0.0, mean - se), mean + se, color=color, alpha=0.10, linewidth=0)
+        ax.plot(x, mean, color=color, linewidth=1.05, marker="o", markersize=2.8,
+                markeredgecolor="white", markeredgewidth=0.35, zorder=3)
+        ax.text(x[-1] + 0.24, end_label_y[group], f"C{group}", color=color,
+                fontsize=5, fontweight="bold", ha="left", va="center")
+    ax.axhline(0, color="#8A8A8A", linewidth=0.55, linestyle="--", zorder=0)
+    ax.set_xlim(-0.08, 3.58)
+    upper = max(max(table.mean_cumulative_shift + table.se_cumulative_shift) for table in series.values())
+    ax.set_ylim(0, max(upper, max(end_label_y.values())) + 0.012)
+    ax.set_xticks(x, ("Baseline", "+TH", "+SH", "+CHC"))
+    ax.set_ylabel("Mean cumulative relative shift")
+    ax.text(0.5, -0.23, "Mean ± SE across living circles\nCumulative RMS across nine supply indicators",
             transform=ax.transAxes, ha="center", va="top", fontsize=5, color="#677384")
+
+
+def bubble_sizes(values: np.ndarray, low: float = 42.0, high: float = 210.0) -> np.ndarray:
+    values = np.asarray(values, dtype=float)
+    span = float(values.max() - values.min())
+    if span <= 0:
+        return np.full_like(values, (low + high) / 2)
+    return low + (values - values.min()) / span * (high - low)
+
+
+def cluster_relation(ax: plt.Axes, table: pd.DataFrame) -> None:
+    concentration = table.configuration_concentration.to_numpy(dtype=float)
+    change = table.mean_change.to_numpy(dtype=float)
+    outgoing_flow = table.outgoing_flow.to_numpy(dtype=float)
+    sizes = bubble_sizes(outgoing_flow)
+    pearson = pearsonr(concentration, change)
+    spearman = spearmanr(concentration, change)
+    fit = np.polyfit(concentration, change, 1)
+    x = np.linspace(concentration.min(), concentration.max(), 100)
+    ax.plot(x, np.polyval(fit, x), color="#64748B", linewidth=0.75, zorder=1)
+    label_offsets = {
+        1: (0.007, 0.007),
+        2: (-0.015, 0.015),
+        3: (0.007, 0.006),
+        4: (0.007, 0.006),
+        5: (0.007, -0.009),
+        6: (-0.009, 0.007),
+    }
+    for row, size in zip(table.itertuples(), sizes):
+        color = CLUSTER_COLORS[int(row.cluster)]
+        ax.scatter(row.configuration_concentration, row.mean_change, s=size, color=color,
+                   edgecolor="white", linewidth=0.8, alpha=0.92, zorder=3)
+        dx, dy = label_offsets[int(row.cluster)]
+        ax.text(row.configuration_concentration + dx, row.mean_change + dy, str(int(row.cluster)),
+                ha="right" if dx < 0 else "left", va="center", fontsize=5,
+                fontweight="bold", color=color, zorder=4)
+    ax.margins(x=0.16, y=0.18)
+    reference_flow = np.quantile(outgoing_flow, (0.0, 0.5, 1.0))
+    reference_size = bubble_sizes(reference_flow, low=42.0, high=210.0)
+    handles = [
+        Line2D([0], [0], marker="o", linestyle="none", markerfacecolor="#94A3B8",
+               markeredgecolor="white", markeredgewidth=0.7, markersize=np.sqrt(size))
+        for size in reference_size
+    ]
+    legend = ax.legend(handles, [f"{value / 1000:.0f}k" for value in reference_flow],
+                       title="Outgoing flow", loc="upper left", ncol=3,
+                       handletextpad=0.45, columnspacing=0.8, borderaxespad=0.2,
+                       fontsize=5, title_fontsize=5)
+    legend._legend_box.align = "left"
+    ax.text(0.98, 0.03, f"r = {pearson.statistic:.3f}, p = {pearson.pvalue:.3f}\n"
+            f"ρ = {spearman.statistic:.3f}, p = {spearman.pvalue:.3f}",
+            transform=ax.transAxes, ha="right", va="bottom", fontsize=5, color="#404040")
+    ax.set_xlabel("Baseline configuration concentration")
+    ax.set_ylabel("Cluster mean relative-shift magnitude")
 
 
 def run_alignment_audit(fig: plt.Figure, axes: list[plt.Axes], panel_ids: list[str], output: Path) -> None:
@@ -313,13 +475,18 @@ def run_alignment_audit(fig: plt.Figure, axes: list[plt.Axes], panel_ids: list[s
         fig,
         axes=axes,
         panel_ids=panel_ids,
-        row_groups=[panel_ids[:3], panel_ids[3:]],
         json_out=output.with_suffix(".alignment.json"),
         overlay_svg=output.with_suffix(".alignment.svg"),
         tolerance_pt=1.5,
         gutter_tolerance_pt=1.5,
         strict=True,
     )
+
+
+def panel_heading(ax: plt.Axes, label: str, title: str) -> None:
+    ax.text(-0.11, 1.08, label, transform=ax.transAxes, fontsize=8.2,
+            fontweight="bold", ha="left", va="bottom")
+    ax.set_title(title, loc="left", fontsize=7.2, fontweight="bold", pad=5)
 
 
 def main() -> None:
@@ -349,54 +516,53 @@ def main() -> None:
     summary = weighted_destination_summary(nodes.change_9.to_numpy(), nodes.baseline_type.to_numpy(dtype=int),
                                            cluster, W)
     summary.to_csv(args.output.with_name(args.output.name + "_cluster_destination.csv"), index=False)
+    cumulative = cluster_cumulative_summary(nodes, cluster)
+    cumulative.to_csv(args.output.with_name(args.output.name + "_cluster_cumulative.csv"), index=False)
+    relation = cluster_relation_summary(nodes, cluster, W)
+    relation.to_csv(args.output.with_name(args.output.name + "_cluster_relation.csv"), index=False)
 
     nature_style()
-    fig = plt.figure(figsize=(7.2047, 6.7717), facecolor="white")
-    ax_a = fig.add_axes([0.055, 0.705, 0.43, 0.255])
-    ax_b = fig.add_axes([0.57, 0.735, 0.375, 0.22])
-    ax_map = fig.add_axes([0.17, 0.24, 0.43, 0.24])
-    ax_d = fig.add_axes([0.755, 0.255, 0.19, 0.235])
-    bar_positions = {
-        4: [0.08, 0.535, 0.16, 0.095],
-        3: [0.29, 0.535, 0.16, 0.095],
-        5: [0.50, 0.535, 0.16, 0.095],
-        2: [0.08, 0.09, 0.16, 0.095],
-        1: [0.29, 0.09, 0.16, 0.095],
-        6: [0.50, 0.09, 0.16, 0.095],
-    }
-    bar_axes = {group: fig.add_axes(position) for group, position in bar_positions.items()}
+    fig = plt.figure(figsize=(7.2047, 6.55), facecolor="white")
+    grid = fig.add_gridspec(
+        3, 2,
+        left=0.07, right=0.97, top=0.955, bottom=0.10,
+        width_ratios=(1.58, 1.0), height_ratios=(1.0, 0.90, 0.90),
+        hspace=0.52, wspace=0.24,
+    )
+    ax_a = fig.add_subplot(grid[0, 0])
+    ax_b = fig.add_subplot(grid[0, 1])
+    ax_map = fig.add_subplot(grid[1:, 0])
+    ax_cumulative = fig.add_subplot(grid[1, 1])
+    ax_d = fig.add_subplot(grid[2, 1])
 
     alluvial(ax_a, data)
     boxplot(ax_b, data)
     values = dict(zip(nodes.community_id.astype(int), nodes.change_9.astype(float)))
     groups = dict(zip(nodes.community_id.astype(int), cluster))
     scalar, _centres = map_panel(ax_map, args.geojson, values, groups)
-    colorbar_axis = fig.add_axes([0.145, 0.225, 0.48, 0.012])
+    colorbar_axis = ax_map.inset_axes([0.12, -0.060, 0.76, 0.025])
     colorbar = fig.colorbar(scalar, cax=colorbar_axis, orientation="horizontal")
     colorbar.ax.tick_params(labelsize=5, length=1.8, width=0.4)
-    y_max = max(summary.weighted_change.max() * 1.18, 0.1)
-    for index, group in enumerate(CLUSTER_ORDER):
-        cluster_bars(bar_axes[group], group, summary, y_max)
-        if index % 3:
-            bar_axes[group].set_yticklabels([])
-        else:
-            bar_axes[group].set_ylabel("Weighted mean shift", labelpad=1)
-    cluster_relation(ax_d, nodes, cluster, W)
+    colorbar.ax.set_title("Nine-indicator relative-shift magnitude", fontsize=5, pad=2)
+    cluster_cumulative_plot(ax_cumulative, cumulative)
+    cluster_relation(ax_d, relation)
 
-    fig.text(0.055, 0.975, "a. PC shift relative to typical aggregation", fontsize=7.5, fontweight="bold", va="top")
-    fig.text(0.57, 0.975, "b. Relative-shift magnitude by configuration", fontsize=7.5, fontweight="bold", va="top")
-    fig.text(0.29, 0.699, "Rise = positive · Stable = zero · Decline = negative\n"
-             "Band width = number of living circles", ha="center", va="top", fontsize=5)
-    fig.text(0.055, 0.665, "c. Living-circle shift and OD destination configuration",
-             fontsize=7.5, fontweight="bold", va="top")
-    fig.text(0.755, 0.505, "d. Cluster-level relationship", fontsize=7.5, fontweight="bold", va="top")
-    fig.text(0.5, 0.006, f"Seed {args.seed} · Spatially cross-fitted shift relative to typical external aggregation\n"
-             "Bars weight each origin’s shift by its within-cluster OD share to the destination configuration; self flows excluded.",
+    panel_heading(ax_a, "a", "PC shift relative to typical aggregation")
+    panel_heading(ax_b, "b", "Relative-shift magnitude by configuration")
+    panel_heading(ax_map, "c", "Spatial supply shift and cluster cumulative profiles")
+    ax_cumulative.set_title("Cumulative shift from baseline", loc="left", fontsize=6.5,
+                            fontweight="bold", pad=4)
+    panel_heading(ax_d, "d", "Cluster-level relationship")
+    ax_a.text(0.5, -0.10, "Rise = positive · Stable = zero · Decline = negative\n"
+              "Band width = number of living circles", transform=ax_a.transAxes,
+              ha="center", va="top", fontsize=5)
+    fig.text(0.5, 0.012, f"Seed {args.seed} · Spatially cross-fitted shift relative to typical external aggregation\n"
+             "Cluster outlines share colors with profiles and bubbles · Bubble area is outgoing OD volume with self flows excluded",
              ha="center", va="bottom", fontsize=5, color="#64748B")
 
-    ordered_bar_axes = [bar_axes[group] for group in CLUSTER_ORDER]
-    panel_ids = [f"cluster{group}" for group in CLUSTER_ORDER]
-    run_alignment_audit(fig, ordered_bar_axes, panel_ids, args.output)
+    axes = [ax_a, ax_b, ax_map, ax_cumulative, ax_d]
+    panel_ids = ["a", "b", "c-map", "c-profile", "d"]
+    run_alignment_audit(fig, axes, panel_ids, args.output)
     fig.savefig(args.output.with_suffix(".svg"), bbox_inches="tight")
     fig.savefig(args.output.with_suffix(".pdf"), bbox_inches="tight")
     fig.savefig(args.output.with_suffix(".png"), dpi=600, bbox_inches="tight", facecolor="white")
