@@ -6,7 +6,12 @@ import numpy as np
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE.parent))
 
-from reconstruct_mech_no_pair_supply_v13 import linear_channel_change, local_reference, split_channels
+from reconstruct_mech_no_pair_supply_v13 import (
+    crossfit_typical_change,
+    linear_channel_change,
+    reference_vector,
+    split_channels,
+)
 from plot_mech_no_pair_supply_change_abcd_v13 import holm, weighted_destination_summary
 
 
@@ -15,13 +20,26 @@ def test_external_channel_difference_is_additive():
     h = rng.normal(size=(7, 12))
     coef = rng.normal(size=(3, 12))
     h, width = split_channels(h)
-    local = local_reference(h, width)
-    total, parts = linear_channel_change(coef, h, width)
-    expected = (h - local) @ coef.T
+    reference = reference_vector(h, rng.normal(size=(7, 8)), width)
+    total, parts = linear_channel_change(coef, h, reference, width)
+    expected = (h - reference) @ coef.T
     np.testing.assert_allclose(total, expected)
     np.testing.assert_allclose(parts.sum(axis=0), expected)
-    np.testing.assert_array_equal(local[:, :width], h[:, :width])
-    np.testing.assert_array_equal(local[:, width:], np.zeros_like(local[:, width:]))
+    np.testing.assert_array_equal(reference[:, :width], h[:, :width])
+
+
+def test_typical_reference_and_decoder_are_cross_fitted():
+    rng = np.random.default_rng(19)
+    target = rng.normal(size=(18, 3))
+    base = target @ rng.normal(size=(3, 4)) + rng.normal(scale=0.05, size=(18, 4))
+    external = target @ rng.normal(size=(3, 8)) + rng.normal(scale=0.05, size=(18, 8))
+    h = np.concatenate([base, external], axis=1)
+    folds = np.repeat(np.arange(3), 6)
+    result = crossfit_typical_change(h, target, folds)
+    assert result["reference"].shape == h.shape
+    assert result["delta"].shape == target.shape
+    np.testing.assert_allclose(result["reference"][:, :4], base)
+    np.testing.assert_allclose(result["parts"].sum(axis=0), result["delta"], rtol=1e-10, atol=1e-10)
 
 
 def test_holm_adjustment_is_monotone_in_sorted_order():

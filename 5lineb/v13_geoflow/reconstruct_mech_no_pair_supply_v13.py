@@ -1,16 +1,20 @@
-"""Reconstruct model-implied supply change from ``mech_no_pair`` node vectors.
+"""Reconstruct relative supply shifts from ``mech_no_pair`` node vectors.
 
 The saved ``arrays.npz`` file contains the final three-channel node
 representation ``h = [h_base, h_comp, h_compete]``.  A Ridge decoder is fitted
-from that aggregated representation to the nine frozen-ruler supply
-coordinates.  The local reference is the same representation with the two
-external channel blocks set to zero.  The model-implied change is therefore
+from that representation to the nine frozen-ruler supply coordinates.  A
+second Ridge model estimates the typical external aggregation conditional on
+the observed baseline supply coordinates.  Both models are spatially
+cross-fitted.  The relative shift is therefore
 
-    delta_x = D(h_base, h_comp, h_compete) - D(h_base, 0, 0).
+    delta_x = D(h_base, h_ext) - D(h_base, E[h_ext | X]).
 
-For a linear decoder the compensation and competition contributions add
-exactly.  The decoded difference is a representation-level intervention; it is
-not an independently observed post-interaction supply outcome.
+For each held-out spatial fold, neither the decoder nor the conditional
+reference model is fitted on the evaluated nodes.  Common external mobility,
+including routine movement within broad hospital catchments, can enter the
+reference.  Because the aggregate OD does not identify facility level, the
+residual is not uniquely attributable to community-health-centre movement and
+is not an independently observed post-interaction supply outcome.
 
 Example
 -------
@@ -98,52 +102,82 @@ def split_channels(h: np.ndarray) -> tuple[np.ndarray, int]:
     return h, h.shape[1] // len(CHANNELS)
 
 
-def local_reference(h: np.ndarray, width: int) -> np.ndarray:
-    local = np.asarray(h, dtype=float).copy()
-    local[:, width:] = 0.0
-    return local
+def reference_vector(h: np.ndarray, typical_external: np.ndarray, width: int) -> np.ndarray:
+    h = np.asarray(h, dtype=float)
+    typical_external = np.asarray(typical_external, dtype=float)
+    if typical_external.shape != (h.shape[0], h.shape[1] - width):
+        raise ValueError("typical external aggregation has incompatible shape")
+    return np.concatenate([h[:, :width], typical_external], axis=1)
 
 
-def linear_channel_change(coef: np.ndarray, h: np.ndarray, width: int) -> tuple[np.ndarray, np.ndarray]:
+def linear_channel_change(
+    coef: np.ndarray,
+    h: np.ndarray,
+    reference: np.ndarray,
+    width: int,
+) -> tuple[np.ndarray, np.ndarray]:
     """Return total external change and the two additive channel parts."""
     coef = np.asarray(coef, dtype=float)
     h = np.asarray(h, dtype=float)
+    reference = np.asarray(reference, dtype=float)
+    residual = h - reference
+    np.testing.assert_allclose(residual[:, :width], 0.0, atol=1e-12)
     parts = np.stack([
-        h[:, width:2 * width] @ coef[:, width:2 * width].T,
-        h[:, 2 * width:3 * width] @ coef[:, 2 * width:3 * width].T,
+        residual[:, width:2 * width] @ coef[:, width:2 * width].T,
+        residual[:, 2 * width:3 * width] @ coef[:, 2 * width:3 * width].T,
     ])
     return parts.sum(axis=0), parts
 
 
-def spatial_oof(h: np.ndarray, target: np.ndarray, folds: np.ndarray) -> np.ndarray:
-    prediction = np.empty_like(target, dtype=float)
+def crossfit_typical_change(
+    h: np.ndarray,
+    target: np.ndarray,
+    folds: np.ndarray,
+) -> dict[str, object]:
+    """Estimate a typical external reference and decoded shift out of fold."""
+    h, width = split_channels(h)
+    reference = np.empty_like(h, dtype=float)
+    decoded_aggregated = np.empty_like(target, dtype=float)
+    decoded_reference = np.empty_like(target, dtype=float)
+    parts = np.empty((2, *target.shape), dtype=float)
+    decoder_alphas: list[float] = []
+    reference_alphas: list[float] = []
     for fold in np.unique(folds):
         test = folds == fold
-        prediction[test] = RidgeCV(alphas=ALPHAS).fit(h[~test], target[~test]).predict(h[test])
-    return prediction
+        decoder = RidgeCV(alphas=ALPHAS).fit(h[~test], target[~test])
+        reference_model = RidgeCV(alphas=ALPHAS).fit(target[~test], h[~test, width:])
+        fold_reference = reference_vector(h[test], reference_model.predict(target[test]), width)
+        reference[test] = fold_reference
+        decoded_aggregated[test] = decoder.predict(h[test])
+        decoded_reference[test] = decoder.predict(fold_reference)
+        fold_delta, fold_parts = linear_channel_change(decoder.coef_, h[test], fold_reference, width)
+        np.testing.assert_allclose(
+            decoded_aggregated[test] - decoded_reference[test], fold_delta, rtol=1e-10, atol=1e-10
+        )
+        parts[:, test] = fold_parts
+        decoder_alphas.append(float(decoder.alpha_))
+        reference_alphas.append(float(reference_model.alpha_))
+    delta = decoded_aggregated - decoded_reference
+    np.testing.assert_allclose(parts.sum(axis=0), delta, rtol=1e-10, atol=1e-10)
+    return {
+        "width": width,
+        "reference": reference,
+        "decoded_aggregated": decoded_aggregated,
+        "decoded_reference": decoded_reference,
+        "delta": delta,
+        "parts": parts,
+        "decoder_fold_alphas": np.asarray(decoder_alphas),
+        "reference_fold_alphas": np.asarray(reference_alphas),
+    }
 
 
 def reconstruct_seed(h: np.ndarray, target: np.ndarray, folds: np.ndarray) -> dict[str, object]:
     h, width = split_channels(h)
-    local = local_reference(h, width)
     decoder = RidgeCV(alphas=ALPHAS).fit(h, target)
-    decoded_aggregated = decoder.predict(h)
-    decoded_local = decoder.predict(local)
-    delta = decoded_aggregated - decoded_local
-    linear_delta, parts = linear_channel_change(decoder.coef_, h, width)
-    np.testing.assert_allclose(delta, linear_delta, rtol=1e-10, atol=1e-10)
-    np.testing.assert_allclose(parts.sum(axis=0), delta, rtol=1e-10, atol=1e-10)
-    oof = spatial_oof(h, target, folds)
-    return {
-        "decoder": decoder,
-        "width": width,
-        "local": local,
-        "decoded_aggregated": decoded_aggregated,
-        "decoded_local": decoded_local,
-        "delta": delta,
-        "parts": parts,
-        "oof": oof,
-    }
+    reference_model = RidgeCV(alphas=ALPHAS).fit(target, h[:, width:])
+    result = crossfit_typical_change(h, target, folds)
+    result.update({"decoder": decoder, "reference_model": reference_model, "oof": result["decoded_aggregated"]})
+    return result
 
 
 def main() -> None:
@@ -194,6 +228,10 @@ def main() -> None:
         oof = result["oof"]
         oof_measure = measure(oof, ruler)
         decoder = result["decoder"]
+        reference_model = result["reference_model"]
+        width = int(result["width"])
+        reference_error = result["reference"][:, width:] - h[:, width:]
+        reference_r2 = [r2_score(h[:, j], result["reference"][:, j]) for j in range(width, h.shape[1])]
 
         for index, column in enumerate(columns):
             error = oof[:, index] - X[:, index]
@@ -203,9 +241,12 @@ def main() -> None:
                                 "oof_r2": float(r2_score(X[:, index], oof[:, index]))})
         eligible = W.sum(axis=1) > 0
         summaries.append({"seed": seed, "alpha": float(decoder.alpha_),
+                          "reference_alpha": float(reference_model.alpha_),
                           "oof_rmse": float(np.sqrt(np.mean((oof - X) ** 2))),
                           "oof_min_r2": float(min(r2_score(X[:, j], oof[:, j]) for j in range(X.shape[1]))),
                           "oof_type_agreement": float(np.mean(oof_measure["class"] == nominal["class"])),
+                          "reference_oof_rmse": float(np.sqrt(np.mean(reference_error ** 2))),
+                          "reference_oof_mean_r2": float(np.mean(reference_r2)),
                           "eligible_n": int(eligible.sum()),
                           "mean_change_9": float(change_9[eligible].mean()),
                           "mean_change_pc": float(change_pc[eligible].mean()),
@@ -228,9 +269,26 @@ def main() -> None:
             frame[f"PC{component + 1}_after"] = after_measure["pc"][:, component]
             frame[f"delta_PC{component + 1}"] = delta_pc[:, component]
         frames.append(frame)
-        np.savez_compressed(output / f"seed{seed}_decoder.npz", ids=ids, h=h, local=result["local"],
-                            coef=decoder.coef_, intercept=decoder.intercept_, alpha=decoder.alpha_,
-                            delta=delta, delta_comp=parts[0], delta_compete=parts[1], oof=oof)
+        np.savez_compressed(
+            output / f"seed{seed}_decoder.npz",
+            ids=ids,
+            h=h,
+            reference=result["reference"],
+            decoded_aggregated=result["decoded_aggregated"],
+            decoded_reference=result["decoded_reference"],
+            coef=decoder.coef_,
+            intercept=decoder.intercept_,
+            alpha=decoder.alpha_,
+            reference_coef=reference_model.coef_,
+            reference_intercept=reference_model.intercept_,
+            reference_alpha=reference_model.alpha_,
+            decoder_fold_alphas=result["decoder_fold_alphas"],
+            reference_fold_alphas=result["reference_fold_alphas"],
+            delta=delta,
+            delta_comp=parts[0],
+            delta_compete=parts[1],
+            oof=oof,
+        )
         input_hashes[f"seed{seed}_arrays"] = sha256(array_path)
 
     nodes = pd.concat(frames, ignore_index=True)
@@ -249,20 +307,24 @@ def main() -> None:
         "variant": VARIANT,
         "seeds": args.seeds,
         "representation": "saved three-channel aggregated node vector h",
-        "decoder": "RidgeCV from aggregated h to nine frozen-ruler standardized indicators",
+        "decoder": "spatial-fold cross-fitted RidgeCV from aggregated h to nine frozen-ruler standardized indicators",
         "alphas": ALPHAS.tolist(),
-        "local_reference": "same h with compensation and competition blocks set to zero",
-        "change": "D(h_base,h_comp,h_compete) - D(h_base,0,0)",
-        "after": "frozen baseline indicators + decoded change",
-        "validation": "spatial-fold out-of-fold reconstruction of baseline indicators",
-        "interpretation": "model-implied representation change, not measured post-interaction supply",
+        "typical_external_reference": "spatial-fold cross-fitted RidgeCV E[(h_comp,h_compete) | nine baseline supply indicators]",
+        "change": "D^(-fold)(h_base,h_ext) - D^(-fold)(h_base,E^(-fold)[h_ext|X])",
+        "after": "frozen baseline indicators + relative decoded shift",
+        "validation": "both decoder and typical-reference model evaluated out of spatial fold",
+        "mobility_scope": "common external aggregation can absorb routine mobility, including plausible movement within broad hospital catchments",
+        "facility_level_limit": "aggregate OD does not identify visited facility level; the residual is not uniquely community-health-centre flow",
+        "interpretation": "relative supply-representation shift from atypical external aggregation, not measured absolute supply change",
         "input_sha256": input_hashes,
     }
     write_json(output / "protocol.json", protocol)
     write_json(output / "verification.json", {
         "fixed_node_order": True,
         "three_equal_channel_blocks": True,
-        "same_decoder_for_aggregated_and_local_reference": True,
+        "same_fold_decoder_for_aggregated_and_typical_reference": True,
+        "typical_reference_is_out_of_fold": True,
+        "decoder_is_out_of_fold": True,
         "intercept_cancels": True,
         "external_channel_parts_add_exactly": True,
         "frozen_ruler_reused": True,

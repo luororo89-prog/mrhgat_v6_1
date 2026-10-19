@@ -1,9 +1,9 @@
-"""Four-panel supply-change figure reconstructed from ``mech_no_pair``.
+"""Four-panel relative supply-shift figure reconstructed from ``mech_no_pair``.
 
-Panel a shows the signs of the three frozen-PC changes.  Panel b compares the
-nine-indicator change magnitude across baseline supply configurations.  Panel
-c maps the living-circle change and summarizes it by within-cluster destination
-configuration.  Panel d relates cluster configuration diversity to mean change.
+Panel a shows the signs of shifts in the three frozen PCs relative to typical
+external aggregation.  Panel b compares the nine-indicator shift magnitude
+across baseline supply configurations.  Panel c maps the living-circle shift and summarizes it by within-cluster destination
+configuration.  Panel d relates cluster configuration diversity to mean shift.
 
 The plotting script only consumes reconstruction outputs and fixed descriptive
 inputs.  It does not refit the decoder or alter model results.
@@ -181,8 +181,14 @@ def boxplot(ax: plt.Axes, data: pd.DataFrame) -> None:
             raw.append(mannwhitneyu(groups[left], groups[right], alternative="two-sided").pvalue)
     adjusted = holm(raw)
     selected = [(pair, value) for pair, value in zip(pairs, adjusted) if value < 0.05]
-    low = min(group.min() for group in groups)
-    high = max(group.max() for group in groups)
+    whiskers = []
+    for group in groups:
+        q1, q3 = np.quantile(group, (0.25, 0.75))
+        iqr = q3 - q1
+        inside = group[(group >= q1 - 1.5 * iqr) & (group <= q3 + 1.5 * iqr)]
+        whiskers.append((inside.min(), inside.max()))
+    low = min(bound[0] for bound in whiskers)
+    high = max(bound[1] for bound in whiskers)
     span = max(high - low, 1e-6)
     step = span * 0.18
     for level, ((left, right), value) in enumerate(selected):
@@ -193,8 +199,9 @@ def boxplot(ax: plt.Axes, data: pd.DataFrame) -> None:
                 fontsize=5, fontweight="bold")
     ax.set_ylim(max(0, low - span * 0.12), high + step * (len(selected) + 2.0))
     ax.set_xticks(range(1, 5), TYPE_NAMES)
-    ax.set_ylabel("Nine-indicator change magnitude")
-    ax.text(0.5, -0.18, "White circles indicate means · Pairwise tests use Holm correction",
+    ax.set_ylabel("Nine-indicator relative-shift magnitude")
+    ax.text(0.5, -0.18, "White circles indicate means · Outliers omitted visually\n"
+            "Pairwise tests use Holm correction",
             transform=ax.transAxes, ha="center", va="top", fontsize=5, color="#444444")
 
 
@@ -283,7 +290,7 @@ def cluster_relation(ax: plt.Axes, data: pd.DataFrame, cluster: np.ndarray, W: n
     ax.plot(x, np.polyval(fit, x), color="#3E88B8", linewidth=0.8)
     ax.scatter(table.diversity, table.change, s=18, color="#3E88B8", edgecolor="white", linewidth=0.45, zorder=3)
     ax.margins(x=0.10, y=0.12)
-    label_offsets = {1: (-12, 6), 2: (-12, -8), 6: (10, -18)}
+    label_offsets = {1: (-12, 6), 2: (-12, -8), 4: (5, 7), 6: (10, -18)}
     for row in table.itertuples():
         offset = label_offsets.get(row.cluster, (3, 2))
         ax.annotate(str(row.cluster), (row.diversity, row.change), xytext=offset,
@@ -292,7 +299,7 @@ def cluster_relation(ax: plt.Axes, data: pd.DataFrame, cluster: np.ndarray, W: n
             f"ρ = {spearman.statistic:.3f}, p = {spearman.pvalue:.3f}\nn = 6 clusters",
             transform=ax.transAxes, ha="left", va="bottom", fontsize=5)
     ax.set_xlabel("Cluster type diversity")
-    ax.set_ylabel("Cluster mean change magnitude")
+    ax.set_ylabel("Cluster mean relative-shift magnitude")
     ax.text(0.5, -0.22, "Diversity uses four configuration shares\nweighted by origin OD volume.",
             transform=ax.transAxes, ha="center", va="top", fontsize=5, color="#677384")
 
@@ -373,18 +380,18 @@ def main() -> None:
         if index % 3:
             bar_axes[group].set_yticklabels([])
         else:
-            bar_axes[group].set_ylabel("Weighted mean change", labelpad=1)
+            bar_axes[group].set_ylabel("Weighted mean shift", labelpad=1)
     cluster_relation(ax_d, nodes, cluster, W)
 
-    fig.text(0.055, 0.975, "a. PC change relative to baseline", fontsize=7.5, fontweight="bold", va="top")
-    fig.text(0.57, 0.975, "b. Change magnitude by configuration", fontsize=7.5, fontweight="bold", va="top")
+    fig.text(0.055, 0.975, "a. PC shift relative to typical aggregation", fontsize=7.5, fontweight="bold", va="top")
+    fig.text(0.57, 0.975, "b. Relative-shift magnitude by configuration", fontsize=7.5, fontweight="bold", va="top")
     fig.text(0.29, 0.699, "Rise = positive · Stable = zero · Decline = negative\n"
              "Band width = number of living circles", ha="center", va="top", fontsize=5)
-    fig.text(0.055, 0.665, "c. Living-circle change and OD destination configuration",
+    fig.text(0.055, 0.665, "c. Living-circle shift and OD destination configuration",
              fontsize=7.5, fontweight="bold", va="top")
     fig.text(0.755, 0.505, "d. Cluster-level relationship", fontsize=7.5, fontweight="bold", va="top")
-    fig.text(0.5, 0.006, f"Seed {args.seed} · Change decoded from the mech_no_pair aggregated vector\n"
-             "Bars weight each origin’s change by its within-cluster OD share to the destination configuration; self flows excluded.",
+    fig.text(0.5, 0.006, f"Seed {args.seed} · Spatially cross-fitted shift relative to typical external aggregation\n"
+             "Bars weight each origin’s shift by its within-cluster OD share to the destination configuration; self flows excluded.",
              ha="center", va="bottom", fontsize=5, color="#64748B")
 
     ordered_bar_axes = [bar_axes[group] for group in CLUSTER_ORDER]
