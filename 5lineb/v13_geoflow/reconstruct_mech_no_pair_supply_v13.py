@@ -2,12 +2,13 @@
 
 The saved ``arrays.npz`` file contains the final three-channel node
 representation ``h = [h_base, h_comp, h_compete]``.  A Ridge decoder is fitted
-from that representation to the nine frozen-ruler supply coordinates.  A
-second Ridge model estimates the typical external aggregation conditional on
-the observed baseline supply coordinates.  Both models are spatially
-cross-fitted.  The relative shift is therefore
+from that representation to the nine frozen-ruler supply coordinates.  An
+Extra Trees model estimates the typical external aggregation conditional on
+``h_base``, visible-network service-range summaries, and flow-weighted TH/SH
+destination context.  Both models are spatially cross-fitted.  The relative
+shift is therefore
 
-    delta_x = D(h_base, h_ext) - D(h_base, E[h_ext | X]).
+    delta_x = D(h_base, h_ext) - D(h_base, E[h_ext | h_base, S, X_hospital]).
 
 For each held-out spatial fold, neither the decoder nor the conditional
 reference model is fitted on the evaluated nodes.  Common external mobility,
@@ -35,6 +36,7 @@ import sys
 
 import numpy as np
 import pandas as pd
+from sklearn.ensemble import ExtraTreesRegressor
 from sklearn.linear_model import RidgeCV
 from sklearn.metrics import r2_score
 
@@ -46,6 +48,10 @@ from ruler import measure  # noqa: E402
 
 VARIANT = "mech_no_pair"
 CHANNELS = ("base", "comp", "compete")
+REFERENCE_TREES = 400
+REFERENCE_MIN_SAMPLES_LEAF = 5
+REFERENCE_MAX_FEATURES = 0.8
+REFERENCE_RANDOM_STATE = 7100
 
 
 def sha256(path: Path) -> str:
@@ -110,6 +116,78 @@ def reference_vector(h: np.ndarray, typical_external: np.ndarray, width: int) ->
     return np.concatenate([h[:, :width], typical_external], axis=1)
 
 
+def hospital_service_range_features(
+    h: np.ndarray,
+    target: np.ndarray,
+    W: np.ndarray,
+    heldout: np.ndarray,
+    columns: list[str],
+) -> tuple[np.ndarray, list[str]]:
+    """Build reference covariates without using held-out OD edges or CHC context."""
+    h, width = split_channels(h)
+    W = np.asarray(W, dtype=float)
+    heldout = np.asarray(heldout, dtype=bool)
+    if W.shape != (len(h), len(h)) or heldout.shape != W.shape:
+        raise ValueError("W and heldout must be square matrices aligned with h")
+    if target.shape != (len(h), len(columns)):
+        raise ValueError("target and columns must be aligned")
+
+    off_diagonal = ~np.eye(len(h), dtype=bool)
+    visible = (W > 0) & off_diagonal & ~heldout
+    context = W * visible
+    external_flow = context.sum(axis=1)
+    destination_count = visible.sum(axis=1)
+    share = np.divide(
+        context,
+        external_flow[:, None],
+        out=np.zeros_like(context),
+        where=external_flow[:, None] > 0,
+    )
+    entropy = -(np.where(share > 0, share * np.log(share + 1e-300), 0.0)).sum(axis=1)
+    entropy = np.divide(
+        entropy,
+        np.log(np.maximum(destination_count, 2)),
+        out=np.zeros_like(entropy),
+        where=destination_count > 1,
+    )
+    maximum_share = share.max(axis=1)
+    hhi = np.square(share).sum(axis=1)
+    effective_destinations = np.divide(1.0, hhi, out=np.zeros_like(hhi), where=hhi > 0)
+    scope = np.column_stack([
+        np.log1p(external_flow),
+        np.log1p(destination_count),
+        entropy,
+        maximum_share,
+        np.log1p(effective_destinations),
+    ])
+
+    hospital_indices = [
+        index for index, column in enumerate(columns)
+        if column.endswith("_TH") or column.endswith("_SH") or "_TH_" in column or "_SH_" in column
+    ]
+    if len(hospital_indices) != 6:
+        raise ValueError("expected three TH and three SH hospital indicators")
+    hospital_context = share @ target[:, hospital_indices]
+    feature_names = (
+        [f"h_base_{index + 1}" for index in range(width)]
+        + ["log_visible_external_flow", "log_visible_destination_count", "destination_entropy",
+           "maximum_destination_share", "log_effective_destination_count"]
+        + [f"flow_weighted_destination_{columns[index]}" for index in hospital_indices]
+    )
+    return np.column_stack([h[:, :width], scope, hospital_context]), feature_names
+
+
+def make_reference_model(random_state: int) -> ExtraTreesRegressor:
+    """Conditional-mean estimator selected by spatial-fold validation."""
+    return ExtraTreesRegressor(
+        n_estimators=REFERENCE_TREES,
+        min_samples_leaf=REFERENCE_MIN_SAMPLES_LEAF,
+        max_features=REFERENCE_MAX_FEATURES,
+        random_state=random_state,
+        n_jobs=-1,
+    )
+
+
 def linear_channel_change(
     coef: np.ndarray,
     h: np.ndarray,
@@ -133,6 +211,8 @@ def crossfit_typical_change(
     h: np.ndarray,
     target: np.ndarray,
     folds: np.ndarray,
+    reference_features: np.ndarray,
+    random_state: int = REFERENCE_RANDOM_STATE,
 ) -> dict[str, object]:
     """Estimate a typical external reference and decoded shift out of fold."""
     h, width = split_channels(h)
@@ -141,12 +221,15 @@ def crossfit_typical_change(
     decoded_reference = np.empty_like(target, dtype=float)
     parts = np.empty((2, *target.shape), dtype=float)
     decoder_alphas: list[float] = []
-    reference_alphas: list[float] = []
-    for fold in np.unique(folds):
+    reference_features = np.asarray(reference_features, dtype=float)
+    if reference_features.shape[0] != h.shape[0]:
+        raise ValueError("reference features must be aligned with h")
+    for fold_index, fold in enumerate(np.unique(folds)):
         test = folds == fold
         decoder = RidgeCV(alphas=ALPHAS).fit(h[~test], target[~test])
-        reference_model = RidgeCV(alphas=ALPHAS).fit(target[~test], h[~test, width:])
-        fold_reference = reference_vector(h[test], reference_model.predict(target[test]), width)
+        reference_model = make_reference_model(random_state + fold_index)
+        reference_model.fit(reference_features[~test], h[~test, width:])
+        fold_reference = reference_vector(h[test], reference_model.predict(reference_features[test]), width)
         reference[test] = fold_reference
         decoded_aggregated[test] = decoder.predict(h[test])
         decoded_reference[test] = decoder.predict(fold_reference)
@@ -156,7 +239,6 @@ def crossfit_typical_change(
         )
         parts[:, test] = fold_parts
         decoder_alphas.append(float(decoder.alpha_))
-        reference_alphas.append(float(reference_model.alpha_))
     delta = decoded_aggregated - decoded_reference
     np.testing.assert_allclose(parts.sum(axis=0), delta, rtol=1e-10, atol=1e-10)
     return {
@@ -167,15 +249,20 @@ def crossfit_typical_change(
         "delta": delta,
         "parts": parts,
         "decoder_fold_alphas": np.asarray(decoder_alphas),
-        "reference_fold_alphas": np.asarray(reference_alphas),
     }
 
 
-def reconstruct_seed(h: np.ndarray, target: np.ndarray, folds: np.ndarray) -> dict[str, object]:
+def reconstruct_seed(
+    h: np.ndarray,
+    target: np.ndarray,
+    folds: np.ndarray,
+    reference_features: np.ndarray,
+    random_state: int,
+) -> dict[str, object]:
     h, width = split_channels(h)
     decoder = RidgeCV(alphas=ALPHAS).fit(h, target)
-    reference_model = RidgeCV(alphas=ALPHAS).fit(target, h[:, width:])
-    result = crossfit_typical_change(h, target, folds)
+    reference_model = make_reference_model(random_state).fit(reference_features, h[:, width:])
+    result = crossfit_typical_change(h, target, folds, reference_features, random_state)
     result.update({"decoder": decoder, "reference_model": reference_model, "oof": result["decoded_aggregated"]})
     return result
 
@@ -196,6 +283,7 @@ def main() -> None:
     with np.load(split_path) as split:
         ids = split["ids"].astype(int)
         W = split["W"].astype(float)
+        H = split["H"].astype(bool)
     ruler = frozen_ruler(args.ruler)
     columns = list(ruler["columns"])
     baseline = ordered_baseline(args.baseline_table, ids, columns)
@@ -217,7 +305,8 @@ def main() -> None:
             h = saved["h"].astype(float)
         if h.shape[0] != len(ids):
             raise ValueError(f"seed {seed} representation does not match fixed node order")
-        result = reconstruct_seed(h, X, folds)
+        reference_features, reference_feature_names = hospital_service_range_features(h, X, W, H, columns)
+        result = reconstruct_seed(h, X, folds, reference_features, REFERENCE_RANDOM_STATE + 100 * seed)
         delta = result["delta"]
         parts = result["parts"]
         after = X + delta
@@ -232,6 +321,7 @@ def main() -> None:
         width = int(result["width"])
         reference_error = result["reference"][:, width:] - h[:, width:]
         reference_r2 = [r2_score(h[:, j], result["reference"][:, j]) for j in range(width, h.shape[1])]
+        reference_variance = float(np.mean(np.square(h[:, width:] - h[:, width:].mean(axis=0))))
 
         for index, column in enumerate(columns):
             error = oof[:, index] - X[:, index]
@@ -241,11 +331,15 @@ def main() -> None:
                                 "oof_r2": float(r2_score(X[:, index], oof[:, index]))})
         eligible = W.sum(axis=1) > 0
         summaries.append({"seed": seed, "alpha": float(decoder.alpha_),
-                          "reference_alpha": float(reference_model.alpha_),
+                          "reference_model": "ExtraTreesRegressor",
                           "oof_rmse": float(np.sqrt(np.mean((oof - X) ** 2))),
                           "oof_min_r2": float(min(r2_score(X[:, j], oof[:, j]) for j in range(X.shape[1]))),
                           "oof_type_agreement": float(np.mean(oof_measure["class"] == nominal["class"])),
                           "reference_oof_rmse": float(np.sqrt(np.mean(reference_error ** 2))),
+                          "reference_oof_nrmse": float(np.sqrt(np.mean(reference_error ** 2) / reference_variance)),
+                          "reference_oof_variance_weighted_r2": float(r2_score(
+                              h[:, width:], result["reference"][:, width:], multioutput="variance_weighted"
+                          )),
                           "reference_oof_mean_r2": float(np.mean(reference_r2)),
                           "eligible_n": int(eligible.sum()),
                           "mean_change_9": float(change_9[eligible].mean()),
@@ -279,11 +373,9 @@ def main() -> None:
             coef=decoder.coef_,
             intercept=decoder.intercept_,
             alpha=decoder.alpha_,
-            reference_coef=reference_model.coef_,
-            reference_intercept=reference_model.intercept_,
-            reference_alpha=reference_model.alpha_,
+            reference_feature_names=np.asarray(reference_feature_names),
+            reference_feature_importance=reference_model.feature_importances_,
             decoder_fold_alphas=result["decoder_fold_alphas"],
-            reference_fold_alphas=result["reference_fold_alphas"],
             delta=delta,
             delta_comp=parts[0],
             delta_compete=parts[1],
@@ -309,11 +401,27 @@ def main() -> None:
         "representation": "saved three-channel aggregated node vector h",
         "decoder": "spatial-fold cross-fitted RidgeCV from aggregated h to nine frozen-ruler standardized indicators",
         "alphas": ALPHAS.tolist(),
-        "typical_external_reference": "spatial-fold cross-fitted RidgeCV E[(h_comp,h_compete) | nine baseline supply indicators]",
-        "change": "D^(-fold)(h_base,h_ext) - D^(-fold)(h_base,E^(-fold)[h_ext|X])",
+        "typical_external_reference": (
+            "spatial-fold cross-fitted ExtraTrees conditional mean E[(h_comp,h_compete) | "
+            "h_base, visible service-range summaries, flow-weighted TH/SH destination context]"
+        ),
+        "reference_model_parameters": {
+            "n_estimators": REFERENCE_TREES,
+            "min_samples_leaf": REFERENCE_MIN_SAMPLES_LEAF,
+            "max_features": REFERENCE_MAX_FEATURES,
+            "random_state_base": REFERENCE_RANDOM_STATE,
+        },
+        "reference_features": reference_feature_names,
+        "change": (
+            "D^(-fold)(h_base,h_ext) - D^(-fold)(h_base,"
+            "E^(-fold)[h_ext|h_base,S(W_visible),P_visible X_hospital])"
+        ),
         "after": "frozen baseline indicators + relative decoded shift",
         "validation": "both decoder and typical-reference model evaluated out of spatial fold",
-        "mobility_scope": "common external aggregation can absorb routine mobility, including plausible movement within broad hospital catchments",
+        "mobility_scope": (
+            "the reference explicitly absorbs repeatable mobility associated with visible service-range structure "
+            "and TH/SH destination context; CHC destination indicators are excluded"
+        ),
         "facility_level_limit": "aggregate OD does not identify visited facility level; the residual is not uniquely community-health-centre flow",
         "interpretation": "relative supply-representation shift from atypical external aggregation, not measured absolute supply change",
         "input_sha256": input_hashes,
@@ -324,6 +432,8 @@ def main() -> None:
         "three_equal_channel_blocks": True,
         "same_fold_decoder_for_aggregated_and_typical_reference": True,
         "typical_reference_is_out_of_fold": True,
+        "reference_uses_only_nonheldout_od_edges": True,
+        "reference_includes_hospital_but_not_chc_destination_context": True,
         "decoder_is_out_of_fold": True,
         "intercept_cancels": True,
         "external_channel_parts_add_exactly": True,

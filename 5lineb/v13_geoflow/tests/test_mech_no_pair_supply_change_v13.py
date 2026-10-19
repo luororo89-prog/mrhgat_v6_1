@@ -8,6 +8,7 @@ sys.path.insert(0, str(HERE.parent))
 
 from reconstruct_mech_no_pair_supply_v13 import (
     crossfit_typical_change,
+    hospital_service_range_features,
     linear_channel_change,
     reference_vector,
     split_channels,
@@ -35,11 +36,28 @@ def test_typical_reference_and_decoder_are_cross_fitted():
     external = target @ rng.normal(size=(3, 8)) + rng.normal(scale=0.05, size=(18, 8))
     h = np.concatenate([base, external], axis=1)
     folds = np.repeat(np.arange(3), 6)
-    result = crossfit_typical_change(h, target, folds)
+    result = crossfit_typical_change(h, target, folds, base, random_state=31)
     assert result["reference"].shape == h.shape
     assert result["delta"].shape == target.shape
     np.testing.assert_allclose(result["reference"][:, :4], base)
     np.testing.assert_allclose(result["parts"].sum(axis=0), result["delta"], rtol=1e-10, atol=1e-10)
+
+
+def test_service_range_features_exclude_self_heldout_and_chc_context():
+    h = np.arange(36, dtype=float).reshape(3, 12)
+    target = np.arange(27, dtype=float).reshape(3, 9)
+    columns = [
+        "RA_TH", "SA_TH", "TC_TH", "RA_SH", "SA_SH", "TC_SH",
+        "RA_CHC", "SA_CHC", "TC_CHC",
+    ]
+    W = np.array([[100.0, 4.0, 9.0], [2.0, 100.0, 7.0], [5.0, 6.0, 100.0]])
+    heldout = np.zeros_like(W, dtype=bool)
+    heldout[0, 2] = True
+    features, names = hospital_service_range_features(h, target, W, heldout, columns)
+    assert features.shape == (3, 15)
+    assert len(names) == features.shape[1]
+    assert not any("CHC" in name for name in names)
+    np.testing.assert_allclose(features[0, -6:], target[1, :6])
 
 
 def test_holm_adjustment_is_monotone_in_sorted_order():
