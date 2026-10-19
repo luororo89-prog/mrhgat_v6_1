@@ -2,14 +2,13 @@
 
 The saved ``arrays.npz`` file contains the final three-channel node
 representation ``h = [h_base, h_comp, h_compete]``.  A Ridge decoder is fitted
-from that representation to the nine frozen-ruler supply coordinates.  An
-Extra Trees model estimates the typical external aggregation conditional on
-``h_base``, a baseline-configuration-specific service range, and flow-weighted
-TH/SH destination context.  Both models are spatially cross-fitted.  For every
-held-out fold, the service-range reference is the median among training nodes
-of the same baseline configuration.  The relative shift is therefore
+from that representation to the nine frozen-ruler supply coordinates.  By
+default, the typical external aggregation is the coordinate-wise median among
+the 20 training-fold nodes of the same baseline configuration whose
+standardized ``h_base`` vectors are closest to the evaluated node.  The
+relative shift is therefore
 
-    delta_x = D(h_base, h_ext) - D(h_base, E[h_ext | h_base, S_typical(T), X_hospital, T]).
+    delta_x = D(h_base, h_ext) - D(h_base, median_20NN(h_ext | h_base, T)).
 
 For each held-out spatial fold, neither the decoder nor the conditional
 reference model is fitted on the evaluated nodes.  Common external mobility,
@@ -40,6 +39,7 @@ import pandas as pd
 from sklearn.ensemble import ExtraTreesRegressor
 from sklearn.linear_model import RidgeCV
 from sklearn.metrics import r2_score
+from sklearn.preprocessing import StandardScaler
 
 HERE = Path(__file__).resolve().parent
 COMMON = HERE.parent / "common"
@@ -54,6 +54,7 @@ REFERENCE_TREES = 400
 REFERENCE_MIN_SAMPLES_LEAF = 5
 REFERENCE_MAX_FEATURES = 0.8
 REFERENCE_RANDOM_STATE = 7100
+KNN_NEIGHBORS = 20
 
 
 def sha256(path: Path) -> str:
@@ -278,6 +279,84 @@ def linear_channel_change(
     return parts.sum(axis=0), parts
 
 
+def crossfit_type_knn_median_change(
+    h: np.ndarray,
+    target: np.ndarray,
+    folds: np.ndarray,
+    node_type: np.ndarray,
+    neighbors: int = KNN_NEIGHBORS,
+) -> dict[str, object]:
+    """Use same-type nearest training nodes in h_base as the external reference."""
+    h, width = split_channels(h)
+    folds = np.asarray(folds)
+    node_type = np.asarray(node_type, dtype=int)
+    if folds.shape != (len(h),) or node_type.shape != (len(h),):
+        raise ValueError("folds and node_type must be aligned with h")
+    if neighbors < 1:
+        raise ValueError("neighbors must be positive")
+
+    reference = np.empty_like(h, dtype=float)
+    decoded_aggregated = np.empty_like(target, dtype=float)
+    decoded_reference = np.empty_like(target, dtype=float)
+    parts = np.empty((2, *target.shape), dtype=float)
+    neighbor_index = np.full((len(h), neighbors), -1, dtype=int)
+    neighbor_distance = np.full((len(h), neighbors), np.nan, dtype=float)
+    decoder_alphas: list[float] = []
+
+    for fold in np.unique(folds):
+        test = folds == fold
+        train = ~test
+        train_index = np.flatnonzero(train)
+        test_index = np.flatnonzero(test)
+        scaler = StandardScaler().fit(h[train, :width])
+        train_base = scaler.transform(h[train, :width])
+        test_base = scaler.transform(h[test, :width])
+        typical_external = np.empty((len(test_index), h.shape[1] - width), dtype=float)
+        for local_index, node_index in enumerate(test_index):
+            same_type = np.flatnonzero(node_type[train_index] == node_type[node_index])
+            if len(same_type) < neighbors:
+                raise ValueError(
+                    f"baseline configuration {node_type[node_index]} has only {len(same_type)} "
+                    f"training nodes; {neighbors} neighbors requested"
+                )
+            distance_squared = np.square(train_base[same_type] - test_base[local_index]).sum(axis=1)
+            selected_positions = np.argpartition(distance_squared, neighbors - 1)[:neighbors]
+            selected_positions = selected_positions[np.argsort(distance_squared[selected_positions])]
+            selected_local = same_type[selected_positions]
+            selected = train_index[selected_local]
+            neighbor_index[node_index] = selected
+            neighbor_distance[node_index] = np.sqrt(
+                np.square(train_base[selected_local] - test_base[local_index]).sum(axis=1)
+            )
+            typical_external[local_index] = np.median(h[selected, width:], axis=0)
+
+        fold_reference = reference_vector(h[test], typical_external, width)
+        reference[test] = fold_reference
+        decoder = RidgeCV(alphas=ALPHAS).fit(h[train], target[train])
+        decoded_aggregated[test] = decoder.predict(h[test])
+        decoded_reference[test] = decoder.predict(fold_reference)
+        fold_delta, fold_parts = linear_channel_change(decoder.coef_, h[test], fold_reference, width)
+        np.testing.assert_allclose(
+            decoded_aggregated[test] - decoded_reference[test], fold_delta, rtol=1e-10, atol=1e-10
+        )
+        parts[:, test] = fold_parts
+        decoder_alphas.append(float(decoder.alpha_))
+
+    delta = decoded_aggregated - decoded_reference
+    np.testing.assert_allclose(parts.sum(axis=0), delta, rtol=1e-10, atol=1e-10)
+    return {
+        "width": width,
+        "reference": reference,
+        "decoded_aggregated": decoded_aggregated,
+        "decoded_reference": decoded_reference,
+        "delta": delta,
+        "parts": parts,
+        "neighbor_index": neighbor_index,
+        "neighbor_distance": neighbor_distance,
+        "decoder_fold_alphas": np.asarray(decoder_alphas),
+    }
+
+
 def crossfit_typical_change(
     h: np.ndarray,
     target: np.ndarray,
@@ -358,6 +437,8 @@ def main() -> None:
     parser.add_argument("--ruler", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--seeds", nargs="+", type=int, default=[0, 1, 2])
+    parser.add_argument("--reference-method", choices=("type_knn_median", "extra_trees"),
+                        default="type_knn_median")
     args = parser.parse_args()
 
     output = args.output
@@ -389,18 +470,27 @@ def main() -> None:
             h = saved["h"].astype(float)
         if h.shape[0] != len(ids):
             raise ValueError(f"seed {seed} representation does not match fixed node order")
-        reference_features, reference_feature_names = hospital_service_range_features(
-            h, X, W, H, columns, nominal["class"]
-        )
         _, width = split_channels(h)
-        reference_query_features = type_typical_scope_features(
-            reference_features, nominal["class"], folds, width
-        )
-        if scope_summary is None:
-            scope_summary = type_scope_summary(reference_features, nominal["class"], folds, width)
-        result = reconstruct_seed(
-            h, X, folds, reference_features, reference_query_features, REFERENCE_RANDOM_STATE + 100 * seed
-        )
+        reference_feature_names: list[str] = []
+        reference_model = None
+        if args.reference_method == "extra_trees":
+            reference_features, reference_feature_names = hospital_service_range_features(
+                h, X, W, H, columns, nominal["class"]
+            )
+            reference_query_features = type_typical_scope_features(
+                reference_features, nominal["class"], folds, width
+            )
+            if scope_summary is None:
+                scope_summary = type_scope_summary(reference_features, nominal["class"], folds, width)
+            result = reconstruct_seed(
+                h, X, folds, reference_features, reference_query_features,
+                REFERENCE_RANDOM_STATE + 100 * seed
+            )
+            reference_model = result["reference_model"]
+        else:
+            result = crossfit_type_knn_median_change(h, X, folds, nominal["class"])
+            result.update({"decoder": RidgeCV(alphas=ALPHAS).fit(h, X),
+                           "oof": result["decoded_aggregated"]})
         delta = result["delta"]
         parts = result["parts"]
         after = X + delta
@@ -411,7 +501,6 @@ def main() -> None:
         oof = result["oof"]
         oof_measure = measure(oof, ruler)
         decoder = result["decoder"]
-        reference_model = result["reference_model"]
         width = int(result["width"])
         reference_error = result["reference"][:, width:] - h[:, width:]
         reference_r2 = [r2_score(h[:, j], result["reference"][:, j]) for j in range(width, h.shape[1])]
@@ -425,7 +514,7 @@ def main() -> None:
                                 "oof_r2": float(r2_score(X[:, index], oof[:, index]))})
         eligible = W.sum(axis=1) > 0
         summaries.append({"seed": seed, "alpha": float(decoder.alpha_),
-                          "reference_model": "ExtraTreesRegressor",
+                          "reference_model": args.reference_method,
                           "oof_rmse": float(np.sqrt(np.mean((oof - X) ** 2))),
                           "oof_min_r2": float(min(r2_score(X[:, j], oof[:, j]) for j in range(X.shape[1]))),
                           "oof_type_agreement": float(np.mean(oof_measure["class"] == nominal["class"])),
@@ -446,6 +535,9 @@ def main() -> None:
                               "change_9": change_9, "change_pc": change_pc})
         if "name" in baseline:
             frame["name"] = baseline["name"].to_numpy()
+        if args.reference_method == "type_knn_median":
+            frame["reference_neighbor_mean_distance"] = result["neighbor_distance"].mean(axis=1)
+            frame["reference_neighbor_max_distance"] = result["neighbor_distance"].max(axis=1)
         for index, column in enumerate(columns):
             frame[f"before_{column}"] = X[:, index]
             frame[f"after_{column}"] = after[:, index]
@@ -457,33 +549,33 @@ def main() -> None:
             frame[f"PC{component + 1}_after"] = after_measure["pc"][:, component]
             frame[f"delta_PC{component + 1}"] = delta_pc[:, component]
         frames.append(frame)
-        np.savez_compressed(
-            output / f"seed{seed}_decoder.npz",
-            ids=ids,
-            h=h,
-            reference=result["reference"],
-            decoded_aggregated=result["decoded_aggregated"],
-            decoded_reference=result["decoded_reference"],
-            coef=decoder.coef_,
-            intercept=decoder.intercept_,
-            alpha=decoder.alpha_,
-            reference_feature_names=np.asarray(reference_feature_names),
-            reference_feature_importance=reference_model.feature_importances_,
-            reference_query_features=result["reference_query_features"],
-            decoder_fold_alphas=result["decoder_fold_alphas"],
-            delta=delta,
-            delta_comp=parts[0],
-            delta_compete=parts[1],
-            oof=oof,
-        )
+        payload = {
+            "ids": ids, "h": h, "reference": result["reference"],
+            "decoded_aggregated": result["decoded_aggregated"],
+            "decoded_reference": result["decoded_reference"], "coef": decoder.coef_,
+            "intercept": decoder.intercept_, "alpha": decoder.alpha_,
+            "decoder_fold_alphas": result["decoder_fold_alphas"], "delta": delta,
+            "delta_comp": parts[0], "delta_compete": parts[1], "oof": oof,
+        }
+        if args.reference_method == "extra_trees":
+            assert reference_model is not None
+            payload.update({
+                "reference_feature_names": np.asarray(reference_feature_names),
+                "reference_feature_importance": reference_model.feature_importances_,
+                "reference_query_features": result["reference_query_features"],
+            })
+        else:
+            payload.update({"neighbor_index": result["neighbor_index"],
+                            "neighbor_distance": result["neighbor_distance"]})
+        np.savez_compressed(output / f"seed{seed}_decoder.npz", **payload)
         input_hashes[f"seed{seed}_arrays"] = sha256(array_path)
 
     nodes = pd.concat(frames, ignore_index=True)
     nodes.to_csv(output / "node_supply_change.csv", index=False)
     pd.DataFrame(performance).to_csv(output / "decoder_performance.csv", index=False)
     pd.DataFrame(summaries).to_csv(output / "decoder_summary.csv", index=False)
-    assert scope_summary is not None
-    scope_summary.to_csv(output / "configuration_service_range_reference.csv", index=False)
+    if scope_summary is not None:
+        scope_summary.to_csv(output / "configuration_service_range_reference.csv", index=False)
     mean = nodes.groupby("community_id", sort=False).agg(
         baseline_type=("baseline_type", "first"), after_type_mode=("after_type", lambda x: int(x.mode().iloc[0])),
         retained_rate=("retained", "mean"), change_9_mean=("change_9", "mean"),
@@ -492,39 +584,67 @@ def main() -> None:
     ).reset_index()
     mean.to_csv(output / "node_seed_mean.csv", index=False)
 
+    if args.reference_method == "type_knn_median":
+        reference_protocol = {
+            "typical_external_reference": (
+                "coordinate-wise median external aggregation of the 20 nearest training-fold nodes "
+                "within the same baseline configuration"
+            ),
+            "reference_model_parameters": {
+                "neighbors": KNN_NEIGHBORS,
+                "distance": "Euclidean distance after training-fold StandardScaler on h_base",
+                "aggregation": "coordinate-wise median of h_comp and h_compete",
+            },
+            "reference_features": "h_base for neighbor matching; baseline configuration as an exact stratum",
+            "change": (
+                "D^(-fold)(h_base,h_ext) - "
+                "D^(-fold)(h_base,median_20NN^(-fold)[h_ext|h_base,T])"
+            ),
+            "mobility_scope": (
+                "external aggregation shared by nearby h_base peers of the same configuration is treated as typical; "
+                "facility level is not identified"
+            ),
+            "figure_reference_label": "same-type 20-NN median",
+        }
+    else:
+        reference_protocol = {
+            "typical_external_reference": (
+                "spatial-fold cross-fitted ExtraTrees conditional mean E[(h_comp,h_compete) | "
+                "h_base, fold-and-configuration-specific typical service range, "
+                "flow-weighted TH/SH destination context, baseline configuration]"
+            ),
+            "configuration_specific_scope": (
+                "for each held-out node, each of five service-range summaries is replaced by the median "
+                "among training-fold nodes with the same baseline configuration"
+            ),
+            "configuration_scope_table": "configuration_service_range_reference.csv reports training-fold quartiles",
+            "reference_model_parameters": {
+                "n_estimators": REFERENCE_TREES,
+                "min_samples_leaf": REFERENCE_MIN_SAMPLES_LEAF,
+                "max_features": REFERENCE_MAX_FEATURES,
+                "random_state_base": REFERENCE_RANDOM_STATE,
+            },
+            "reference_features": reference_feature_names,
+            "change": (
+                "D^(-fold)(h_base,h_ext) - D^(-fold)(h_base,"
+                "E^(-fold)[h_ext|h_base,S_typical^(-fold)(T),P_visible X_hospital,T])"
+            ),
+            "mobility_scope": (
+                "the reference explicitly absorbs repeatable mobility associated with visible service-range structure "
+                "within each baseline configuration and TH/SH destination context; CHC destination indicators are excluded"
+            ),
+            "figure_reference_label": "type-specific hospital-range reference",
+        }
     protocol = {
         "variant": VARIANT,
         "seeds": args.seeds,
+        "reference_method": args.reference_method,
         "representation": "saved three-channel aggregated node vector h",
         "decoder": "spatial-fold cross-fitted RidgeCV from aggregated h to nine frozen-ruler standardized indicators",
         "alphas": ALPHAS.tolist(),
-        "typical_external_reference": (
-            "spatial-fold cross-fitted ExtraTrees conditional mean E[(h_comp,h_compete) | "
-            "h_base, fold-and-configuration-specific typical service range, "
-            "flow-weighted TH/SH destination context, baseline configuration]"
-        ),
-        "configuration_specific_scope": (
-            "for each held-out node, each of five service-range summaries is replaced by the median "
-            "among training-fold nodes with the same baseline configuration"
-        ),
-        "configuration_scope_table": "configuration_service_range_reference.csv reports training-fold quartiles",
-        "reference_model_parameters": {
-            "n_estimators": REFERENCE_TREES,
-            "min_samples_leaf": REFERENCE_MIN_SAMPLES_LEAF,
-            "max_features": REFERENCE_MAX_FEATURES,
-            "random_state_base": REFERENCE_RANDOM_STATE,
-        },
-        "reference_features": reference_feature_names,
-        "change": (
-            "D^(-fold)(h_base,h_ext) - D^(-fold)(h_base,"
-            "E^(-fold)[h_ext|h_base,S_typical^(-fold)(T),P_visible X_hospital,T])"
-        ),
+        **reference_protocol,
         "after": "frozen baseline indicators + relative decoded shift",
         "validation": "both decoder and typical-reference model evaluated out of spatial fold",
-        "mobility_scope": (
-            "the reference explicitly absorbs repeatable mobility associated with visible service-range structure "
-            "within each baseline configuration and TH/SH destination context; CHC destination indicators are excluded"
-        ),
         "facility_level_limit": "aggregate OD does not identify visited facility level; the residual is not uniquely community-health-centre flow",
         "interpretation": "relative supply-representation shift from atypical external aggregation, not measured absolute supply change",
         "input_sha256": input_hashes,
@@ -535,9 +655,10 @@ def main() -> None:
         "three_equal_channel_blocks": True,
         "same_fold_decoder_for_aggregated_and_typical_reference": True,
         "typical_reference_is_out_of_fold": True,
-        "reference_uses_only_nonheldout_od_edges": True,
-        "service_range_is_configuration_specific_and_training_fold_only": True,
-        "reference_includes_hospital_but_not_chc_destination_context": True,
+        "reference_neighbors_are_same_type_and_training_fold_only": args.reference_method == "type_knn_median",
+        "reference_uses_only_nonheldout_od_edges": args.reference_method == "extra_trees",
+        "service_range_is_configuration_specific_and_training_fold_only": args.reference_method == "extra_trees",
+        "reference_includes_hospital_but_not_chc_destination_context": args.reference_method == "extra_trees",
         "decoder_is_out_of_fold": True,
         "intercept_cancels": True,
         "external_channel_parts_add_exactly": True,

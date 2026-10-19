@@ -7,6 +7,7 @@ HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE.parent))
 
 from reconstruct_mech_no_pair_supply_v13 import (
+    crossfit_type_knn_median_change,
     crossfit_typical_change,
     hospital_service_range_features,
     linear_channel_change,
@@ -42,6 +43,20 @@ def test_typical_reference_and_decoder_are_cross_fitted():
     assert result["reference"].shape == h.shape
     assert result["delta"].shape == target.shape
     np.testing.assert_allclose(result["reference"][:, :4], base)
+    np.testing.assert_allclose(result["parts"].sum(axis=0), result["delta"], rtol=1e-10, atol=1e-10)
+
+
+def test_knn_reference_uses_same_type_nodes_from_other_fold():
+    rng = np.random.default_rng(29)
+    h = rng.normal(size=(16, 12))
+    target = rng.normal(size=(16, 3))
+    folds = np.repeat([0, 1], 8)
+    node_type = np.tile(np.repeat([0, 1], 4), 2)
+    result = crossfit_type_knn_median_change(h, target, folds, node_type, neighbors=2)
+    for node, selected in enumerate(result["neighbor_index"]):
+        assert np.all(folds[selected] != folds[node])
+        assert np.all(node_type[selected] == node_type[node])
+        np.testing.assert_allclose(result["reference"][node, 4:], np.median(h[selected, 4:], axis=0))
     np.testing.assert_allclose(result["parts"].sum(axis=0), result["delta"], rtol=1e-10, atol=1e-10)
 
 
