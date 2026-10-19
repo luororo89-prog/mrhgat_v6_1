@@ -383,7 +383,7 @@ def main() -> None:
             bar_axes[group].set_ylabel("Weighted mean shift", labelpad=1)
     cluster_relation(ax_d, nodes, cluster, W)
 
-    fig.text(0.055, 0.975, "a. PC shift relative to hospital-range reference", fontsize=7.5,
+    fig.text(0.055, 0.975, "a. PC shift relative to type-specific range", fontsize=7.5,
              fontweight="bold", va="top")
     fig.text(0.57, 0.975, "b. Relative-shift magnitude by configuration", fontsize=7.5, fontweight="bold", va="top")
     fig.text(0.29, 0.699, "Rise = positive · Stable = zero · Decline = negative\n"
@@ -391,7 +391,7 @@ def main() -> None:
     fig.text(0.055, 0.665, "c. Living-circle shift and OD destination configuration",
              fontsize=7.5, fontweight="bold", va="top")
     fig.text(0.755, 0.505, "d. Cluster-level relationship", fontsize=7.5, fontweight="bold", va="top")
-    fig.text(0.5, 0.006, f"Seed {args.seed} · Spatially cross-fitted shift relative to the hospital-range-conditioned reference\n"
+    fig.text(0.5, 0.006, f"Seed {args.seed} · Spatially cross-fitted shift relative to the type-specific hospital-range reference\n"
              "Bars weight each origin’s shift by its within-cluster OD share to the destination configuration; self flows excluded.",
              ha="center", va="bottom", fontsize=5, color="#64748B")
 

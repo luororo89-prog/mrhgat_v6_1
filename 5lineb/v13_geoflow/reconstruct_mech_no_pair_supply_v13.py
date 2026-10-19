@@ -4,11 +4,12 @@ The saved ``arrays.npz`` file contains the final three-channel node
 representation ``h = [h_base, h_comp, h_compete]``.  A Ridge decoder is fitted
 from that representation to the nine frozen-ruler supply coordinates.  An
 Extra Trees model estimates the typical external aggregation conditional on
-``h_base``, visible-network service-range summaries, and flow-weighted TH/SH
-destination context.  Both models are spatially cross-fitted.  The relative
-shift is therefore
+``h_base``, a baseline-configuration-specific service range, and flow-weighted
+TH/SH destination context.  Both models are spatially cross-fitted.  For every
+held-out fold, the service-range reference is the median among training nodes
+of the same baseline configuration.  The relative shift is therefore
 
-    delta_x = D(h_base, h_ext) - D(h_base, E[h_ext | h_base, S, X_hospital]).
+    delta_x = D(h_base, h_ext) - D(h_base, E[h_ext | h_base, S_typical(T), X_hospital, T]).
 
 For each held-out spatial fold, neither the decoder nor the conditional
 reference model is fitted on the evaluated nodes.  Common external mobility,
@@ -48,6 +49,7 @@ from ruler import measure  # noqa: E402
 
 VARIANT = "mech_no_pair"
 CHANNELS = ("base", "comp", "compete")
+CONFIGURATION_LABELS = ("scarcity", "chc_based", "sh_based", "abundance")
 REFERENCE_TREES = 400
 REFERENCE_MIN_SAMPLES_LEAF = 5
 REFERENCE_MAX_FEATURES = 0.8
@@ -122,6 +124,7 @@ def hospital_service_range_features(
     W: np.ndarray,
     heldout: np.ndarray,
     columns: list[str],
+    node_type: np.ndarray,
 ) -> tuple[np.ndarray, list[str]]:
     """Build reference covariates without using held-out OD edges or CHC context."""
     h, width = split_channels(h)
@@ -131,6 +134,9 @@ def hospital_service_range_features(
         raise ValueError("W and heldout must be square matrices aligned with h")
     if target.shape != (len(h), len(columns)):
         raise ValueError("target and columns must be aligned")
+    node_type = np.asarray(node_type, dtype=int)
+    if node_type.shape != (len(h),) or not np.isin(node_type, np.arange(4)).all():
+        raise ValueError("node_type must contain the four baseline configurations 0--3")
 
     off_diagonal = ~np.eye(len(h), dtype=bool)
     visible = (W > 0) & off_diagonal & ~heldout
@@ -168,13 +174,78 @@ def hospital_service_range_features(
     if len(hospital_indices) != 6:
         raise ValueError("expected three TH and three SH hospital indicators")
     hospital_context = share @ target[:, hospital_indices]
+    configuration = np.eye(4, dtype=float)[node_type]
     feature_names = (
         [f"h_base_{index + 1}" for index in range(width)]
         + ["log_visible_external_flow", "log_visible_destination_count", "destination_entropy",
            "maximum_destination_share", "log_effective_destination_count"]
         + [f"flow_weighted_destination_{columns[index]}" for index in hospital_indices]
+        + [f"baseline_configuration_{index}" for index in range(4)]
     )
-    return np.column_stack([h[:, :width], scope, hospital_context]), feature_names
+    return np.column_stack([h[:, :width], scope, hospital_context, configuration]), feature_names
+
+
+def type_typical_scope_features(
+    features: np.ndarray,
+    node_type: np.ndarray,
+    folds: np.ndarray,
+    width: int,
+) -> np.ndarray:
+    """Replace each held-out node's scope by its training-fold type median."""
+    features = np.asarray(features, dtype=float)
+    node_type = np.asarray(node_type, dtype=int)
+    folds = np.asarray(folds)
+    if features.shape[0] != len(node_type) or folds.shape != node_type.shape:
+        raise ValueError("features, node_type, and folds must share node order")
+    query = features.copy()
+    scope = slice(width, width + 5)
+    for fold in np.unique(folds):
+        train = folds != fold
+        test = ~train
+        for configuration in range(4):
+            train_type = train & (node_type == configuration)
+            test_type = test & (node_type == configuration)
+            if test_type.any() and not train_type.any():
+                raise ValueError(f"no training nodes for baseline configuration {configuration}")
+            if test_type.any():
+                query[test_type, scope] = np.median(features[train_type, scope], axis=0)
+    return query
+
+
+def type_scope_summary(
+    features: np.ndarray,
+    node_type: np.ndarray,
+    folds: np.ndarray,
+    width: int,
+) -> pd.DataFrame:
+    """Report the fold-specific type ranges used to construct the reference."""
+    transformed = np.asarray(features, dtype=float)[:, width:width + 5]
+    node_type = np.asarray(node_type, dtype=int)
+    folds = np.asarray(folds)
+    rows: list[dict[str, object]] = []
+    names = (
+        "visible_external_flow", "visible_destination_count", "destination_entropy",
+        "maximum_destination_share", "effective_destination_count",
+    )
+    for fold in np.unique(folds):
+        train = folds != fold
+        for configuration, label in enumerate(CONFIGURATION_LABELS):
+            values = transformed[train & (node_type == configuration)]
+            if not len(values):
+                raise ValueError(f"no training nodes for baseline configuration {configuration}")
+            quantiles = np.quantile(values, [0.25, 0.5, 0.75], axis=0)
+            quantiles[:, [0, 1, 4]] = np.expm1(quantiles[:, [0, 1, 4]])
+            row: dict[str, object] = {
+                "heldout_fold": fold,
+                "baseline_configuration": configuration,
+                "configuration_label": label,
+                "training_n": len(values),
+            }
+            for column, name in enumerate(names):
+                for quantile, suffix in enumerate(("q25", "median", "q75")):
+                    row[f"{name}_{suffix}"] = float(quantiles[quantile, column])
+            rows.append(row)
+    return pd.DataFrame(rows)
 
 
 def make_reference_model(random_state: int) -> ExtraTreesRegressor:
@@ -212,6 +283,7 @@ def crossfit_typical_change(
     target: np.ndarray,
     folds: np.ndarray,
     reference_features: np.ndarray,
+    reference_query_features: np.ndarray | None = None,
     random_state: int = REFERENCE_RANDOM_STATE,
 ) -> dict[str, object]:
     """Estimate a typical external reference and decoded shift out of fold."""
@@ -224,12 +296,19 @@ def crossfit_typical_change(
     reference_features = np.asarray(reference_features, dtype=float)
     if reference_features.shape[0] != h.shape[0]:
         raise ValueError("reference features must be aligned with h")
+    if reference_query_features is None:
+        reference_query_features = reference_features
+    reference_query_features = np.asarray(reference_query_features, dtype=float)
+    if reference_query_features.shape != reference_features.shape:
+        raise ValueError("reference query features must match the fitted reference features")
     for fold_index, fold in enumerate(np.unique(folds)):
         test = folds == fold
         decoder = RidgeCV(alphas=ALPHAS).fit(h[~test], target[~test])
         reference_model = make_reference_model(random_state + fold_index)
         reference_model.fit(reference_features[~test], h[~test, width:])
-        fold_reference = reference_vector(h[test], reference_model.predict(reference_features[test]), width)
+        fold_reference = reference_vector(
+            h[test], reference_model.predict(reference_query_features[test]), width
+        )
         reference[test] = fold_reference
         decoded_aggregated[test] = decoder.predict(h[test])
         decoded_reference[test] = decoder.predict(fold_reference)
@@ -248,6 +327,7 @@ def crossfit_typical_change(
         "decoded_reference": decoded_reference,
         "delta": delta,
         "parts": parts,
+        "reference_query_features": reference_query_features,
         "decoder_fold_alphas": np.asarray(decoder_alphas),
     }
 
@@ -257,12 +337,15 @@ def reconstruct_seed(
     target: np.ndarray,
     folds: np.ndarray,
     reference_features: np.ndarray,
+    reference_query_features: np.ndarray,
     random_state: int,
 ) -> dict[str, object]:
     h, width = split_channels(h)
     decoder = RidgeCV(alphas=ALPHAS).fit(h, target)
     reference_model = make_reference_model(random_state).fit(reference_features, h[:, width:])
-    result = crossfit_typical_change(h, target, folds, reference_features, random_state)
+    result = crossfit_typical_change(
+        h, target, folds, reference_features, reference_query_features, random_state
+    )
     result.update({"decoder": decoder, "reference_model": reference_model, "oof": result["decoded_aggregated"]})
     return result
 
@@ -296,6 +379,7 @@ def main() -> None:
     frames: list[pd.DataFrame] = []
     performance: list[dict[str, object]] = []
     summaries: list[dict[str, object]] = []
+    scope_summary: pd.DataFrame | None = None
     input_hashes = {"fixed_split": sha256(split_path), "baseline_table": sha256(args.baseline_table),
                     "folds": sha256(args.folds), "ruler": sha256(args.ruler)}
 
@@ -305,8 +389,18 @@ def main() -> None:
             h = saved["h"].astype(float)
         if h.shape[0] != len(ids):
             raise ValueError(f"seed {seed} representation does not match fixed node order")
-        reference_features, reference_feature_names = hospital_service_range_features(h, X, W, H, columns)
-        result = reconstruct_seed(h, X, folds, reference_features, REFERENCE_RANDOM_STATE + 100 * seed)
+        reference_features, reference_feature_names = hospital_service_range_features(
+            h, X, W, H, columns, nominal["class"]
+        )
+        _, width = split_channels(h)
+        reference_query_features = type_typical_scope_features(
+            reference_features, nominal["class"], folds, width
+        )
+        if scope_summary is None:
+            scope_summary = type_scope_summary(reference_features, nominal["class"], folds, width)
+        result = reconstruct_seed(
+            h, X, folds, reference_features, reference_query_features, REFERENCE_RANDOM_STATE + 100 * seed
+        )
         delta = result["delta"]
         parts = result["parts"]
         after = X + delta
@@ -375,6 +469,7 @@ def main() -> None:
             alpha=decoder.alpha_,
             reference_feature_names=np.asarray(reference_feature_names),
             reference_feature_importance=reference_model.feature_importances_,
+            reference_query_features=result["reference_query_features"],
             decoder_fold_alphas=result["decoder_fold_alphas"],
             delta=delta,
             delta_comp=parts[0],
@@ -387,6 +482,8 @@ def main() -> None:
     nodes.to_csv(output / "node_supply_change.csv", index=False)
     pd.DataFrame(performance).to_csv(output / "decoder_performance.csv", index=False)
     pd.DataFrame(summaries).to_csv(output / "decoder_summary.csv", index=False)
+    assert scope_summary is not None
+    scope_summary.to_csv(output / "configuration_service_range_reference.csv", index=False)
     mean = nodes.groupby("community_id", sort=False).agg(
         baseline_type=("baseline_type", "first"), after_type_mode=("after_type", lambda x: int(x.mode().iloc[0])),
         retained_rate=("retained", "mean"), change_9_mean=("change_9", "mean"),
@@ -403,8 +500,14 @@ def main() -> None:
         "alphas": ALPHAS.tolist(),
         "typical_external_reference": (
             "spatial-fold cross-fitted ExtraTrees conditional mean E[(h_comp,h_compete) | "
-            "h_base, visible service-range summaries, flow-weighted TH/SH destination context]"
+            "h_base, fold-and-configuration-specific typical service range, "
+            "flow-weighted TH/SH destination context, baseline configuration]"
         ),
+        "configuration_specific_scope": (
+            "for each held-out node, each of five service-range summaries is replaced by the median "
+            "among training-fold nodes with the same baseline configuration"
+        ),
+        "configuration_scope_table": "configuration_service_range_reference.csv reports training-fold quartiles",
         "reference_model_parameters": {
             "n_estimators": REFERENCE_TREES,
             "min_samples_leaf": REFERENCE_MIN_SAMPLES_LEAF,
@@ -414,13 +517,13 @@ def main() -> None:
         "reference_features": reference_feature_names,
         "change": (
             "D^(-fold)(h_base,h_ext) - D^(-fold)(h_base,"
-            "E^(-fold)[h_ext|h_base,S(W_visible),P_visible X_hospital])"
+            "E^(-fold)[h_ext|h_base,S_typical^(-fold)(T),P_visible X_hospital,T])"
         ),
         "after": "frozen baseline indicators + relative decoded shift",
         "validation": "both decoder and typical-reference model evaluated out of spatial fold",
         "mobility_scope": (
             "the reference explicitly absorbs repeatable mobility associated with visible service-range structure "
-            "and TH/SH destination context; CHC destination indicators are excluded"
+            "within each baseline configuration and TH/SH destination context; CHC destination indicators are excluded"
         ),
         "facility_level_limit": "aggregate OD does not identify visited facility level; the residual is not uniquely community-health-centre flow",
         "interpretation": "relative supply-representation shift from atypical external aggregation, not measured absolute supply change",
@@ -433,6 +536,7 @@ def main() -> None:
         "same_fold_decoder_for_aggregated_and_typical_reference": True,
         "typical_reference_is_out_of_fold": True,
         "reference_uses_only_nonheldout_od_edges": True,
+        "service_range_is_configuration_specific_and_training_fold_only": True,
         "reference_includes_hospital_but_not_chc_destination_context": True,
         "decoder_is_out_of_fold": True,
         "intercept_cancels": True,

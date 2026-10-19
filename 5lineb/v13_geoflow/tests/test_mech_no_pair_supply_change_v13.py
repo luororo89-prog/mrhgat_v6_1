@@ -12,6 +12,8 @@ from reconstruct_mech_no_pair_supply_v13 import (
     linear_channel_change,
     reference_vector,
     split_channels,
+    type_scope_summary,
+    type_typical_scope_features,
 )
 from plot_mech_no_pair_supply_change_abcd_v13 import holm, weighted_destination_summary
 
@@ -53,11 +55,29 @@ def test_service_range_features_exclude_self_heldout_and_chc_context():
     W = np.array([[100.0, 4.0, 9.0], [2.0, 100.0, 7.0], [5.0, 6.0, 100.0]])
     heldout = np.zeros_like(W, dtype=bool)
     heldout[0, 2] = True
-    features, names = hospital_service_range_features(h, target, W, heldout, columns)
-    assert features.shape == (3, 15)
+    features, names = hospital_service_range_features(
+        h, target, W, heldout, columns, np.array([0, 1, 2])
+    )
+    assert features.shape == (3, 19)
     assert len(names) == features.shape[1]
     assert not any("CHC" in name for name in names)
-    np.testing.assert_allclose(features[0, -6:], target[1, :6])
+    np.testing.assert_allclose(features[0, 9:15], target[1, :6])
+    np.testing.assert_array_equal(features[:, 15:], np.eye(4)[:3])
+
+
+def test_type_typical_scope_is_estimated_from_other_spatial_folds():
+    features = np.zeros((8, 11), dtype=float)
+    features[:, 2:7] = np.arange(40, dtype=float).reshape(8, 5)
+    node_type = np.tile(np.arange(4), 2)
+    folds = np.array([0, 0, 0, 0, 1, 1, 1, 1])
+    query = type_typical_scope_features(features, node_type, folds, width=2)
+    np.testing.assert_allclose(query[:4, 2:7], features[4:, 2:7])
+    np.testing.assert_allclose(query[4:, 2:7], features[:4, 2:7])
+    summary = type_scope_summary(features, node_type, folds, width=2)
+    assert len(summary) == 8
+    first = summary.query("heldout_fold == 0 and baseline_configuration == 0").iloc[0]
+    assert first.training_n == 1
+    np.testing.assert_allclose(first.visible_external_flow_median, np.expm1(20.0))
 
 
 def test_holm_adjustment_is_monotone_in_sorted_order():
