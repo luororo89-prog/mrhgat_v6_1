@@ -14,12 +14,12 @@ from reconstruct_mech_no_pair_supply_v13 import (
     split_channels,
 )
 from plot_mech_no_pair_supply_change_abcd_v13 import (
-    SUPPLY_BLOCKS,
-    cluster_cumulative_summary,
+    cluster_outline,
     cluster_relation_summary,
     holm,
     weighted_destination_summary,
 )
+from shapely.geometry import box
 
 
 def test_external_channel_difference_is_additive():
@@ -70,30 +70,20 @@ def test_destination_summary_uses_origin_shares_and_excludes_self_flows():
     assert scarcity.origin_n == 1 and chc.origin_n == 1
 
 
-def test_cluster_cumulative_shift_starts_at_baseline_and_ends_at_change_9():
-    values = {
-        column: np.array([0.0, 0.0])
-        for _, columns in SUPPLY_BLOCKS
-        for column in columns
-    }
-    values["delta_RA_TH"] = np.array([3.0, 1.0])
-    values["delta_RA_SH"] = np.array([4.0, 2.0])
-    values["delta_RA_CHC"] = np.array([12.0, 2.0])
-    energy = sum(np.square(values[column]) for column in values)
-    values["change_9"] = np.sqrt(energy / 9.0)
-    table = cluster_cumulative_summary(pd.DataFrame(values), np.array([1, 1]), cluster_ids=(1,))
-    trajectory = table.sort_values("stage").mean_cumulative_shift.to_numpy()
-    assert trajectory[0] == 0.0
-    assert np.all(np.diff(trajectory) >= 0.0)
-    np.testing.assert_allclose(trajectory[-1], values["change_9"].mean())
+def test_cluster_outline_is_one_closed_polygon():
+    outline = cluster_outline([box(0, 0, 1.5, 1.5), box(2, 0, 3, 1)])
+    assert outline.geom_type == "Polygon"
+    assert outline.exterior.is_ring
+    np.testing.assert_allclose(outline.area, 2.25)
 
 
-def test_cluster_relation_uses_concentration_and_excludes_self_outflow():
+def test_cluster_relation_uses_diversity_and_excludes_self_outflow():
     data = pd.DataFrame({"baseline_type": [0, 1, 0], "change_9": [1.0, 3.0, 8.0]})
     cluster = np.array([1, 1, 2])
     W = np.array([[100.0, 4.0, 0.0], [2.0, 100.0, 0.0], [0.0, 0.0, 100.0]])
     table = cluster_relation_summary(data, cluster, W, cluster_ids=(1,))
     row = table.iloc[0]
     assert row.outgoing_flow == 6.0
-    np.testing.assert_allclose(row.configuration_concentration, (4.0 / 6.0) ** 2 + (2.0 / 6.0) ** 2)
+    np.testing.assert_allclose(row.configuration_diversity,
+                               1.0 - (4.0 / 6.0) ** 2 - (2.0 / 6.0) ** 2)
     assert row.mean_change == 2.0
