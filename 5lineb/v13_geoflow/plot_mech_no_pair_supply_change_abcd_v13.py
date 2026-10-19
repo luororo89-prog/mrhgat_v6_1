@@ -335,8 +335,6 @@ def main() -> None:
 
     nodes = pd.read_csv(args.reconstruction / "node_supply_change.csv")
     nodes = nodes.loc[nodes.seed == args.seed].copy()
-    protocol = json.loads((args.reconstruction / "protocol.json").read_text(encoding="utf-8"))
-    reference_label = protocol.get("figure_reference_label", "typical aggregation")
     with np.load(args.fixed_split) as split:
         ids = split["ids"].astype(int)
         W = split["W"].astype(float)
@@ -385,15 +383,14 @@ def main() -> None:
             bar_axes[group].set_ylabel("Weighted mean shift", labelpad=1)
     cluster_relation(ax_d, nodes, cluster, W)
 
-    fig.text(0.055, 0.975, f"a. PC shift relative to {reference_label}", fontsize=7.5,
-             fontweight="bold", va="top")
+    fig.text(0.055, 0.975, "a. PC shift relative to typical aggregation", fontsize=7.5, fontweight="bold", va="top")
     fig.text(0.57, 0.975, "b. Relative-shift magnitude by configuration", fontsize=7.5, fontweight="bold", va="top")
     fig.text(0.29, 0.699, "Rise = positive · Stable = zero · Decline = negative\n"
              "Band width = number of living circles", ha="center", va="top", fontsize=5)
     fig.text(0.055, 0.665, "c. Living-circle shift and OD destination configuration",
              fontsize=7.5, fontweight="bold", va="top")
     fig.text(0.755, 0.505, "d. Cluster-level relationship", fontsize=7.5, fontweight="bold", va="top")
-    fig.text(0.5, 0.006, f"Seed {args.seed} · Spatially cross-fitted shift relative to the {reference_label}\n"
+    fig.text(0.5, 0.006, f"Seed {args.seed} · Spatially cross-fitted shift relative to typical external aggregation\n"
              "Bars weight each origin’s shift by its within-cluster OD share to the destination configuration; self flows excluded.",
              ha="center", va="bottom", fontsize=5, color="#64748B")
 
