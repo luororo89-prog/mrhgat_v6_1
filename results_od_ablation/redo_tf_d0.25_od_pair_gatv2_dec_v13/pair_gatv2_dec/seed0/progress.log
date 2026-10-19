@@ -1,9 +1,0 @@
-10:59:33 pair_gatv2_dec seed=0 START destination CE + Adam L2, fixed holdout seed 0
-10:59:58 pair_gatv2_dec seed=0 epoch=25 ce=5.5264 val_ce=5.4682 val_cpc=0.1003
-11:00:24 pair_gatv2_dec seed=0 epoch=50 ce=5.3648 val_ce=5.2895 val_cpc=0.1195
-11:00:49 pair_gatv2_dec seed=0 epoch=75 ce=4.8958 val_ce=4.5705 val_cpc=0.2761
-11:01:15 pair_gatv2_dec seed=0 epoch=100 ce=4.8565 val_ce=4.4513 val_cpc=0.3157
-11:01:46 pair_gatv2_dec seed=0 epoch=125 ce=4.8566 val_ce=4.5545 val_cpc=0.2669
-11:02:15 pair_gatv2_dec seed=0 epoch=150 ce=4.8435 val_ce=4.4821 val_cpc=0.3006
-11:02:45 pair_gatv2_dec seed=0 epoch=175 ce=4.8282 val_ce=4.4602 val_cpc=0.3059
-11:03:12 pair_gatv2_dec seed=0 DONE {"ce": 4.517404534209488, "ce_trips": 4.110298317056491, "cpc": 0.45291430353849416, "nrmse": 6.670393945241757, "internal_error_conditional": 0.03969916001979069, "internal_error_full_diagnostic": 0.01931818785933882, "variant": "pair_gatv2_dec", "seed": 0, "epochs": 198, "best_epoch": 148, "best_val_ce": 4.4145319480784195, "seconds": 218.8851399421692, "routing_entropy_normalized": 0.5422691633582497, "routing_probability_std_C1": 0.30860805892021054, "confident_flow_share_p08": 0.8468133826868157}
